@@ -14,6 +14,7 @@ import { Recording, demoRoute } from "../features/tracking/simulator";
 import { GpsFix } from "../features/tracking/gps";
 import { duration, km, pace } from "../features/activities/model";
 import { sportInfo } from "../features/activities/sports";
+import SportIcon from "./SportIcon";
 import { MapKind } from "../features/maps/config";
 
 import { useTrackingStatus } from "../stores/useTrackingStatus";
@@ -147,7 +148,7 @@ export default function RecordingMap({
       {timerOnly ? (
         <View style={[s.timerBackdrop, { paddingBottom: panelHeight }]}>
           <View style={s.sportEmblem}>
-            <Icon name={info.icon} size={48} color={brand.route} />
+            <SportIcon sport={r.sport} size={72} />
           </View>
           <Txt size={30} weight="700" style={{ color: "#11182C" }}>
             {r.sport}
@@ -398,7 +399,7 @@ export default function RecordingMap({
                   <View
                     style={[s.actionCircle, { backgroundColor: "#EDF5E6" }]}
                   >
-                    <Icon name={info.icon} color={brand.route} size={25} />
+                    <SportIcon sport={r.sport} size={42} />
                   </View>
                   <Txt
                     size={12}

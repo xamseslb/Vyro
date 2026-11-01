@@ -1,5 +1,13 @@
 # Leveranseplan
 
+## Enklere idrettsvalg og Flaticon-ikoner — 1. november 2026
+
+Basketball, volleyball, badminton, tennis, yoga, dans, HIIT, elliptisk, skateboarding, cricket, padel, skøyter, snowboard og spinning er fjernet fra idrettsvelgeren og de øvrige valgene i profil, ukemål og fremgang. Rulleskøyter beholdes. Hele datakatalogen beholdes slik at tidligere lagrede økter, profiler og sikkerhetskopier fortsatt kan leses; ingen databaseendring eller sletting er utført.
+
+Brukeren har godkjent Flaticon-forslaget. 17 originale PNG-illustrasjoner fra Magnific er nå inkludert i appen og dekker alle 22 gjenværende idrettsvalg; beslektede idretter deler en illustrasjon. Idrettsvelgeren, treningsskjermen og treningsloggen bruker samme komponent. Bildene følger apppakken og trenger ikke nett. Historiske økter med utgåtte idretter beholder sine tidligere symboler.
+
+Magnific og Flaticon krediteres med lenker under **Innstillinger → Hjelp og om VYRO → Ikoner og illustrasjoner**. Kilde, opphav og lisens for hver fil er dokumentert i `mobile/assets/sports/flaticon/`. Gratisikonene brukes med kreditering etter [Flaticons lisens](https://www.flaticon.com/legal); bildenes farger og former er uendret. Ingen databaseendring, Git-push eller nytt signert iPhone-bygg i denne runden. Se [teststatus](testing.md).
+
 ## iPhone-preview 15 ferdig — 31. oktober 2026
 
 [Preview 15](https://expo.dev/accounts/xamse10/projects/vyro/builds/cb69dbb1-0b93-47b9-9753-a507865f00b0) er **FINISHED**, versjon 0.1.0 (15), med installasjonsfil. Bygget bruker commit `c3158b3` og inkluderer klubbsoner/eiernåler samt sikkerhetsarbeidet nedenfor. Eksisterende app-ID og signering for iPhone, widget og Watch er beholdt. Alle 547 tester, typecheck og lint bestod igjen før opplasting. Fysisk testing av den nye appen gjenstår; installer over eksisterende VYRO. Ingen Git-push eller TestFlight-innsending er gjort i denne byggerunden.

@@ -169,7 +169,32 @@ export const sportCatalog = {
   },
 } as const;
 export type Sport = keyof typeof sportCatalog;
+// Keep the complete catalog for reading existing workouts and backups.
 export const sports = Object.keys(sportCatalog) as Sport[];
+const retiredSportNames = [
+  "Basketball",
+  "Volleyball",
+  "Badminton",
+  "Tennis",
+  "Yoga",
+  "Dans",
+  "HIIT",
+  "Elliptisk",
+  "Skateboarding",
+  "Cricket",
+  "Padel",
+  "Skøyter",
+  "Snowboard",
+  "Spinning",
+] as const satisfies readonly Sport[];
+export type SelectableSport = Exclude<
+  Sport,
+  (typeof retiredSportNames)[number]
+>;
+const retiredSports = new Set<Sport>(retiredSportNames);
+export const selectableSports = sports.filter(
+  (sport) => !retiredSports.has(sport),
+);
 export const isSport = (value: unknown): value is Sport =>
   typeof value === "string" && Object.hasOwn(sportCatalog, value);
 export const sportInfo = (sport: Sport) =>
@@ -198,10 +223,10 @@ export function validWorkoutDetails(value: WorkoutDetails) {
 }
 export function sportSections(query: string, favorites: Sport[] = []) {
   const normalized = query.trim().toLocaleLowerCase("nb-NO");
-  const selected = sports.filter((sport) =>
+  const selected = selectableSports.filter((sport) =>
     sport.toLocaleLowerCase("nb-NO").includes(normalized),
   );
-  const groups = [...new Set(sports.map((s) => sportInfo(s).group))];
+  const groups = [...new Set(selectableSports.map((s) => sportInfo(s).group))];
   return [
     {
       title: "Dine idretter",

@@ -1,0 +1,151 @@
+{
+  "checked": "2026-11-01",
+  "pack": "https://www.flaticon.com/packs/active-lifestyle-29",
+  "license": "Flaticon License: Free for personal and commercial purpose with attribution.",
+  "licenseUrl": "https://www.flaticon.com/legal",
+  "note": "Original PNG icons bundled in VYRO. Attribution is displayed in Settings > Help and about VYRO. Cycling variants share relevant family artwork.",
+  "icons": [
+    {
+      "label": "Løping",
+      "slug": "running_2000047",
+      "id": "2000047",
+      "author": "Magnific",
+      "page": "https://www.flaticon.com/free-icon/running_2000047",
+      "image": "https://cdn-icons-png.flaticon.com/512/2000/2000047.png",
+      "pack": "https://www.flaticon.com/packs/active-lifestyle-29"
+    },
+    {
+      "label": "Fotball",
+      "slug": "soccer_2000113",
+      "id": "2000113",
+      "author": "Magnific",
+      "page": "https://www.flaticon.com/free-icon/soccer_2000113",
+      "image": "https://cdn-icons-png.flaticon.com/512/2000/2000113.png",
+      "pack": "https://www.flaticon.com/packs/active-lifestyle-29"
+    },
+    {
+      "label": "Sykling",
+      "slug": "cycling_2000140",
+      "id": "2000140",
+      "author": "Magnific",
+      "page": "https://www.flaticon.com/free-icon/cycling_2000140",
+      "image": "https://cdn-icons-png.flaticon.com/512/2000/2000140.png",
+      "pack": "https://www.flaticon.com/packs/active-lifestyle-29"
+    },
+    {
+      "label": "Svømming",
+      "slug": "swimmer_2000149",
+      "id": "2000149",
+      "author": "Magnific",
+      "page": "https://www.flaticon.com/free-icon/swimmer_2000149",
+      "image": "https://cdn-icons-png.flaticon.com/512/2000/2000149.png",
+      "pack": "https://www.flaticon.com/packs/active-lifestyle-29"
+    },
+    {
+      "label": "Gange",
+      "slug": "walking_2000197",
+      "id": "2000197",
+      "author": "Magnific",
+      "page": "https://www.flaticon.com/free-icon/walking_2000197",
+      "image": "https://cdn-icons-png.flaticon.com/512/2000/2000197.png",
+      "pack": "https://www.flaticon.com/packs/active-lifestyle-29"
+    },
+    {
+      "label": "Styrketrening",
+      "slug": "dumbbell_2000054",
+      "id": "2000054",
+      "author": "Magnific",
+      "page": "https://www.flaticon.com/free-icon/dumbbell_2000054",
+      "image": "https://cdn-icons-png.flaticon.com/512/2000/2000054.png",
+      "pack": "https://www.flaticon.com/packs/active-lifestyle-29"
+    },
+    {
+      "label": "Fottur",
+      "slug": "hiking_805484",
+      "image": "https://cdn-icons-png.flaticon.com/512/805/805484.png",
+      "page": "https://www.flaticon.com/free-icon/hiking_805484",
+      "pack": "https://www.flaticon.com/packs/extreme-sports-6",
+      "author": "Magnific"
+    },
+    {
+      "label": "Langrenn / rulleski",
+      "slug": "ski_3969648",
+      "image": "https://cdn-icons-png.flaticon.com/512/3969/3969648.png",
+      "page": "https://www.flaticon.com/free-icon/ski_3969648",
+      "pack": "https://www.flaticon.com/packs/sports-158",
+      "author": "Magnific"
+    },
+    {
+      "label": "Alpint",
+      "slug": "skiing_805505",
+      "image": "https://cdn-icons-png.flaticon.com/512/805/805505.png",
+      "page": "https://www.flaticon.com/free-icon/skiing_805505",
+      "pack": "https://www.flaticon.com/packs/extreme-sports-6",
+      "author": "Magnific"
+    },
+    {
+      "label": "Kajakk / padling",
+      "slug": "kayak_805490",
+      "image": "https://cdn-icons-png.flaticon.com/512/805/805490.png",
+      "page": "https://www.flaticon.com/free-icon/kayak_805490",
+      "pack": "https://www.flaticon.com/packs/extreme-sports-6",
+      "author": "Magnific"
+    },
+    {
+      "label": "Roing",
+      "slug": "rowing_2119046",
+      "image": "https://cdn-icons-png.flaticon.com/512/2119/2119046.png",
+      "page": "https://www.flaticon.com/free-icon/rowing_2119046",
+      "pack": "https://www.flaticon.com/packs/sports-105",
+      "author": "Magnific"
+    },
+    {
+      "label": "Klatring",
+      "slug": "climbing_805512",
+      "image": "https://cdn-icons-png.flaticon.com/512/805/805512.png",
+      "page": "https://www.flaticon.com/free-icon/climbing_805512",
+      "pack": "https://www.flaticon.com/packs/extreme-sports-6",
+      "author": "Magnific"
+    },
+    {
+      "label": "Pilates",
+      "slug": "pilates_6233472",
+      "image": "https://cdn-icons-png.flaticon.com/512/6233/6233472.png",
+      "page": "https://www.flaticon.com/free-icon/pilates_6233472",
+      "pack": "https://www.flaticon.com/packs/pilates-65",
+      "author": "Magnific"
+    },
+    {
+      "label": "Trappemaskin",
+      "slug": "stairs_9436103",
+      "image": "https://cdn-icons-png.flaticon.com/512/9436/9436103.png",
+      "page": "https://www.flaticon.com/free-icon/stairs_9436103",
+      "pack": "https://www.flaticon.com/packs/motivation-121",
+      "author": "Magnific"
+    },
+    {
+      "label": "Truger",
+      "slug": "snowshoe_9007233",
+      "image": "https://cdn-icons-png.flaticon.com/512/9007/9007233.png",
+      "page": "https://www.flaticon.com/free-icon/snowshoe_9007233",
+      "pack": "https://www.flaticon.com/packs/winter-582",
+      "author": "Magnific"
+    },
+    {
+      "label": "Terreng / gravel",
+      "slug": "mountain-bike_3253157",
+      "image": "https://cdn-icons-png.flaticon.com/512/3253/3253157.png",
+      "page": "https://www.flaticon.com/free-icon/mountain-bike_3253157",
+      "pack": "https://www.flaticon.com/packs/bycicle-racing",
+      "author": "Magnific"
+    },
+    {
+      "label": "Rulleskøyter",
+      "slug": "roller-skate_2000155",
+      "image": "https://cdn-icons-png.flaticon.com/512/2000/2000155.png",
+      "page": "https://www.flaticon.com/free-icon/roller-skate_2000155",
+      "pack": "https://www.flaticon.com/packs/active-lifestyle-29",
+      "author": "Magnific"
+    }
+  ]
+}

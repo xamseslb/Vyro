@@ -46,9 +46,12 @@ test("search selects an indoor sport and closes the picker", async () => {
   await render(
     <SportPicker selected={["Løping"]} onSelect={select} onClose={close} />,
   );
-  await fireEvent.changeText(screen.getByLabelText("Søk etter idrett"), "yoga");
-  await fireEvent.press(screen.getByRole("radio", { name: "Yoga" }));
-  expect(select).toHaveBeenCalledWith("Yoga");
+  await fireEvent.changeText(
+    screen.getByLabelText("Søk etter idrett"),
+    "pilates",
+  );
+  await fireEvent.press(screen.getByRole("radio", { name: "Pilates" }));
+  expect(select).toHaveBeenCalledWith("Pilates");
   expect(close).toHaveBeenCalledTimes(1);
 });
 

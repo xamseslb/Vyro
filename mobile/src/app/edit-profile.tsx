@@ -15,7 +15,7 @@ import {
   validateProfileDetails,
 } from "../features/auth/profileDetails";
 import SportPicker from "../components/SportPicker";
-import { sports } from "../features/activities/model";
+import { selectableSports } from "../features/activities/sports";
 
 export default function EditProfileScreen() {
   const user = useAuthStore((s) => s.session?.user);
@@ -51,9 +51,15 @@ export default function EditProfileScreen() {
 }
 function ProfileForm({ user }: { user: User }) {
   const { profile } = useOwnProfile();
-  const [draft, setDraft] = useState(() =>
-    profileDetails(user, profile?.display_name),
-  );
+  const [draft, setDraft] = useState(() => {
+    const details = profileDetails(user, profile?.display_name);
+    return {
+      ...details,
+      selectedSports: details.selectedSports.filter((sport) =>
+        selectableSports.includes(sport),
+      ),
+    };
+  });
   const [selectSports, setSelectSports] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -150,7 +156,7 @@ function ProfileForm({ user }: { user: User }) {
         </Pressable>
       }
     >
-      <ProfilePhotoEditor owner={user.id} name={draft.displayName || "V"}/>
+      <ProfilePhotoEditor owner={user.id} name={draft.displayName || "V"} />
       {!!error && (
         <View
           accessibilityLiveRegion="polite"
@@ -184,9 +190,12 @@ function ProfileForm({ user }: { user: User }) {
         >
           <Chip
             title="Alle"
-            selected={draft.selectedSports.length === sports.length}
+            selected={selectableSports.every((sport) =>
+              draft.selectedSports.includes(sport),
+            )}
             onPress={() => {
-              if (!busy) setDraft({ ...draft, selectedSports: [...sports] });
+              if (!busy)
+                setDraft({ ...draft, selectedSports: [...selectableSports] });
             }}
           />
           <Button

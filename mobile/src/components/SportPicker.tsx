@@ -3,6 +3,7 @@ import { Modal, Pressable, SectionList, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon, Txt, useTheme } from "./ui";
 import { Sport, sportInfo, sportSections } from "../features/activities/sports";
+import SportIcon from "./SportIcon";
 
 /** Mount only while open so a new selection starts with an empty search. */
 export default function SportPicker({
@@ -126,7 +127,7 @@ export default function SportPicker({
                   if (!multiple) onClose();
                 }}
                 style={({ pressed }) => ({
-                  minHeight: 62,
+                  minHeight: 76,
                   paddingVertical: 12,
                   paddingHorizontal: 12,
                   marginVertical: 2,
@@ -138,11 +139,7 @@ export default function SportPicker({
                   gap: 14,
                 })}
               >
-                <Icon
-                  name={sportInfo(item).icon}
-                  color={chosen ? c.accent : c.text}
-                  size={24}
-                />
+                <SportIcon sport={item} size={48} />
                 <View style={{ flex: 1, gap: 2 }}>
                   <Txt weight={chosen ? "700" : "500"}>{item}</Txt>
                   <Txt muted size={12}>

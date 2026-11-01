@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 import Constants from "expo-constants";
+import { openURL } from "expo-linking";
 import { router } from "expo-router";
 import {
   Page,
@@ -37,6 +38,15 @@ const questions = [
 ] as const;
 export default function Help() {
   const [open, setOpen] = useState<number | null>(null);
+  const [linkError, setLinkError] = useState("");
+  async function openCredit(url: string) {
+    setLinkError("");
+    try {
+      await openURL(url);
+    } catch {
+      setLinkError("Kunne ikke åpne lenken. Prøv igjen når du er på nett.");
+    }
+  }
   return (
     <Page title="Hjelp og om VYRO">
       <SettingsGroup title="Vanlige spørsmål">
@@ -71,6 +81,29 @@ export default function Help() {
           onPress={() => router.push("/apple-watch")}
         />
       </SettingsGroup>
+      <SettingsGroup
+        title="Ikoner og illustrasjoner"
+        note="Idrettsikonene er laget av Magnific og hentet fra Flaticon. Brukt med kreditering etter Flaticons lisens."
+      >
+        <SettingsRow
+          title="Magnific"
+          description="Designeren bak idrettsikonene"
+          onPress={() =>
+            void openCredit("https://www.flaticon.com/authors/magnific")
+          }
+        />
+        <SettingsRow
+          title="Flaticon"
+          description="Se ikonbiblioteket"
+          onPress={() => void openCredit("https://www.flaticon.com/")}
+        />
+        <SettingsRow
+          title="Lisens for ikonene"
+          description="Flaticons bruksvilkår"
+          onPress={() => void openCredit("https://www.flaticon.com/legal")}
+        />
+      </SettingsGroup>
+      {!!linkError && <PageNote>{linkError}</PageNote>}
       <PageNote>
         VYRO {Constants.expoConfig?.version ?? "0.1.0"}
         {"\n"}Et sted for turene dine, menneskene du følger og løypene du vil

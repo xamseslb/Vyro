@@ -5,12 +5,8 @@ import Svg, { Circle, Line, Polyline, Text as SvgText } from "react-native-svg";
 import { Button, Chip, Icon, Txt, styles, useTheme } from "./ui";
 import { ProgressLine } from "./motion";
 import { useAppStore } from "../stores/useAppStore";
-import {
-  type Sport,
-  sports,
-  type Workout,
-  km,
-} from "../features/activities/model";
+import { type Sport, type Workout, km } from "../features/activities/model";
+import { selectableSports } from "../features/activities/sports";
 import {
   defaultGoal,
   goalProgress,
@@ -99,7 +95,7 @@ export function TrainingProgress({
         </Pressable>
         {chooseSport && (
           <View style={styles.wrap}>
-            {(["Alle", ...sports] as const).map((value) => (
+            {(["Alle", ...selectableSports] as const).map((value) => (
               <Chip
                 key={value}
                 title={value}

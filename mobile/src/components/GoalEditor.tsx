@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TextInput, View } from "react-native";
 import { Button, Chip, Txt, styles, useTheme } from "./ui";
-import { sports } from "../features/activities/model";
+import { selectableSports } from "../features/activities/sports";
 import { WeeklyGoal } from "../features/activities/training";
 
 export function GoalEditor({
@@ -14,7 +14,11 @@ export function GoalEditor({
   close: () => void;
 }) {
   const [kind, setKind] = useState(goal.kind);
-  const [sport, setSport] = useState(goal.sport);
+  const [sport, setSport] = useState<WeeklyGoal["sport"]>(
+    goal.sport === "Alle" || selectableSports.includes(goal.sport)
+      ? goal.sport
+      : "Alle",
+  );
   const [target, setTarget] = useState(String(goal.target));
   const c = useTheme();
   const number = Number(target.replace(",", "."));
@@ -62,7 +66,7 @@ export function GoalEditor({
         }}
       />
       <View style={styles.wrap}>
-        {(["Alle", ...sports] as const).map((value) => (
+        {(["Alle", ...selectableSports] as const).map((value) => (
           <Chip
             key={value}
             title={value}

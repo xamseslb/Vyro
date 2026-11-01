@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { Workout } from "../features/activities/model";
 import { Card, Icon, Txt, styles, useTheme } from "./ui";
 import WorkoutStats from "./WorkoutStats";
-import { sportInfo } from "../features/activities/sports";
+import SportIcon from "./SportIcon";
 export function ActivityCard({ workout }: { workout: Workout }) {
   const c = useTheme();
   return (
@@ -33,12 +33,12 @@ export function ActivityCard({ workout }: { workout: Workout }) {
           >
             <View
               style={{
-                padding: 12,
+                padding: 6,
                 borderRadius: 16,
                 backgroundColor: c.raised,
               }}
             >
-              <Icon name={sportInfo(workout.sport).icon} color={c.text} />
+              <SportIcon sport={workout.sport} size={40} />
             </View>
             <View style={{ flex: 1 }}>
               <Txt weight="600">{workout.title}</Txt>

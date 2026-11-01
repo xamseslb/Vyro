@@ -1,6 +1,8 @@
 import type { Session } from "@supabase/supabase-js";
 import {
   sports,
+  selectableSports,
+  isSport,
   sportInfo,
   sportSections,
 } from "../src/features/activities/sports";
@@ -169,12 +171,41 @@ test("timer recordings remain private across account changes and count in minute
 
 test("Norwegian sport search and favorites do not duplicate or lose choices", () => {
   expect(sportSections("  SKØYTER ").flatMap((s) => s.data)).toEqual([
-    "Skøyter",
     "Rulleskøyter",
   ]);
   const sections = sportSections("", ["Yoga", "Fotball"]);
   expect(sections[0].title).toBe("Dine idretter");
-  expect(new Set(sections.flatMap((s) => s.data)).size).toBe(sports.length);
-  expect(sections.flatMap((s) => s.data)).toHaveLength(sports.length);
+  expect(sections[0].data).toEqual(["Fotball"]);
+  expect(new Set(sections.flatMap((s) => s.data)).size).toBe(
+    selectableSports.length,
+  );
+  expect(sections.flatMap((s) => s.data)).toHaveLength(selectableSports.length);
   expect(sportSections("finnes ikke")).toEqual([]);
+});
+
+test("retired choices cannot return through search or favorites; old workouts remain supported", () => {
+  const retired = [
+    "Basketball",
+    "Volleyball",
+    "Badminton",
+    "Tennis",
+    "Yoga",
+    "Dans",
+    "HIIT",
+    "Elliptisk",
+    "Skateboarding",
+    "Cricket",
+    "Padel",
+    "Skøyter",
+    "Snowboard",
+    "Spinning",
+  ] as const;
+  for (const sport of retired) {
+    expect(isSport(sport)).toBe(true);
+    expect(selectableSports).not.toContain(sport);
+    expect(sportSections(sport, [sport]).flatMap((s) => s.data)).not.toContain(
+      sport,
+    );
+  }
+  expect(selectableSports).toContain("Rulleskøyter");
 });

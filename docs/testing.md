@@ -1,5 +1,12 @@
 # Testing
 
+## Idrettsvalg og Flaticon-ikoner — 1. november 2026
+
+- Typecheck, lint og **46 tester i tre suiter** (`sports-recording`, `sport-picker` og `football-ui`) består etter ikonbyttet. Søk og gamle favoritter kan ikke legge tilbake de 14 fjernede valgene, inkludert tennis. Rulleskøyter kan fortsatt velges. Den fullstendige katalogen beholdes for tidligere økter og sikkerhetskopier.
+- Brukerens godkjente Flaticon-forslag er nå implementert: 17 originale illustrasjoner dekker alle 22 valgbare idretter. Den typede bildekatalogen krever et bilde for hvert gjenværende valg; gamle idretter får sine tidligere symboler. Kilder og kreditering er lagret i `mobile/assets/sports/flaticon/`, og hver ikonside er kontrollert for opphav og gratis bruk med kreditering.
+- Lokal nettleserkontroll med 393 pikslers bredde: ikonene vises i idrettsvelgeren, søk etter Pilates gir riktig rad, og valget oppdaterer både treningsskjermens store illustrasjon og idrettsknappen. Krediteringen vises under Hjelp og om VYRO, og Magnific-lenken åpner den riktige forfattersiden hos Flaticon. Skjermbilde: `mobile/.expo/sport-icons-verified.png`.
+- Samlet Expo-eksport for iOS og web består. Windows-sandkassen blokkerte først Hermes fra å skrive en midlertidig fil; samme lokale eksport bestod utenfor sandkassen. Ingen produksjonspublisering, databaseendring, Git-push eller nytt signert iPhone-bygg. Fysisk iPhone-kontroll av bildene og lenkeåpning gjenstår.
+
 ## Signert iPhone-preview 15 — 31. oktober 2026
 
 - Før bygging: typecheck, lint og **547 tester i 86 suiter** består på nytt på commit `c3158b3`.
