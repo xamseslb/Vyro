@@ -1,5 +1,45 @@
 # Leveranseplan
 
+## Mapbox som valgfritt iPhone-kart — 4. november 2026
+
+Apple beholdes som standard og fallback; Mapbox kan velges i Innstillinger → Kart i et nytt native bygg. De to motorene deler GPS-/rutedata uten å endre opptak. Mapbox dekker treningskart, rutekart og klubbsoner med profilnåler, separate standard-/satellitt-/hybridvisninger, 2D/3D og høydekurver. Fotballvarmekart bruker midlertidig privat cache. Låseskjerm, Watch og stedssøk bruker fortsatt Apple.
+
+Kontogrensen må løses før bildekvalitet/lastetid kan vurderes: bildetesten svarer 429 og konsollen viser «Usage limited». Ingen betaling, Git-push eller signert nytt bygg er startet. Se [oppsett](mapbox-setup.md) og [tester](testing.md). Neste steg er å verifisere tilgangen, sørge for offentlig Mapbox-token i EAS-preview-miljøet, bygge og fysisk sammenligne kartmotorene ved samme sted/zoom.
+
+## Samme Apple-bildegrunnlag i 2D og 3D — 4. november 2026
+
+Brukeren rapporterte eldre satellittbilder av Triaden/Lørenskog i 2D enn i 3D. Felles `AppleMap` byttet tidligere mellom vanlig satellitt/hybrid og Flyover ved hvert vinkelbytte. Satellitt og hybrid bruker nå Flyover også rett ovenfra, med kameravinkel 0 i 2D og 55 i 3D. Standardkart og eksisterende kamerabevaring er beholdt. Dette gjelder kartene som bruker `AppleMap`, inkludert Kart og Tren; klubbsonenes separate kart er uendret.
+
+Dette gir et konsistent bildegrunnlag ved 2D/3D-bytte, ikke en garanti om nyeste flyfoto. Apple styrer opptaksdato og dekning. [Apple beskriver Flyover-data](https://developer.apple.com/documentation/mapkit/mkmaptype/satelliteflyover) og [rett ovenfra ved kameravinkel 0](https://developer.apple.com/documentation/mapkit/mkmapview/camera). Verken lokal kode eller den dokumenterte kartkonfigurasjonen velger fotograferingsår. Fysisk sammenligning ved Triaden, lastetid, ruteoverlegg og gjentatte vinkelbytter gjenstår på iPhone. Ingen nytt bygg eller Git-push er gjort.
+
+## Treningsmål, profiler og klokketilkobling — 4. november 2026
+
+Treningsmål har ny mobilvisning med ukefremgang, distanse/tid/økter, hurtigvalg, idrettsfilter og fast lagreknapp. Endringer lagres først ved bekreftelse. Tidtakingsidretter bruker tid eller antall økter. Fremgangen beregnes fra brukerens egne registrerte økter; delmål under én kilometer har korrekt fremdriftsbrøk.
+
+Automatiske `runner_…`-identifikatorer skjules i synlig persontekst og profildeling; navn og eventuelle valgte brukernavn brukes i stedet. Databaseidentitetene er uendret. Personer åpnes via sin faktiske konto-ID fra klubbmedlemmer, resultater, innlegg, kommentarer, søk, følgerlister, varsler og sonehendelser. Den nye profilsiden viser bare innlegg som eksisterende tilgangsregler tillater. Private kontoer krever godkjent følgeforhold. Profildeling bruker fortsatt en søketekst, ikke en ny universell lenke.
+
+Apple Watch-siden skiller mellom manglende støtte, ventende kontroll, ingen paret klokke, manglende Watch-app og klar tilkobling. Avkobling tømmer native kontokontekst også uten tilgjengelig klokke. Ingen simulert forbindelse vises som ekte. Fysisk Watch-test gjenstår; se [klokkeguiden](apple-watch.md) og [teststatus](testing.md). Ingen produksjonsdatabase, Git-push eller nytt signert bygg er utført.
+
+## Kartstart, kommentarknapper og UX-gjennomgang — 4. november 2026
+
+Innlegg har nå en kompakt rad med hjerte, kommentarboble og repost, med store trykkflater og tilgjengelige navn. Kart åpner ved aktuell posisjon i stedet for å velge siste GPS-rute. Lagrede ruter velges uttrykkelig; avvist tilgang og gammel posisjon har egne tilstander. En sen tillatelsesrespons kan ikke overstyre et nyere kartvalg.
+
+Gjennomgangen ga også lesbarere målingskolonner på smale skjermer, større tabbetiketter, profilbilder i kommentarer, tydeligere feil og tastaturtilpasning i felles skjemaer. Kortet «Del med følgerne dine» åpner nå riktig forhåndsvisning uten å publisere. GPS-beregning, privat lagring og backendregler er beholdt.
+
+[UX-rapporten](design-references/ux-review-2026-11-04.md) dokumenterer undersøkelser av Strava, Apple, Expo og designreferansene, gjennomgåtte produktområder og prioriterte lanseringspunkter. Offentlig personvern-/kontaktinformasjon, modereringsrutine og fysisk akseptanse gjenstår. 569 tester i 89 suiter, typecheck og lint består. Ingen Git-push, databaseendring eller nytt EAS-bygg er gjort i denne runden.
+
+## iPhone-preview 16 ferdig — 2. november 2026
+
+[Preview 16](https://expo.dev/accounts/xamse10/projects/vyro/builds/81e15400-a8b7-46fd-b89e-e468aa49e1a8) er **FINISHED**, versjon 0.1.0 (16), med signert installasjonsfil. Bygget inneholder den nye lagrings-/delingsflyten nedenfor og Flaticon-idrettsikonene. Kilden er lokal arbeidskopi på `e4b3f10`, inkludert ukommitterte endringer. Eksisterende iPhone-/widget-/Watch-signering er beholdt. Fysisk kontroll gjenstår; installer over eksisterende app. Ingen Git-push eller TestFlight-innsending utført.
+
+## Lagring og deling av økter — 2. november 2026
+
+Lagringsskjemaet og øktdetaljene har en felles, kompakt oppsummering med idrettsikon, dato og tydelige målinger. Den doble «Synlighet / Kun deg»-seksjonen er fjernet fra skjemaet. Etter privat lagring velger brukeren **Lag innlegg** eller **Behold privat**. Sletting, eksport og gjenbruk av rute ligger under **Flere valg**. Private notater vises bare når de finnes.
+
+«Lag innlegg» åpner den aktuelle økten direkte i en forhåndsvisning, med følgere som førstevalg. Private profiler kan bare dele til godkjente følgere. Offentlige profiler kan også velge Alle i VYRO. Den tydelige publiseringsknappen deler først etter et eget trykk; privat lagring og avbryt publiserer ingenting. Eksisterende innlegg oppdateres ved ny deling. Notater, anstrengelse, 200-metersskjerming og fotballens uttrykkelige samtykke til hel rute beholder sine regler.
+
+Visuell inspirasjon er hentet fra [Kokonut UI sine målingskort](https://kokonutui.com/docs/cards/metric-card) og prosjektets Strava-referanser. Implementasjonen bruker eksisterende React Native-komponenter og VYROs farger. Ingen webbiblioteker eller databaseendringer. Typecheck, lint, 28 relevante tester og web-/iOS-kodeeksport er kontrollert; se [teststatus](testing.md). Fysisk iPhone-kontroll gjenstår. Ingen Git-push eller signert testbygg i denne runden.
+
 ## Enklere idrettsvalg og Flaticon-ikoner — 1. november 2026
 
 Basketball, volleyball, badminton, tennis, yoga, dans, HIIT, elliptisk, skateboarding, cricket, padel, skøyter, snowboard og spinning er fjernet fra idrettsvelgeren og de øvrige valgene i profil, ukemål og fremgang. Rulleskøyter beholdes. Hele datakatalogen beholdes slik at tidligere lagrede økter, profiler og sikkerhetskopier fortsatt kan leses; ingen databaseendring eller sletting er utført.

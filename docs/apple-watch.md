@@ -1,5 +1,11 @@
 # VYRO på Apple Watch
 
+## Tilkoblingsside og frakobling — 4. november 2026
+
+Siden viser nå egen status for manglende native støtte, kontroll som pågår, ingen paret klokke, VYRO som ikke er installert på klokken, og klar forbindelse. «Sjekk tilkoblingen» leser faktisk native status på nytt. Å slå på krever både paret klokke og installert Watch-app, men ikke at klokken er aktivt tilgjengelig akkurat nå. En eksisterende kontokobling kan slås av selv når klokken er frakoblet. Kontokonteksten tømmes før pare-/installasjonskontrollen, slik at gammel konto ikke blir hengende i native-laget.
+
+Brukeren har ikke fysisk Apple Watch. Bryteren kan derfor ikke aktiveres på denne telefonen ennå; dette skal forklares i grensesnittet. På Mac kan [Xcode pare iPhone- og Watch-simulatorer](https://help.apple.com/xcode/mac/current/en.lproj/devc98049be4.html) for skjerm-/flyttest. Windows kan kjøre validerings- og komponenttestene, men ikke Apples simulator. Puls, GPS, batteri, bakgrunn og full overføring må prøves av en tester med fysisk klokke. Ingen slik fysisk test eller ny simulatorbygging er gjort i denne runden.
+
 ## Test uten egen klokke — 27. oktober 2026
 
 PC-testene dekker validering av ekte GPS-data, personvern, kontobytte, avbrudd, lagring før kvittering, duplikater og Fotball. IPhone viser tilkoblingsvalg som inaktivt uten paret klokke/installert Watch-app, og forsøker da ikke synkronisering. Dette beviser ikke at sensorer eller WatchConnectivity fungerer på en fysisk klokke.
@@ -18,7 +24,7 @@ Klokkemålet krever watchOS 10 eller nyere. Android/Wear OS og Garmin er ikke de
 
 1. Installer VYRO på iPhone og den parede Apple Watch. Åpne iPhone-appen og logg inn.
 2. Under **Innstillinger → Apple Watch**, slå på **Koble denne kontoen til Apple Watch**. Åpne VYRO på klokken slik at kontokoblingen mottas.
-3. Velg Løping, Gange, Sykling eller Fottur og trykk Start. Gi posisjonstilgang og tillat å lagre treningsøkter i Helse. Pulstilgang er separat; manglende/utdatert puls vises som «—».
+3. Velg Løping, Gange, Sykling, Fottur eller Fotball og trykk Start. Gi posisjonstilgang og tillat å lagre treningsøkter i Helse. Pulstilgang er separat; manglende/utdatert puls vises som «—».
 4. Klokken tar opp utendørs GPS og viser aktiv tid, kilometer, snitt min/km og puls. Pause/Fortsett skiller rutesegmenter og stopper/fortsetter aktiv tid. Avslutt gir valg mellom Lagre, Forkast og Tilbake.
 5. Åpne VYRO på iPhone etter turen, eller trykk Synkroniser nå. Økten vises i **Du → Treningslogg** som en privat GPS-økt med Apple Watch i tittelen. Vanlig eksplisitt deling og ruteeksport kan brukes etterpå.
 

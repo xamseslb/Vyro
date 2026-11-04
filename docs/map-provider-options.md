@@ -1,4 +1,12 @@
-# Kartleverandør vurdert 24. oktober 2026
+# Kartleverandører
+
+## Valgfri Mapbox-prøve — 4. november 2026
+
+Etter brukerens ønske beholdes Apple som standard/reserve, mens native Mapbox kan velges i Innstillinger → Kart i et nytt iPhone-bygg. `@rnmapbox/maps@10.3.17` er installert via Expo, med config-plugin; GPS-opptak, private økter, Apple Watch og låseskjerm er ikke byttet. Ruter, fotballvarmekart og klubbsoner har Mapbox-visning. Manglende støtte/nøkkel eller lastingsfeil gir Apple-kart tilbake. Se [oppsett og kontobegrensning](mapbox-setup.md) og [teststatus](testing.md).
+
+Dette er en lokal implementasjon, ikke et bekreftet native skybygg eller en fysisk ytelses-/bildeforbedring. Brukeren har vist «Usage limited» i Mapbox-konsollen, og bildefliser svarer 429. Ingen betalingsmetode er lagt til av agenten. Historikken nedenfor forklarer forrige bytte; den er ikke dagens komplette status.
+
+## Vurdering 24. oktober 2026
 
 Apple Maps er valgt og implementert som kartmotor for iPhone etter brukerens beskjed 24. oktober. iOS er første mobilplattform; Samsung/Android kommer senere. Nettleserforhåndsvisningen beholder Mapbox. Ingen Apple-konto, betalingsavtale eller nøkkel er opprettet.
 

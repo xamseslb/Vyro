@@ -21,6 +21,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { client, type Comment, socialError } from "../features/social/api";
 import { requireOwner } from "../features/social/profiles";
 import { Avatar } from "./SocialUi";
+import { ProfileLink } from "./ProfileLink";
+import { personName } from "../features/social/display";
 import SafetyActions from "./SafetyActions";
 import { Button, Icon, Txt, useTheme } from "./ui";
 
@@ -61,7 +63,7 @@ export default function PostComments({
       const result = await client()
         .from("comments")
         .select(
-          "id,author_id,body,profiles!comments_author_id_fkey(id,username,display_name)",
+          "id,author_id,body,profiles!comments_author_id_fkey(id,username,display_name,avatar_path)",
         )
         .eq("post_id", postId)
         .order("created_at", { ascending: false })
@@ -288,7 +290,13 @@ export default function PostComments({
             ) : undefined}
             {comments.map((item) => (
               <View key={item.id} style={{ flexDirection: "row", gap: 12 }}>
-                <Avatar name={item.profiles.display_name} size={34} />
+                <ProfileLink id={item.author_id} name={item.profiles.display_name} beforeOpen={onClose} style={{ alignSelf: "flex-start" }}>
+                <Avatar
+                  name={personName(item.profiles.display_name)}
+                  path={item.profiles.avatar_path}
+                  size={34}
+                />
+                </ProfileLink>
                 <View style={{ flex: 1, gap: 5 }}>
                   <View
                     style={{
@@ -297,9 +305,11 @@ export default function PostComments({
                       justifyContent: "space-between",
                     }}
                   >
+                    <ProfileLink id={item.author_id} name={item.profiles.display_name} beforeOpen={onClose} style={{ flex: 1 }}>
                     <Txt size={14} weight="700">
-                      {item.profiles.display_name}
+                      {personName(item.profiles.display_name)}
                     </Txt>
+                    </ProfileLink>
                     <SafetyActions
                       owner={userId}
                       target={item.author_id}
@@ -330,7 +340,11 @@ export default function PostComments({
                             ? void mutate(item.id)
                             : setConfirmDelete(item.id)
                         }
-                        style={{ minHeight: 36, justifyContent: "center" }}
+                        style={{
+                          minHeight: 44,
+                          minWidth: 44,
+                          justifyContent: "center",
+                        }}
                       >
                         <Txt muted size={12}>
                           {confirmDelete === item.id
@@ -343,7 +357,11 @@ export default function PostComments({
                           accessibilityRole="button"
                           onPress={() => setConfirmDelete(null)}
                           disabled={writing}
-                          style={{ minHeight: 36, justifyContent: "center" }}
+                          style={{
+                            minHeight: 44,
+                            minWidth: 44,
+                            justifyContent: "center",
+                          }}
                         >
                           <Txt muted size={12}>
                             Avbryt

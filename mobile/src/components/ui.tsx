@@ -1,6 +1,8 @@
 import React, { PropsWithChildren } from "react";
 import {
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -68,6 +70,8 @@ export function Txt({
   );
 }
 const paths = {
+  globe:
+    "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c-5 5-5 13 0 18 5-5 5-13 0-18Z",
   ball: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18M12 8l4 3-2 5h-4l-2-5 4-3ZM12 8V3m4 8 5-2m-7 7 3 4m-7-4-3 4m1-9L3 9",
   strength: "M3 8v8m3-10v12m12-12v12m3-10v8M6 12h12",
   waves: "M2 7q3-4 6 0t6 0 6 0M2 12q3-4 6 0t6 0 6 0M2 17q3-4 6 0t6 0 6 0",
@@ -86,7 +90,10 @@ const paths = {
   photo: "M3 4h18v16H3ZM3 16l5-5 5 5 3-3 5 5M16 8h.01",
   settings:
     "M9.59 5L10.09 2.18L13.91 2.18L14.41 5L16.85 6.42L19.55 5.44L21.46 8.74L19.26 10.59L19.26 13.41L21.46 15.26L19.55 18.56L16.85 17.58L14.41 19L13.91 21.82L10.09 21.82L9.59 19L7.15 17.58L4.45 18.56L2.54 15.26L4.74 13.41L4.74 10.59L2.54 8.74L4.45 5.44L7.15 6.42Z M15.3 12a3.3 3.3 0 1 1-6.6 0 3.3 3.3 0 0 1 6.6 0Z",
-  message: "M4 4h16v12H9l-5 4V4Z",
+  message: "M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l1.2-4A8.5 8.5 0 1 1 21 11.5Z",
+  repost:
+    "m16 3 4 4-4 4M20 7H7a3 3 0 0 0-3 3v2m4 9-4-4 4-4M4 17h13a3 3 0 0 0 3-3v-2",
+  bookmark: "M6 3h12v18l-6-4-6 4V3Z",
   club: "M12 3 4 7v6c0 4 8 8 8 8s8-4 8-8V7l-8-4ZM8 12l3 3 5-6",
   chevronUp: "m6 15 6-6 6 6",
   chevronDown: "m6 9 6 6 6-6",
@@ -126,16 +133,19 @@ export function Icon({
   name,
   size = 24,
   color = brand.lime,
+  filled = false,
 }: {
   name: IconName;
   size?: number;
   color?: string;
+  filled?: boolean;
 }) {
   if (name === "run") return <BrandMark size={size} color={color} />;
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <Path
         d={paths[name]}
+        fill={filled ? color : "none"}
         stroke={color}
         strokeWidth={1.7}
         strokeLinecap="round"
@@ -271,41 +281,54 @@ export function Screen({
       }
       style={{ flex: 1, backgroundColor: c.bg }}
     >
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          padding: 20,
-          gap: 24,
-          width: "100%",
-          maxWidth: 680,
-          alignSelf: "center",
-          paddingBottom: 36,
-        }}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        {error && <Txt style={{ color: brand.coral }}>{error}</Txt>}
-        {children}
-      </ScrollView>
-      {footer && (
-        <View
-          style={{
-            backgroundColor: c.bg,
-            borderTopWidth: 1,
-            borderTopColor: c.border,
-            padding: 16,
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          contentContainerStyle={{
+            padding: 20,
+            gap: 24,
+            width: "100%",
+            maxWidth: 680,
+            alignSelf: "center",
+            paddingBottom: 36,
           }}
         >
+          {error && (
+            <Txt
+              accessibilityRole="alert"
+              style={{ color: c.bg === "#0B1120" ? brand.coral : "#B33A28" }}
+            >
+              {error}
+            </Txt>
+          )}
+          {children}
+        </ScrollView>
+        {footer && (
           <View
             style={{
-              width: "100%",
-              maxWidth: 632,
-              alignSelf: "center",
-              gap: 10,
+              backgroundColor: c.bg,
+              borderTopWidth: 1,
+              borderTopColor: c.border,
+              padding: 16,
             }}
           >
-            {footer}
+            <View
+              style={{
+                width: "100%",
+                maxWidth: 632,
+                alignSelf: "center",
+                gap: 10,
+              }}
+            >
+              {footer}
+            </View>
           </View>
-        </View>
-      )}
+        )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -340,7 +363,7 @@ export function Section({
   const c = useTheme();
   return (
     <View style={styles.row}>
-      <Txt size={20} weight="700">
+      <Txt size={20} weight="700" style={{ flex: 1 }}>
         {title}
       </Txt>
       {action && (
@@ -369,7 +392,7 @@ export function Badge({ text }: { text: string }) {
         borderRadius: 8,
       }}
     >
-      <Txt size={10} weight="700" muted style={{ letterSpacing: 1 }}>
+      <Txt size={11} weight="700" muted style={{ letterSpacing: 1 }}>
         {text.toUpperCase()}
       </Txt>
     </View>

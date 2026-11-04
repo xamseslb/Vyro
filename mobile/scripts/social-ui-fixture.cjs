@@ -140,6 +140,7 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
     },
   });
   const footballPreview = process.env.VYRO_UI_SCENARIO === "football-summary";
+  const sharingPreview = process.env.VYRO_UI_SCENARIO === "workout-sharing";
   const securityPreview = process.env.VYRO_UI_SCENARIO === "security";
   const sampleRoute = [
     { latitude: 59.914, longitude: 10.75 },
@@ -186,10 +187,22 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
         : {}),
     },
   };
-  const fixtureMarker = footballPreview
+  if (sharingPreview) {
+    fixtureState.state.workouts = [{
+      id: "local-strength", ownerId: a, source: "timer", sport: "Styrketrening",
+      title: "Styrke etter jobb", seconds: 1835, distance: 0, route: [],
+      notes: "", visibility: "private", date: new Date().toISOString(),
+      workoutType: "Vanlig økt",
+    }];
+    fixtureState.state.recording = {
+      status: "finishing", sport: "Styrketrening", mode: "timer", seconds: 1835,
+      distance: 0, startedAt: null, lastFix: null, route: [], ownerId: a,
+    };
+  }
+  const fixtureMarker = sharingPreview ? "workout-sharing-v1" : footballPreview
     ? "football-summary-fixture"
     : securityPreview ? "security-fixture-v1" : "social-fixture-v2";
-  const script = `<script>if(!sessionStorage.getItem(${JSON.stringify(fixtureMarker)})){localStorage.clear();localStorage.setItem('sb-diviitenhbidwrcpmkxr-auth-token',${JSON.stringify(JSON.stringify(session(a)))});localStorage.setItem('sb-127-auth-token',localStorage.getItem('sb-diviitenhbidwrcpmkxr-auth-token'));localStorage.setItem('vyro-prototype-v1',${JSON.stringify(JSON.stringify(fixtureState))});sessionStorage.setItem(${JSON.stringify(fixtureMarker)},'yes');}const originalFetch=window.fetch.bind(window);window.fetch=(input,init)=>{const url=typeof input==='string'?input:input.url||String(input);if(url.includes('.supabase.co/')){const u=new URL(url);return originalFetch('/fixture-api'+u.pathname+u.search,init);}return originalFetch(input,init);};document.addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.textContent='LOKAL TEST · INGEN EKTE BRUKERE';b.style='position:fixed;bottom:0;right:0;background:#11182C;color:white;z-index:99999;font:8px sans-serif;padding:2px;pointer-events:none';document.body.appendChild(b);});</script>`;
+  const script = `<script>if(!sessionStorage.getItem(${JSON.stringify(fixtureMarker)})){localStorage.clear();localStorage.setItem('sb-diviitenhbidwrcpmkxr-auth-token',${JSON.stringify(JSON.stringify(session(a)))});localStorage.setItem('sb-fixture-auth-token',localStorage.getItem('sb-diviitenhbidwrcpmkxr-auth-token'));localStorage.setItem('sb-127-auth-token',localStorage.getItem('sb-diviitenhbidwrcpmkxr-auth-token'));localStorage.setItem('vyro-prototype-v1',${JSON.stringify(JSON.stringify(fixtureState))});sessionStorage.setItem(${JSON.stringify(fixtureMarker)},'yes');}const originalFetch=window.fetch.bind(window);window.fetch=(input,init)=>{const url=typeof input==='string'?input:input.url||String(input);if(url.includes('.supabase.co/')){const u=new URL(url);return originalFetch('/fixture-api'+u.pathname+u.search,init);}return originalFetch(input,init);};document.addEventListener('DOMContentLoaded',()=>{const b=document.createElement('div');b.textContent='LOKAL TEST · INGEN EKTE BRUKERE';b.style='position:fixed;bottom:0;right:0;background:#11182C;color:white;z-index:99999;font:8px sans-serif;padding:2px;pointer-events:none';document.body.appendChild(b);});</script>`;
   const root = path.resolve(__dirname, process.env.VYRO_UI_ROOT || "../dist");
   const images = new Map();
   let queue = Promise.resolve();
@@ -299,8 +312,8 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
               result = await rows("select * from notification_preferences");
             } else if (ep === "/rest/v1/posts") {
               result = await rows(
-                "select n.*,to_jsonb(p) profiles from posts n join profiles p on p.id=n.author_id where n.id=$1",
-                [filter("id")],
+                "select n.*,to_jsonb(p) profiles from posts n join profiles p on p.id=n.author_id where ($1::uuid is null or n.id=$1) and ($2::uuid is null or n.author_id=$2) order by n.created_at desc,n.id desc",
+                [filter("id") || null, filter("author_id") || null],
               );
               if (req.headers.accept?.includes("vnd.pgrst.object"))
                 result = result[0] ?? null;
@@ -393,8 +406,9 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
                 );
               result = await rows(
                 "select * from follows where follower_id=$1",
-                [current],
+                [filter("follower_id") || current],
               );
+              if (filter("following_id")) result = result.filter(r => r.following_id === filter("following_id"));
             } else if (ep === "/rest/v1/place_posts" && req.method === "DELETE")
               result = await rows(
                 "delete from place_posts where id=$1 and author_id=$2 returning id",
@@ -403,6 +417,7 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
             else if (ep.startsWith("/rest/v1/rpc/")) {
               const name = ep.split("/").at(-1);
               const rpc = {
+                publish_workout: ["p_local_id", "p_title", "p_sport", "p_distance_km", "p_seconds", "p_recorded_at", "p_source", "p_route", "p_audience"],
                 vyro_club_turfs: ["p_club_id", "p_before_updated", "p_before_id"],
                 vyro_club_turf_results: ["p_club_id", "p_offset"],
                 vyro_block: ["p_target", "p_block"],
@@ -442,7 +457,7 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
               if (!Object.hasOwn(rpc, name))
                 throw Error("Unsupported test RPC " + name);
               const keys = rpc[name].filter((k) => Object.hasOwn(body, k));
-              const args = keys.map((k) => body[k]);
+              const args = keys.map((k) => k === "p_route" ? JSON.stringify(body[k]) : body[k]);
               const q = `${name}(${keys.map((k, i) => `${k}=>$${i + 1}`).join(",")})`;
               result =
                 name.startsWith("vyro_") &&
@@ -524,7 +539,10 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
             )
               ? Number(url.searchParams.get("width"))
               : 393;
-            const phoneScreen = footballPreview
+            const phoneScreen = sharingPreview
+              ? url.searchParams.get("screen") === "activity"
+                ? "/activity/local-strength?saved=1" : "/summary"
+              : footballPreview
               ? url.searchParams.get("screen") === "activity"
                 ? "/activity/local-football"
                 : "/summary"
@@ -534,6 +552,13 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
                     "/settings/privacy",
                     "/edit-profile",
                     "/people",
+                    "/",
+                    "/map",
+                    "/community",
+                    "/profile",
+                    "/settings",
+                    "/training-goal",
+                    "/apple-watch",
                   ].includes(url.searchParams.get("screen"))
                 ? url.searchParams.get("screen")
                 : "/track";

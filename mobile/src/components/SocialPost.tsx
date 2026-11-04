@@ -5,6 +5,7 @@ import { useSocialStore } from "../stores/useSocialStore";
 import { Txt, Button, styles, useTheme } from "./ui";
 import WorkoutMap from "./WorkoutMap";
 import { km, duration, pace } from "../features/activities/model";
+import { PostActions } from "./PostActions";
 export function SocialPost({ post }: { post: ActivityPost }) {
   const s = useSocialStore();
   const c = useTheme();
@@ -69,27 +70,16 @@ export function SocialPost({ post }: { post: ActivityPost }) {
           ? "Eksempeløkt og illustrert løype på ekte kart"
           : "GPS-rute · lokal forhåndsvisning"}
       </Txt>
-      <View style={styles.row}>
-        {[
-          [s.likes.includes(post.id) ? "Likt" : "Lik", () => s.like(post.id)],
-          [`Kommentarer (${comments.length})`, () => setExpanded(!expanded)],
-          [
-            s.reposts.includes(post.id) ? "Angre deling" : "Del på nytt",
-            () => s.repost(post.id),
-          ],
-        ].map(([label, action]) => (
-          <Pressable
-            key={label as string}
-            accessibilityRole="button"
-            onPress={action as () => void}
-            style={{ minHeight: 44, justifyContent: "center" }}
-          >
-            <Txt size={12} weight="600">
-              {label as string}
-            </Txt>
-          </Pressable>
-        ))}
-      </View>
+      <PostActions
+        liked={s.likes.includes(post.id)}
+        likeCount={s.likes.includes(post.id) ? 1 : 0}
+        reposted={s.reposts.includes(post.id)}
+        commentCount={comments.length}
+        commentsOpen={expanded}
+        onLike={() => s.like(post.id)}
+        onRepost={() => s.repost(post.id)}
+        onComment={() => setExpanded(!expanded)}
+      />
       {s.reposts.includes(post.id) && (
         <Txt muted size={12}>
           Delt på nytt i lokal forhåndsvisning · original forfatter beholdes

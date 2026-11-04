@@ -1,5 +1,50 @@
 # Testing
 
+## Valgfritt native Mapbox-kart — 4. november 2026
+
+- TypeScript og Expo lint består uten feil/varsler etter endringen. Expo prebuild-konfigurasjon løses med Mapbox-plugin og samme bundle-ID `app.vyro.xamse10`. iOS/Hermes-kodeeksport består (2467 moduler, ca. 6,4 MB). Første eksport ble hindret av sandboxens temp-mappetilgang; ny eksport med midlertidig mappe under `.expo` bestod. Dette er ikke native Swift/CocoaPods-kompilering eller et signert iPhone-bygg.
+- Fullkjøringen dekket 604 tester i 98 suiter: 603 bestod, og én ny klubbkarttest feilet i testdobbel/trykksimulering. Etter retting av testdobbel og bruk av `fireEvent.press` bestod alle seks tester i den suiten; de tre øvrige nye suitenes ti tester bestod også målrettet. Totalt **604 ulike tester bestått i fullkjøring og målrettet rettest samlet**. Ingen produksjonsendring ble nødvendig for disse testdobbel-feilene.
+- Dekning: Apple som standard, reversibelt kartbytte uten å endre økt/opptak, manglende modul/token i gamle bygg, renderfeil, tilefeil og 20-sekunders stil-timeout, gjentatte 2D/3D-bytter uten zoomreset, stilbytte uten kameraflytting, GPS-følging/panorering/recentrering, pausegrenser i opptak og delte ruter, klubbsoner/profilnåler og trykk, koordinatrekkefølge og privat cache/opprydding for fotballvarmekart. Eksisterende Apple-, GPS-, sosial-, backup- og Watch-tester inngår i fullkjøringen.
+- Eksisterende dependency-security-regresjoner består. npm audit rapporterer fortsatt lave/moderate funn i den samlede avhengighetskjeden; ingen automatisk major-nedgradering er utført.
+- Kontotest: standardstil/satellittstil/TileJSON 200, faktisk satellittbilde 429. Brukerens konsoll viser «Usage limited» med forespørsel om betalingsinformasjon. Ingen billingendring, produksjonsdataendring eller Git-push. Betalings-/tilgangsbegrensningen er ikke løst av kodeendringen.
+- **Fysisk utestet:** native oppstart/kompilering, Mapbox-kartfliser og fotodato ved Triaden, native 2D/3D/terreng, sonebilder/varmekart, kartbytte under aktiv/pauset økt, lastetid/minne/batteri, låsing/retur og VoiceOver. Før nytt bygg må offentlig token være satt i riktig EAS-miljø. Installer over eksisterende app, sammenlign samme sted/zoom, bytt tilbake til Apple og bekreft at øktdata og GPS fortsatt er riktige. SDK-logo/attribusjon skal være synlig. Live Activity og Watch bruker fortsatt Apple.
+
+## Apple-bildegrunnlag ved 2D/3D-bytte — 4. november 2026
+
+- Typecheck og Expo lint består. 38 tester i `apple-map`, `apple-camera-pitch`, `map-current-location` og `map-options` består. Kameratestene kontrollerer stabil karttype gjennom ti vinkelbytter, kameravinkel 0 i 2D, bevart zoom/sentrum/retning, forsinkede native tilbakestillinger og avbrutte kameraavlesninger. Satellitt og hybrid er fortsatt adskilte karttyper.
+- Felles `AppleMap` bruker samme Flyover-type i 2D og 3D. Dette er en kodeverifisering av kartvalg/kamera, **ikke** en visuell verifisering av Apples faktiske bilder eller opptaksdato. Brukeren har observert nyere bygninger ved Triaden i 3D enn i 2D; ingen bestemt fotodato er bekreftet.
+- Fysisk iPhone-kontroll gjenstår i nytt bygg: sammenlign Triaden i satellitt og hybrid ved lik zoom, bytt 2D/3D flere ganger, kontroller rett ovenfra, ruter, posisjonsmarkør og lastetid. Kontroller også et område uten Flyover-dekning. Apple bestemmer bilder/dekning; endringen lover ikke de nyeste flyfotoene overalt. Ingen signert bygg, Git-push eller databaseendring i denne runden.
+
+## Treningsmål, personprofiler og Watch — 4. november 2026
+
+- Full Jest-kjøring: **587 tester i 93 suiter bestått**. Etter siste retting av profilforespørsler/sonehendelser bestod seks målrettede tester i to suiter, inkludert én ny test. Dermed er **588 ulike tester i 94 suiter** dekket i fullkjøringen og oppfølgingen samlet. TypeScript og Expo lint består etter siste kodeendring. `git diff --check` har ingen whitespace-feil (Windows varsler bare om LF/CRLF).
+- Nye tester dekker privat/offentlig profil, utestående/godkjent følgeforhold, eksakte person-ID-er og RLS-baserte sideinndelte innleggsforespørsler, profiltekst uten automatiske handles, to personer med samme navn, klokketilkobling uten maskinvare/installasjon, frakobling og kontobytte, staged målredigering, desimalkomma, hele økter, tidtakingsidretter og brøkmål.
+- Web-eksport består. Isolert lokal PGlite-fixture med fiktive kontoer: målskjerm kontrollert ved 393 og 320 piksler, bytte av mål/idrett og lagring kontrollert mot profilens fremgang. Personsøk åpnet riktig annen profil og viste tilgjengelige innlegg uten runner-handle. Watch-sidens tilstand uten native støtte er visuelt kontrollert. Ingen ekte brukere eller produksjonsdata er brukt eller endret.
+- Native skjermleser/Dynamic Type, native delingsark og profilnavigasjon på fysisk iPhone gjenstår. Pare-/installasjonsstatus, sensorer, bakgrunn og reell WatchConnectivity-overføring er **ikke fysisk verifisert**. Automatiserte tester erstatter ikke dette. Koden er lokal og krever nytt appbygg før den finnes i installert Preview 16.
+
+## Kommentarikon, kartstart og UX — 4. november 2026
+
+- Hele Jest-suiten: **569 tester i 89 suiter bestått**. TypeScript og Expo lint består. `git diff --check` uten feil. Nye karttester dekker fersk posisjon, fravær av automatisk historikk, eksplisitt rutevalg, retur til kartet, gamle posisjoner og en sen tillatelsesrespons etter panorering. En treg testoppstart krevde justert testtidsgrense; appens tidsgrenser er ikke forlenget.
+- To nye `PostActions`-tester dekker trykkflater, tilgjengelige navn/tilstander og at kommentarer fortsatt kan åpnes mens en reaksjon sendes. Delingsflyten har nå 12 tester, inklusive det trykkbare følgerkortet som åpner riktig økt uten publisering. Eksisterende kommentar-, GPS-, sikkerhets- og delingstester består.
+- Web-kodeeksport består (1690 moduler). Kontrollert med fiktiv Supabase-konfigurasjon og isolert PGlite-testserver på loopback. Ingen ekte kontoer, ruter, innlegg eller backendinnstillinger er endret. Første eksportkatalog var låst av Windows; ny eksport til `.expo/ux-audit-final` med tømt Metro-cache bestod.
+- Visuelt kontrollert i nettleser ved 393 og 320 piksler: kompakt ikonrad, hele målingskolonner som brytes til neste rad, kommentaråpning, bevart kladd ved lukking/gjenåpning og publisering av en kommentar kun i lokal testdatabase. Kartets tilstand uten posisjonstillatelse, klubboversikten, profilnavigasjon og innstillingsmeny er også kontrollert. Temavelger og ikonrad er kontrollert i mørkt tema på web.
+- Nettleserens isolerte eksport har ingen kartleverandørnøkkel. Derfor viser den kartets utilgjengelig-tilstand; dette er **ikke** en visuell verifisering av Apple Maps eller faktisk sentrering på GPS. Kartets props/tilstand og overgangene er automatisert testet.
+- Fysisk iPhone-test gjenstår: nåposisjon ved hver åpning, avvist/gitt tillatelse, 2D/3D etter panorering, native kommentartastatur, største Dynamic Type, VoiceOver og mørkt tema. Bakgrunnsopptak, Live Activity, push, OAuth og Apple Watch er ikke fysisk retestet i denne runden. Nettlesertesten erstatter ikke disse kontrollene.
+- Se [UX-rapport og kildegrunnlag](design-references/ux-review-2026-11-04.md). Endringene er lokale; de er ikke i Preview 16. Ingen Git-push eller signert iPhone-bygg er utført.
+
+## iPhone-preview 16 — 2. november 2026
+
+[EAS-bygg 16](https://expo.dev/accounts/xamse10/projects/vyro/builds/81e15400-a8b7-46fd-b89e-e468aa49e1a8) er bekreftet **FINISHED** 20:17:16 UTC, versjon 0.1.0 (16), med signert IPA. `preview`-miljøet og eksisterende ad hoc-profiler for app, widget og Watch er brukt, med samme registrerte iPhone. Kilden er lokal arbeidskopi på `e4b3f10`, med ukommittert lagrings-/delingsflyt. Typecheck, Expo lint, 28 relevante tester, web-/iOS-kodeeksport og mobilvisning ved 320/393 piksler var bestått før opplasting. Fysisk installasjon og iPhone-akseptansen nedenfor er fortsatt utestet. Ingen Git-push, databaseendring eller TestFlight-innsending.
+
+## Lagring, øktdetaljer og deling — 2. november 2026
+
+- 28 relevante tester i fem suiter dekker lagring/forkasting, bevarte målinger, navn og notater, privat valg uten publisering, direktevalg av riktig økt, følgerdeling, private profiler, valg av alle innloggede, avbryt, sendefeil/nytt forsøk, manglende profil, kontobytte og uvedkommende økt-ID. Fotballsamtykke og rutens personvernfiltrering består også. Den nye delingsflyten har 11 egne UI-tester.
+- Typecheck og Expo lint består. Web-eksport og iOS/Hermes-kodeeksport består. Første Hermes-kjøring ble stoppet av sandkassens tilgang til midlertidig fil; lokal kjøring uten denne begrensningen bestod. Dette er ingen signert EAS-/Xcode-app.
+- Visuell kontroll ved 393 og 320 piksler bredde i nettleseren: tydelige målinger, rullbart skjema og fast knappområde. En fiktiv styrkeøkt ble lagret, valgt direkte i forhåndsvisningen og publisert til følgere i en isolert lokal PGlite-database. Strømmen viste riktig tittel, tid og publikum. Egendefinert øktnavn ble også kontrollert gjennom lagring. Automatiserte tester kontrollerer private notater; fysisk tastatur er ikke verifisert.
+- Skjermbilder fra den kjørende lokale appen: `mobile/.expo/workout-detail-verified.png` og `mobile/.expo/workout-share-verified.png`. Testene bruker fiktive kontoer og data; ingen produksjonsinnlegg eller ekte GPS-data ble publisert. Ingen endringer i database, Git-push eller signert iPhone-bygg.
+
+Fysisk akseptanse gjenstår: lagre både GPS- og tidtakingsøkt, skriv navn/notater med iPhone-tastaturet, velg Behold privat, åpne økten igjen, velg Lag innlegg og kontroller publikum/kartutklipp før deling. Kontroller også stor tekst, tilbake/avbryt, sendefeil og det eksisterende innlegget ved ny deling.
+
 ## Idrettsvalg og Flaticon-ikoner — 1. november 2026
 
 - Typecheck, lint og **46 tester i tre suiter** (`sports-recording`, `sport-picker` og `football-ui`) består etter ikonbyttet. Søk og gamle favoritter kan ikke legge tilbake de 14 fjernede valgene, inkludert tennis. Rulleskøyter kan fortsatt velges. Den fullstendige katalogen beholdes for tidligere økter og sikkerhetskopier.

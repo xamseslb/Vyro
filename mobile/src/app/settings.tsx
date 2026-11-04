@@ -1,3 +1,4 @@
+import { personName } from "../features/social/display";
 import { preparePushSignOut } from "../features/social/push";
 import { useRef, useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
@@ -21,10 +22,10 @@ export default function Settings() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const c = useTheme();
-  const name =
+  const name = personName(
     profile?.display_name ??
     session?.user.user_metadata?.display_name ??
-    "Din profil";
+    "Din profil");
   return (
     <Page title="Innstillinger" fallback="/profile">
       {session ? (
@@ -62,7 +63,7 @@ export default function Settings() {
         </SettingsGroup>
       )}
       <SettingsGroup title="Konto">
-        <SettingsRow title="Sosiale varsler" description="Nye følgere og følgeforespørsler" icon="bell" onPress={()=>router.push("/settings/notifications")}/>
+        <SettingsRow title="Sosiale varsler" description="Følgere, innlegg, liker og kommentarer" icon="bell" onPress={()=>router.push("/settings/notifications")}/>
         <SettingsRow
           title={session ? "Konto og sikkerhet" : "Innlogging"}
           description={session?.user.email}
@@ -125,7 +126,7 @@ export default function Settings() {
           onPress={() => router.push("/settings/appearance")}
         />
         <SettingsRow
-          title="Standardkart"
+            title="Kart"
           value={
             { standard: "Standard", satellite: "Satellitt", hybrid: "Hybrid" }[
               mapKind

@@ -18,6 +18,7 @@ jest.mock("../src/components/ui", () => {
   return {
     Screen: View,
     Txt: Text,
+    Icon: () => null,
     useTheme: () => ({ bg: "white", raised: "#eee" }),
     Button: ({
       title,
@@ -48,7 +49,30 @@ jest.mock("../src/components/LiveMap", () => ({
   },
 }));
 jest.mock("expo-router", () => ({
-  router: { back: jest.fn(), replace: jest.fn(), prefetch: jest.fn() },
+  router: {
+    back: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+    canGoBack: () => true,
+  },
+  useLocalSearchParams: () => ({}),
+}));
+jest.mock("../src/components/SettingsUi", () => ({
+  Page: ({
+    children,
+    footer,
+  }: {
+    children: import("react").ReactNode;
+    footer: import("react").ReactNode;
+  }) => {
+    const React = jest.requireActual("react");
+    return React.createElement(
+      jest.requireActual("react-native").View,
+      null,
+      children,
+      footer,
+    );
+  },
 }));
 jest.mock("../src/features/social/api", () => ({
   publish: jest.fn(),
@@ -105,23 +129,22 @@ test("whole pitch sharing requires fresh consent after switching workouts", asyn
   await render(<ShareWorkout />);
   await fireEvent.press(screen.getByRole("button", { name: "Kamp A" }));
   expect(
-    screen.getByRole("button", { name: "Publiser økten med kart" }),
+    screen.getByRole("button", { name: "Del med følgere" }),
   ).toBeDisabled();
   await fireEvent(
     screen.getByLabelText("Del hele fotballruten"),
     "valueChange",
     true,
   );
-  expect(
-    screen.getByRole("button", { name: "Publiser økten med kart" }),
-  ).toBeEnabled();
+  expect(screen.getByRole("button", { name: "Del med følgere" })).toBeEnabled();
   expect(screen.getByText(/Start og slutt er synlige/)).toBeTruthy();
+  await fireEvent.press(screen.getByRole("button", { name: "Bytt økt" }));
   await fireEvent.press(screen.getByRole("button", { name: "Kamp B" }));
   expect(screen.getByLabelText("Del hele fotballruten").props.value).toBe(
     false,
   );
   expect(
-    screen.getByRole("button", { name: "Publiser økten med kart" }),
+    screen.getByRole("button", { name: "Del med følgere" }),
   ).toBeDisabled();
   await fireEvent(
     screen.getByLabelText("Del hele fotballruten"),
@@ -129,7 +152,7 @@ test("whole pitch sharing requires fresh consent after switching workouts", asyn
     true,
   );
   await fireEvent.press(
-    screen.getByRole("button", { name: "Publiser økten med kart" }),
+    screen.getByRole("button", { name: "Del med følgere" }),
   );
   expect(publish).toHaveBeenCalledWith(
     expect.objectContaining({ id: "b" }),
@@ -138,4 +161,9 @@ test("whole pitch sharing requires fresh consent after switching workouts", asyn
     true,
   );
 });
-jest.mock("../src/features/auth/useOwnProfile",()=>({useOwnProfile:()=>({profile:{id:"owner",is_private:false},failed:false})}));
+jest.mock("../src/features/auth/useOwnProfile", () => ({
+  useOwnProfile: () => ({
+    profile: { id: "owner", is_private: false },
+    failed: false,
+  }),
+}));

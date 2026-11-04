@@ -1,3 +1,4 @@
+import { personName } from "../../features/social/display";
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import { useFocusEffect } from "expo-router";
@@ -53,7 +54,7 @@ function BlockedList({ owner }: { owner: string }) {
         {!busy && !error && !rows.length && <Txt>Ingen blokkerte brukere.</Txt>}
         {rows.map((p) => (
           <View key={p.id} style={{ gap: 8 }}>
-            <Txt weight="700">{p.display_name}</Txt>
+            <Txt weight="700">{personName(p.display_name)}</Txt>
             <Button
               title="Opphev blokkering"
               secondary

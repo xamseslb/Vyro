@@ -46,6 +46,7 @@ type State = {
   experience: string;
   theme: "dark" | "light" | "system";
   defaultMapKind: "standard" | "satellite" | "hybrid";
+  mapProvider: import("../features/maps/provider").MapProvider;
   homeFeed: "following" | "reposted" | "own";
   sharingAudienceByOwner: Record<string, "followers" | "everyone">;
   examplesVisible: boolean;
@@ -70,6 +71,7 @@ type State = {
         | "experience"
         | "theme"
         | "defaultMapKind"
+        | "mapProvider"
         | "homeFeed"
         | "sharingAudienceByOwner"
         | "examplesVisible"
@@ -116,6 +118,7 @@ type SavedState = Pick<
   | "experience"
   | "theme"
   | "defaultMapKind"
+  | "mapProvider"
   | "homeFeed"
   | "sharingAudienceByOwner"
   | "examplesVisible"
@@ -182,6 +185,7 @@ export const useAppStore = create<State>()(
       experience: "Litt erfaring",
       theme: "light",
       defaultMapKind: "standard",
+      mapProvider: "apple",
       homeFeed: "following",
       sharingAudienceByOwner: {},
       examplesVisible: false,
@@ -435,6 +439,7 @@ export const useAppStore = create<State>()(
         experience: s.experience,
         theme: s.theme,
         defaultMapKind: s.defaultMapKind,
+        mapProvider: s.mapProvider,
         homeFeed: s.homeFeed,
         sharingAudienceByOwner: s.sharingAudienceByOwner,
         examplesVisible: s.examplesVisible,

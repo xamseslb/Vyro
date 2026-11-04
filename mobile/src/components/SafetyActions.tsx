@@ -1,3 +1,4 @@
+import { personName } from "../features/social/display";
 import { useRef, useState } from "react";
 import {
   Modal,
@@ -22,7 +23,7 @@ const reasons = {
 export default function SafetyActions({
   owner,
   target,
-  name,
+  name: rawName,
   postId,
   placeId,
   onBlocked,
@@ -34,6 +35,7 @@ export default function SafetyActions({
   placeId?: string;
   onBlocked: () => void;
 }) {
+  const name = personName(rawName);
   const c = useTheme();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"menu" | "report" | "block" | "sent">(

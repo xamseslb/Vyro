@@ -1,5 +1,23 @@
 # Til Codex på PC: fortsett herfra
 
+## Valgfritt Mapbox-kart — 4. november 2026
+
+Brukeren vil prøve Mapbox på iPhone uten å miste Apple-koden. `@rnmapbox/maps@10.3.17` og Expo-plugin er installert; Apple er fortsatt standard/fallback. Innstillinger → Kart har leverandørvalg. LiveMap og klubbkart har begge motorer; låseskjerm/Watch/stedssøk forblir Apple. Typecheck/lint, 604 ulike tester (fullkjøring + målrettet rettest), Expo-konfigurasjon og iOS/Hermes-kodeeksport består. Native kompilering/fysisk kartvisning er utestet. Ingen EAS-bygg, push, betaling eller databaseendring er startet i denne runden.
+
+Blokkeringen er faktisk karttilgang: eksisterende public token gir 200 på stil/TileJSON, men 429 på bildeflisen. Brukerens siste skjermbilde viser «Usage limited» og «Add payment info to remove them». Brukeren må selv håndtere betalingsinformasjon. Ingen bekreftelse på at dette er gjort ennå. Når tilgang er løst: kjør `npm run map:check` uten å skrive token, sørg for `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` i EAS-preview-miljøet, bygg og test fysisk. Ikke lov nyere bilder ved Triaden før de faktisk er sammenlignet. Se `docs/mapbox-setup.md`, `docs/testing.md` og `docs/roadmap.md`.
+
+## Apple-bilder i 2D/3D — 4. november 2026
+
+Brukeren observerte eldre satellittbilder ved Triaden/Lørenskog i 2D enn i 3D. `AppleMap` velger nå samme Flyover-grunnlag i begge vinkler, med 0 graders kameravinkel i 2D, i stedet for å bytte til vanlig satellitt/hybrid. Standardkart og kamerabevaring beholdes. Typecheck, lint og 38 relevante karttester består. Faktiske bilder, lastetid og fysisk kameraflyt er ikke kontrollert på iPhone; Apple styrer opptaksdato/dekning. Endringen er lokal og trenger nytt bygg før den ses i installert preview. Ingen Git-push eller bygg startet. Se øverste avsnitt i `docs/testing.md` og `docs/roadmap.md`.
+
+## Lokale endringer etter Preview 16 — 4. november 2026
+
+Ny målskjerm, sanerte personnavn/profildeling, trykkbare personidentiteter med ny RLS-basert profilside, og tydeligere Watch-status/frakobling er implementert. Tidligere lokale kartstart-/kommentar-/UX-endringer er beholdt. 587 tester i fullkjøringen og seks i siste oppfølging (én ny), typecheck/lint og web-eksport består. Se de øverste avsnittene i `docs/testing.md`, `docs/roadmap.md` og `docs/apple-watch.md`. Brukeren har ingen Apple Watch; fysisk klokkeflyt er utestet. Ingen Git-push, databaseendring eller signert nytt bygg i denne runden. Neste steg før installasjon er nytt bygg og fysisk iPhone-akseptanse; ikke beskriv endringene som allerede installert.
+
+## Nyeste iPhone-bygg — 2. november 2026
+
+[Preview 16](https://expo.dev/accounts/xamse10/projects/vyro/builds/81e15400-a8b7-46fd-b89e-e468aa49e1a8) er **FINISHED** 20:17:16 UTC, versjon 0.1.0 (16), med signert IPA. Bygget bruker lokal arbeidskopi på `e4b3f10`, inkludert ukommittert ny lagrings-/delingsflyt, og har Flaticon-idrettsikonene. Typecheck, Expo lint, 28 relevante tester, web-/iOS-kodeeksport og lokal visuell test består. Eksisterende signering og app-ID for iPhone, widget og Watch er brukt. Installer over eksisterende VYRO; fysisk kontroll av nytt skjema og deling gjenstår. Ingen Git-push, TestFlight-innsending eller databaseendring. Se nyeste `docs/testing.md` og `docs/roadmap.md`.
+
 ## Nyeste iPhone-bygg — 31. oktober 2026
 
 [Preview 15](https://expo.dev/accounts/xamse10/projects/vyro/builds/cb69dbb1-0b93-47b9-9753-a507865f00b0) er **FINISHED** 10:44:17 UTC, versjon 0.1.0 (15), med installasjonsfil. Kilde: commit `c3158b3`, inkludert klubbsoner/eiernåler, klubbresultater og sikkerhetsarbeidet fra 28.–30. oktober. Typecheck, lint og alle 547 tester i 86 suiter består på nytt. Eksisterende app-ID/signering for iPhone, widget og Watch er beholdt; installer over eksisterende VYRO. Ingen Git-push eller TestFlight-innsending utført i byggerunden. Fysisk iPhone-test av klubbkart, profilbilder, to kontoers soneforsøk og sikkerhetsflyter gjenstår. Se nyeste `docs/testing.md`, `docs/roadmap.md` og `docs/social-and-turf.md`; eldre status nedenfor er historikk.

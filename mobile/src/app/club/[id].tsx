@@ -1,6 +1,8 @@
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { ProfileLink } from "../../components/ProfileLink";
+import { personName } from "../../features/social/display";
 import { AccountGate } from "../../components/AccountGate";
 import { Avatar, SocialHeader } from "../../components/SocialUi";
 import { PeopleSearch } from "../../components/PeopleSearch";
@@ -163,7 +165,7 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
                 if (result.error) throw result.error;
                 setPending((v) => [...v, person.id]);
                 setNotice(
-                  `Invitasjon sendt til ${person.display_name}. Den vises under Klubber hos mottakeren.`,
+                  `Invitasjon sendt til ${personName(person.display_name)}. Den vises under Klubber hos mottakeren.`,
                 );
               }}
             />
@@ -175,13 +177,15 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
           )}
           {members.map((member) => (
             <View key={member.user_id} style={[styles.row, { gap: 12 }]}>
-              <Avatar name={member.profiles.display_name} path={member.profiles.avatar_path} />
+              <ProfileLink id={member.user_id} name={member.profiles.display_name} style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 12 }}>
+              <Avatar name={personName(member.profiles.display_name)} path={member.profiles.avatar_path} />
               <View style={{ flex: 1 }}>
-                <Txt weight="700">{member.profiles.display_name}</Txt>
+                <Txt weight="700">{personName(member.profiles.display_name)}</Txt>
                 <Txt muted size={12}>
                   {member.user_id === club.owner_id ? "Eier" : "Medlem"}
                 </Txt>
               </View>
+              </ProfileLink>
               {owner && member.user_id !== userId && (
                 <Button
                   title={

@@ -1,5 +1,9 @@
 import type { Session } from "@supabase/supabase-js";
-import { syncWatch, useWatchStatus } from "../src/features/watch/sync";
+import {
+  setWatchEnabled,
+  syncWatch,
+  useWatchStatus,
+} from "../src/features/watch/sync";
 import { watchNative } from "../src/features/watch/native";
 import { useAppStore } from "../src/stores/useAppStore";
 import { useAuthStore } from "../src/stores/useAuthStore";
@@ -22,6 +26,34 @@ beforeEach(() => {
     session: { user: { id: "a" } } as Session,
   });
   useAppStore.setState({ ready: true, watchOwners: ["a"] });
+});
+
+test("a connected watch can be enabled and disabled; disabling clears native identity even after unpairing", async () => {
+  useAppStore.setState({ watchOwners: [] });
+  jest
+    .mocked(watchNative!.status)
+    .mockResolvedValue({ paired: true, installed: true, reachable: false });
+  await syncWatch();
+  await setWatchEnabled("a", true);
+  expect(useAppStore.getState().watchOwners).toEqual(["a"]);
+  expect(watchNative!.setOwner).toHaveBeenLastCalledWith("a");
+  jest
+    .mocked(watchNative!.status)
+    .mockResolvedValue({ paired: false, installed: false, reachable: false });
+  await setWatchEnabled("a", false);
+  expect(useAppStore.getState().watchOwners).toEqual([]);
+  expect(watchNative!.setOwner).toHaveBeenLastCalledWith("");
+});
+test("a missing Watch or changed account cannot enable a connection", async () => {
+  useAppStore.setState({ watchOwners: [] });
+  useWatchStatus.setState({ paired: false, installed: false });
+  await expect(setWatchEnabled("a", true)).rejects.toThrow(
+    "Koble til Apple Watch",
+  );
+  await expect(setWatchEnabled("other", true)).rejects.toThrow(
+    "Kontoen er endret",
+  );
+  expect(useAppStore.getState().watchOwners).toEqual([]);
 });
 test.each([
   { paired: false, installed: false },

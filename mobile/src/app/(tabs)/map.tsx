@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ComponentProps,
 } from "react";
@@ -14,6 +15,7 @@ import {
   KeyboardAvoidingView,
   Switch,
   Platform,
+  Linking,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -49,9 +51,23 @@ function MapText({ style, muted, ...props }: ComponentProps<typeof Txt>) {
 }
 
 export default function Maps() {
-  const { view, clubId } = useLocalSearchParams<{ view?: string; clubId?: string }>();
-  const userId = useAuthStore(s => s.session?.user.id);
-  if (view === "zones") return <AccountGate>{userId && <ClubZones key={`${userId}:${clubId ?? ""}`} userId={userId} initialClubId={clubId} />}</AccountGate>;
+  const { view, clubId } = useLocalSearchParams<{
+    view?: string;
+    clubId?: string;
+  }>();
+  const userId = useAuthStore((s) => s.session?.user.id);
+  if (view === "zones")
+    return (
+      <AccountGate>
+        {userId && (
+          <ClubZones
+            key={`${userId}:${clubId ?? ""}`}
+            userId={userId}
+            initialClubId={clubId}
+          />
+        )}
+      </AccountGate>
+    );
   return <RoutesMap />;
 }
 function RoutesMap() {
@@ -60,8 +76,9 @@ function RoutesMap() {
   const [length, setLength] = useState(0);
   const [sheet, setSheet] = useState<"layers" | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
-  useFocusEffect(useCallback(() => () => setSearchOpen(false), []));
   const mapKind = useAppStore((s) => s.defaultMapKind ?? "standard");
+  const provider = useAppStore((s) => s.mapProvider);
+  const apple = Platform.OS === "ios" && provider !== "mapbox";
   const setMapKind = (defaultMapKind: MapKind) =>
     useAppStore.getState().preferences({ defaultMapKind });
   const [poi, setPoi] = useState(true);
@@ -69,15 +86,34 @@ function RoutesMap() {
   const [threeD, setThreeD] = useState(false);
   const [north, setNorth] = useState(0);
   const [target, setTarget] = useState<Place | null>(null);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState<number | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [panelHeight, setPanelHeight] = useState(300);
   const [height, setHeight] = useState(700);
-  const [follow, setFollow] = useState(false);
+  const [follow, setFollow] = useState(true);
   const [recenter, setRecenter] = useState(0);
   const [message, setMessage] = useState("");
   const [locating, setLocating] = useState(false);
+  const locationIntent = useRef(0);
+  const permissionRequest = useRef(false);
   const loc = useLiveLocation(true);
+  // Opening Maps starts with the current area. Old private routes are an
+  // explicit choice, never a substitute for the person's current position.
+  useFocusEffect(
+    useCallback(() => {
+      locationIntent.current++;
+      setIndex(null);
+      setTarget(null);
+      setFollow(true);
+      setMessage("");
+      setLocating(false);
+      setRecenter((v) => v + 1);
+      return () => {
+        locationIntent.current++;
+        setSearchOpen(false);
+      };
+    }, []),
+  );
   const [now, setNow] = useState(Date.now);
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 5000);
@@ -112,7 +148,8 @@ function RoutesMap() {
             : t.distance > 10),
     );
   }, [workouts, length]);
-  const turf = turfs[index % Math.max(1, turfs.length)];
+  const turf =
+    index === null ? undefined : turfs[index % Math.max(1, turfs.length)];
   const owner = { name: "Deg", initials: "DU" };
   const routes = useMemo(
     () =>
@@ -152,6 +189,7 @@ function RoutesMap() {
         recenter={recenter}
         padding={padding}
         onPan={() => {
+          locationIntent.current++;
           setFollow(false);
           setSearchOpen(false);
         }}
@@ -198,27 +236,46 @@ function RoutesMap() {
         >
           <MapText weight="700">{threeD ? "2D" : "3D"}</MapText>
         </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Vis hele ruten"
-          onPress={() => {
-            setFollow(false);
-            setTarget(null);
-            setRecenter((v) => v + 1);
-            setMessage("");
-          }}
-          style={s.control}
-        >
-          <Icon name="map" size={22} color="#11182C" />
-        </Pressable>
+        {!!turf && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Vis hele ruten"
+            onPress={() => {
+              locationIntent.current++;
+              setFollow(false);
+              setTarget(null);
+              setRecenter((v) => v + 1);
+              setMessage("");
+            }}
+            style={s.control}
+          >
+            <Icon name="map" size={22} color="#11182C" />
+          </Pressable>
+        )}
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Vis min posisjon"
+          accessibilityState={{
+            selected: follow,
+            busy: locating,
+            disabled: locating,
+          }}
           disabled={locating}
           onPress={async () => {
+            if (permissionRequest.current) return;
+            permissionRequest.current = true;
+            const intent = ++locationIntent.current;
             setLocating(true);
             try {
-              if (await loc.request()) {
+              if (!loc.canAskAgain && loc.permission === "denied") {
+                await Linking.openSettings();
+                return;
+              }
+              const granted =
+                loc.permission === "granted" || (await loc.request());
+              if (intent !== locationIntent.current) return;
+              if (granted) {
+                setIndex(null);
                 setTarget(null);
                 setFollow(true);
                 setRecenter((v) => v + 1);
@@ -227,7 +284,11 @@ function RoutesMap() {
                 setMessage(
                   "Gi tilgang til posisjon for å finne deg på kartet.",
                 );
+            } catch {
+              if (intent === locationIntent.current)
+                setMessage("Kunne ikke åpne posisjon. Prøv igjen.");
             } finally {
+              permissionRequest.current = false;
               setLocating(false);
             }
           }}
@@ -244,7 +305,11 @@ function RoutesMap() {
         {!!(message || loc.error || (follow && !position)) && (
           <View style={s.notice}>
             <MapText size={13}>
-              {message || loc.error || "Finner posisjonen din …"}
+              {message ||
+                loc.error ||
+                (loc.permission === "granted"
+                  ? "Finner posisjonen din …"
+                  : "Trykk på posisjonsknappen for å vise hvor du er.")}
             </MapText>
           </View>
         )}
@@ -263,7 +328,7 @@ function RoutesMap() {
               <View style={s.tag}>
                 <View style={s.dot} />
                 <MapText size={11} weight="700">
-                  {turf ? "DIN LAGREDE GPS-RUTE" : "RUTER"}
+                  {turf ? "DIN LAGREDE GPS-RUTE" : "UTFORSK"}
                 </MapText>
               </View>
               {!!turf && (
@@ -275,11 +340,20 @@ function RoutesMap() {
                       : "Lagre ruten"
                   }
                   onPress={() => saved.toggle(turf.id)}
-                  style={{ padding: 12, marginLeft: "auto" }}
+                  accessibilityState={{ selected: saved.ids.includes(turf.id) }}
+                  style={{
+                    padding: 12,
+                    minHeight: 44,
+                    minWidth: 44,
+                    marginLeft: "auto",
+                  }}
                 >
-                  <MapText size={20}>
-                    {saved.ids.includes(turf.id) ? "★" : "☆"}
-                  </MapText>
+                  <Icon
+                    name="bookmark"
+                    color={brand.route}
+                    size={22}
+                    filled={saved.ids.includes(turf.id)}
+                  />
                 </Pressable>
               )}
               <Pressable
@@ -299,7 +373,8 @@ function RoutesMap() {
               </Pressable>
             </View>
             <MapText size={21} weight="700">
-              {turf?.name ?? "Ingen ruter å vise"}
+              {turf?.name ??
+                (index === null ? "Kartet rundt deg" : "Ingen ruter passer")}
             </MapText>
             {turf ? (
               <>
@@ -325,13 +400,19 @@ function RoutesMap() {
                   {turfs.length > 1 && (
                     <Pressable
                       accessibilityRole="button"
-                      accessibilityLabel="Neste turf"
+                      accessibilityLabel="Neste lagrede rute"
                       onPress={() => {
-                        setIndex((v) => v + 1);
+                        locationIntent.current++;
+                        setIndex((v) => (v ?? 0) + 1);
                         setFollow(false);
                         setTarget(null);
                       }}
-                      style={{ marginLeft: "auto", padding: 10 }}
+                      style={{
+                        marginLeft: "auto",
+                        padding: 10,
+                        minHeight: 44,
+                        justifyContent: "center",
+                      }}
                     >
                       <MapText size={13} weight="600">
                         Neste →
@@ -342,15 +423,40 @@ function RoutesMap() {
               </>
             ) : (
               <MapText muted size={14}>
-                Ingen ruter passer filteret. Finn en ny løype under Ruteforslag,
-                eller lagre din egen GPS-økt.
+                {index === null
+                  ? "Finn et sted, utforsk ruteforslag eller start en økt herfra."
+                  : "Velg en annen lengde, eller finn en løype under Ruteforslag."}
               </MapText>
+            )}
+            {index === null && turfs.length > 0 && (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Vis mine lagrede ruter"
+                onPress={() => {
+                  locationIntent.current++;
+                  setIndex(0);
+                  setFollow(false);
+                  setTarget(null);
+                  setMessage("");
+                }}
+                style={{
+                  minHeight: 48,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <Icon name="map" size={20} color={brand.route} />
+                <MapText size={14} weight="600">
+                  Mine lagrede ruter · {turfs.length}
+                </MapText>
+                <Icon name="chevronRight" size={18} color={brand.route} />
+              </Pressable>
             )}
             {expanded && (
               <MapText muted size={13}>
-                Dette panelet viser dine private GPS-ruter. Åpne Soner for
-                konkurranseløyper. Slå hele løypa og velg om du vil utvide den
-                med resten av turen.
+                Lagrede ruter er private. Klubbens konkurranser finner du under
+                Soner.
               </MapText>
             )}
             <Pressable
@@ -380,6 +486,8 @@ function RoutesMap() {
               router.push({ pathname: "/routes", params: { tab: "saved" } })
             }
             onSelect={(place) => {
+              locationIntent.current++;
+              setIndex(null);
               setTarget(place);
               setFollow(false);
               setMessage("");
@@ -394,7 +502,7 @@ function RoutesMap() {
             >
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Åpne ekte soner"
+                accessibilityLabel="Åpne klubbsoner"
                 onPress={() => router.push("/turf")}
                 style={s.chip}
               >
@@ -427,8 +535,11 @@ function RoutesMap() {
               <MapLengthFilter
                 value={length}
                 onChange={(value) => {
+                  locationIntent.current++;
                   setLength(value);
                   setIndex(0);
+                  setFollow(false);
+                  setTarget(null);
                 }}
               />
             </ScrollView>
@@ -537,7 +648,7 @@ function RoutesMap() {
               {(
                 [
                   [
-                    Platform.OS === "ios"
+                    apple
                       ? "Interessepunkter"
                       : "Stedsnavn og interessepunkter",
                     poi,
@@ -545,14 +656,14 @@ function RoutesMap() {
                   ],
                   ["Høydekurver", contours, setContours],
                   [
-                    Platform.OS === "ios" ? "3D-visning" : "3D-terreng",
+                    apple ? "3D-visning" : "3D-terreng",
                     threeD,
                     setThreeD,
                   ],
                 ] as const
               )
                 .filter(
-                  ([label]) => Platform.OS !== "ios" || label !== "Høydekurver",
+                  ([label]) => !apple || label !== "Høydekurver",
                 )
                 .map(([label, value, set]) => (
                   <View

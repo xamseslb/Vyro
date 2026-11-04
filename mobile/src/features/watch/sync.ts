@@ -7,7 +7,12 @@ import { watchNative, type WatchConnection } from "./native";
 
 export const watchSupported = !!watchNative;
 export const useWatchStatus = create<
-  WatchConnection & { busy: boolean; error: string | null; imported: number }
+  WatchConnection & {
+    busy: boolean;
+    error: string | null;
+    imported: number;
+    checked: boolean;
+  }
 >(() => ({
   paired: false,
   installed: false,
@@ -15,6 +20,7 @@ export const useWatchStatus = create<
   busy: false,
   error: null,
   imported: 0,
+  checked: false,
 }));
 function owner() {
   const app = useAppStore.getState(),
@@ -42,7 +48,10 @@ export function syncWatch(): Promise<void> {
       requested = false;
       try {
         const connection = await native.status();
-        useWatchStatus.setState({ ...connection, error: null });
+        useWatchStatus.setState({ ...connection, error: null, checked: true });
+        // Clear the cached identity even while the watch/app is disconnected.
+        // Native WatchConnectivity delivers the latest context when it reconnects.
+        if (!owner()) await native.setOwner("");
         if (!connection.paired || !connection.installed) continue;
         const imported = await importWatchWorkouts({
           owner,
@@ -88,6 +97,25 @@ export function syncWatch(): Promise<void> {
     if (requested) void syncWatch();
   });
   return running;
+}
+export async function setWatchEnabled(user: string, enabled: boolean) {
+  if (useAuthStore.getState().session?.user.id !== user)
+    throw new Error("Kontoen er endret. Åpne siden på nytt.");
+  if (
+    enabled &&
+    (!watchSupported ||
+      !useWatchStatus.getState().paired ||
+      !useWatchStatus.getState().installed)
+  )
+    throw new Error(
+      "Koble til Apple Watch og installer VYRO på klokken først.",
+    );
+  useAppStore.setState((s) => ({
+    watchOwners: enabled
+      ? [...new Set([...s.watchOwners, user])]
+      : s.watchOwners.filter((id) => id !== user),
+  }));
+  await syncWatch();
 }
 export function observeWatch() {
   if (!watchNative) return;

@@ -7,7 +7,8 @@ import { Avatar, IconButton } from "../components/SocialUi";
 import { Button, Txt, useTheme } from "../components/ui";
 import { useAuthStore } from "../stores/useAuthStore";
 import { client, socialError } from "../features/social/api";
-import { visibleUsername } from "../features/social/display";
+import { openProfile, ProfileLink } from "../components/ProfileLink";
+import { personName, visibleUsername } from "../features/social/display";
 import { loadNotificationTarget } from "../features/social/notificationTarget";
 import {
   loadNotices,
@@ -116,10 +117,7 @@ function Inbox({ owner }: { owner: string }) {
           },
         });
       else
-        router.push({
-          pathname: "/people",
-          params: { query: target.username },
-        });
+        openProfile(n.actor_id);
     } catch (e) {
       setError(socialError(e));
     } finally {
@@ -167,7 +165,7 @@ function Inbox({ owner }: { owner: string }) {
                 borderColor: c.border,
               }}
             >
-              <View
+              <ProfileLink id={r.requester_id} name={r.profiles.display_name}
                 style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
               >
                 <Avatar
@@ -175,14 +173,14 @@ function Inbox({ owner }: { owner: string }) {
                   path={r.profiles.avatar_path}
                 />
                 <View style={{ flex: 1 }}>
-                  <Txt weight="700">{r.profiles.display_name}</Txt>
+                  <Txt weight="700">{personName(r.profiles.display_name)}</Txt>
                   {visibleUsername(r.profiles.username) && (
                     <Txt muted size={13}>
                       {visibleUsername(r.profiles.username)}
                     </Txt>
                   )}
                 </View>
-              </View>
+              </ProfileLink>
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Button
@@ -206,11 +204,8 @@ function Inbox({ owner }: { owner: string }) {
       )}
       <SettingsGroup title="Siste nytt">
         {items.map((n) => (
-          <Pressable
+          <View
             key={n.id}
-            accessibilityRole="button"
-            disabled={busy || !!acting}
-            onPress={() => void openNotice(n)}
             style={{
               padding: 20,
               gap: 12,
@@ -221,13 +216,13 @@ function Inbox({ owner }: { owner: string }) {
               backgroundColor: n.read_at ? c.surface : c.raised,
             }}
           >
-            <Avatar
+            <ProfileLink id={n.actor_id} name={n.profiles.display_name}><Avatar
               name={n.profiles.display_name}
               path={n.profiles.avatar_path}
-            />
-            <View style={{ flex: 1, gap: 4 }}>
+            /></ProfileLink>
+            <Pressable accessibilityRole="button" disabled={busy || !!acting} onPress={() => void openNotice(n)} style={{ flex: 1, gap: 4, minHeight: 44 }}>
               <Txt>
-                <Txt weight="700">{n.profiles.display_name}</Txt>{" "}
+                <Txt weight="700">{personName(n.profiles.display_name)}</Txt>{" "}
                 {noticeText[n.kind] ?? "har en oppdatering til deg"}.
               </Txt>
               <Txt muted size={12}>
@@ -239,8 +234,8 @@ function Inbox({ owner }: { owner: string }) {
                 })}
                 {!n.read_at ? " · Ulest" : ""}
               </Txt>
-            </View>
-          </Pressable>
+            </Pressable>
+          </View>
         ))}
       </SettingsGroup>
       <View style={{ padding: 22, gap: 12 }}>

@@ -1,3 +1,4 @@
+import { personName } from "../social/display";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Pressable, View } from "react-native";
@@ -190,7 +191,7 @@ export default function ClubZoneMap({
                 onPress={() => onSelect(shape.turf.id)}
               >
                 <ZonePin
-                  name={shape.turf.profiles?.display_name ?? "Medlem"}
+                  name={personName(shape.turf.profiles?.display_name)}
                   path={shape.turf.profiles?.avatar_path}
                   color={shape.color}
                   selected={selected === pin.id}

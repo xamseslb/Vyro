@@ -10,7 +10,8 @@ import {
   type ConnectionKind,
 } from "../features/social/connections";
 import { client, socialError, type Profile } from "../features/social/api";
-import { visibleUsername } from "../features/social/display";
+import { openProfile } from "../components/ProfileLink";
+import { personName, visibleUsername } from "../features/social/display";
 import { Avatar } from "../components/SocialUi";
 export default function Connections() {
   const id = useAuthStore((s) => s.session?.user.id);
@@ -85,14 +86,11 @@ function ConnectionList({
         {people.map((p) => (
           <View key={p.id}>
             <SettingsRow
-              title={p.display_name}
+              title={personName(p.display_name)}
               description={visibleUsername(p.username) ?? undefined}
               end={<Avatar name={p.display_name} path={p.avatar_path} />}
               onPress={() =>
-                router.push({
-                  pathname: "/people",
-                  params: { query: p.username },
-                })
+                openProfile(p.id)
               }
             />
             {kind === "followers" && (

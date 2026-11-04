@@ -67,7 +67,7 @@ export default function AppleMap({
     typeof beginAppleCameraTransition
   > | null>(null);
   // Keep native mode props unchanged until we have captured the old camera.
-  // Disabling pitch or leaving Flyover can itself change MapKit's altitude.
+  // Disabling pitch or changing map style can change MapKit's altitude.
   const [presentation, setPresentation] = useState<{
     threeD: boolean;
     mapKind: typeof mapKind;
@@ -237,6 +237,10 @@ export default function AppleMap({
     [],
   );
 
+  // Keep the imagery source stable when changing viewing angle. Ordinary
+  // satellite and Flyover can show different captures of the same place.
+  // Pitch 0 gives an overhead view of this same imagery; Apple controls
+  // its age and coverage, so Flyover is not a guarantee of newer photos.
   return (
     <MapView
       ref={map}
@@ -245,7 +249,7 @@ export default function AppleMap({
       style={{ height, width: "100%" }}
       provider={PROVIDER_DEFAULT}
       mapType={
-        presentation.threeD && presentation.mapKind !== "standard"
+        presentation.mapKind !== "standard"
           ? `${presentation.mapKind}Flyover`
           : presentation.mapKind
       }

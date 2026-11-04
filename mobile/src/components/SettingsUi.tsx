@@ -246,18 +246,21 @@ export function ChoiceRow({
   description,
   selected,
   onPress,
+  disabled = false,
 }: {
   title: string;
   description?: string;
   selected: boolean;
   onPress: () => void;
+  disabled?: boolean;
 }) {
   const c = useTheme();
   return (
     <Pressable
       accessibilityRole="radio"
       accessibilityLabel={title}
-      accessibilityState={{ checked: selected }}
+      accessibilityState={{ checked: selected, disabled }}
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => ({
         paddingHorizontal: 22,
@@ -267,6 +270,7 @@ export function ChoiceRow({
         alignItems: "center",
         gap: 16,
         backgroundColor: pressed ? c.raised : c.surface,
+        opacity: disabled ? 0.55 : 1,
         borderBottomWidth: 0.5,
         borderColor: c.border,
       })}

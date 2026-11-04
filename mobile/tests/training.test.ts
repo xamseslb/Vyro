@@ -30,6 +30,24 @@ const workouts: Workout[] = [
   { ...workout, id: "sim", source: "simulation", distance: 999 },
   { ...workout, id: "example", source: "example", distance: 999 },
 ];
+test("fractional distance goals reach 100 percent at the actual target", () => {
+  expect(
+    goalProgress(
+      [{ ...workout, distance: 0.5 }],
+      { kind: "distance", target: 0.5, sport: "Løping" },
+      "a",
+      now,
+    ).fraction,
+  ).toBe(1);
+  expect(
+    goalProgress(
+      [{ ...workout, distance: 0.25 }],
+      { kind: "distance", target: 0.5, sport: "Løping" },
+      "a",
+      now,
+    ).fraction,
+  ).toBe(0.5);
+});
 test("weekly goals count only this account's real workouts, selected sport and current week", () => {
   expect(
     goalProgress(

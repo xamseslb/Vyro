@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { client, Post, socialError } from "../features/social/api";
 import { FeedPost, ReactionSummary } from "../features/social/feed";
 import { km, duration, pace } from "../features/activities/model";
 import { isSport, sportInfo } from "../features/activities/sports";
-import { Button, Txt, styles, useTheme } from "./ui";
+import { Button, Txt, useTheme } from "./ui";
 import WorkoutMap from "./WorkoutMap";
 import FootballMap, { FootballSpeed } from "./FootballMap";
 import { Avatar } from "./SocialUi";
+import { ProfileLink } from "./ProfileLink";
+
 import PostComments from "./PostComments";
-import { visibleUsername } from "../features/social/display";
+import { personName, visibleUsername } from "../features/social/display";
 import SafetyActions from "./SafetyActions";
+import { PostActions } from "./PostActions";
 
 export function CloudPost({
   post,
@@ -26,6 +29,7 @@ export function CloudPost({
   initialComments?: boolean;
 }) {
   const c = useTheme();
+  const { fontScale, width } = useWindowDimensions();
   const [expanded, setExpanded] = useState(initialComments);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -54,12 +58,13 @@ export function CloudPost({
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+        <ProfileLink id={post.author_id} name={post.profiles.display_name} style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 12 }}>
         <Avatar
-          name={post.profiles.display_name}
+          name={personName(post.profiles.display_name)}
           path={post.profiles.avatar_path}
         />
         <View style={{ flex: 1, gap: 3 }}>
-          <Txt weight="700">{post.profiles.display_name}</Txt>
+          <Txt weight="700">{personName(post.profiles.display_name)}</Txt>
           <Txt muted size={12}>
             {visibleUsername(post.profiles.username)
               ? `${visibleUsername(post.profiles.username)} · `
@@ -67,6 +72,7 @@ export function CloudPost({
             {new Date(post.recorded_at).toLocaleDateString("nb-NO")}
           </Txt>
         </View>
+        </ProfileLink>
         <SafetyActions
           owner={userId}
           target={post.author_id}
@@ -78,7 +84,7 @@ export function CloudPost({
       <Txt size={24} weight="700">
         {post.title}
       </Txt>
-      <View style={styles.row}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
         {(Number(post.distance_km) === 0
           ? [["Tid", duration(post.seconds)]]
           : [
@@ -92,11 +98,23 @@ export function CloudPost({
                 : ["Tempo", `${pace(Number(post.distance_km), post.seconds)}`],
             ]
         ).map(([label, value]) => (
-          <View key={label} style={{ gap: 5, flexShrink: 1 }}>
+          <View
+            key={label}
+            style={{
+              gap: 5,
+              flexGrow: 1,
+              flexBasis: Math.min(width - 48, 100 * Math.max(1, fontScale)),
+            }}
+          >
             <Txt muted size={12}>
               {label}
             </Txt>
-            <Txt weight="700" size={21}>
+            <Txt
+              weight="700"
+              size={21}
+              numberOfLines={1}
+              style={{ fontVariant: ["tabular-nums"] }}
+            >
               {value}
             </Txt>
             {label === "Tempo" && (
@@ -125,6 +143,8 @@ export function CloudPost({
         postId={post.id}
         userId={userId}
         onChange={onReactionsChanged}
+        onComment={() => setExpanded(true)}
+        commentsOpen={expanded}
         summary={
           post.like_count == null
             ? undefined
@@ -134,12 +154,6 @@ export function CloudPost({
                 reposted: !!post.reposted,
               }
         }
-      />
-      <Button
-        title="Kommentarer"
-        secondary
-        icon="message"
-        onPress={() => setExpanded(true)}
       />
       {expanded && (
         <PostComments
@@ -175,6 +189,14 @@ export function CloudPost({
               onRemoved();
             });
           }}
+        />
+      )}
+      {confirm && post.author_id === userId && (
+        <Button
+          title="Avbryt"
+          secondary
+          disabled={busy}
+          onPress={() => setConfirm(false)}
         />
       )}
       {!!error && <Txt>{error}</Txt>}
@@ -259,11 +281,15 @@ function Reactions({
   userId,
   summary,
   onChange,
+  onComment,
+  commentsOpen,
 }: {
   postId: string;
   userId: string;
   summary?: ReactionSummary;
   onChange?: (id: string, summary: ReactionSummary) => void;
+  onComment: () => void;
+  commentsOpen: boolean;
 }) {
   const [liked, setLiked] = useState(summary?.liked ?? false);
   const [reposted, setReposted] = useState(summary?.reposted ?? false);
@@ -356,21 +382,16 @@ function Reactions({
   }
   return (
     <>
-      <View style={styles.wrap}>
-        <Button
-          secondary
-          icon="heart"
-          title={`${liked ? "Likt" : "Lik"} · ${count}`}
-          disabled={busy || !ready}
-          onPress={() => toggle("likes", liked)}
-        />
-        <Button
-          secondary
-          title={reposted ? "Angre repost" : "Del på nytt"}
-          disabled={busy || !ready}
-          onPress={() => toggle("reposts", reposted)}
-        />
-      </View>
+      <PostActions
+        liked={liked}
+        likeCount={count}
+        reposted={reposted}
+        disabled={busy || !ready}
+        commentsOpen={commentsOpen}
+        onLike={() => void toggle("likes", liked)}
+        onComment={onComment}
+        onRepost={() => void toggle("reposts", reposted)}
+      />
       {reposted && (
         <Txt muted size={12}>
           Repost lagret. Originalinnlegget beholdes.

@@ -1,7 +1,6 @@
 import type { Profile } from "./api";
-export function profileShareText(profile: Profile) {
-  return `Finn meg på VYRO: ${profile.display_name} (@${profile.username}). Åpne Finn venner i VYRO og søk etter @${profile.username}.`;
-}
+import { profileShareText } from "./profileShareText";
+export { profileShareText } from "./profileShareText";
 export async function shareProfile(
   profile: Profile,
 ): Promise<"shared" | "copied" | "cancelled"> {

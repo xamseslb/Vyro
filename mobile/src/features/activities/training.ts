@@ -36,7 +36,7 @@ export function goalProgress(
   return {
     value,
     remaining: Math.max(0, goal.target - value),
-    fraction: Math.min(1, Math.max(0, value / Math.max(1, goal.target))),
+    fraction: goal.target > 0 ? Math.min(1, Math.max(0, value / goal.target)) : 0,
   };
 }
 export type HistoryFilter = {

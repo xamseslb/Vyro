@@ -1,3 +1,4 @@
+import { personName } from "../social/display";
 import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -156,7 +157,7 @@ function TurfList({
             title={t.name}
             icon="map"
             label={`Se ${t.name}`}
-            description={`${t.owner_id === userId ? "Du eier sonen" : `${t.profiles?.display_name ?? "Løper"} eier sonen`} · ${km(t.distance_m / 1000)} km · ${duration(t.seconds)} å slå`}
+            description={`${t.owner_id === userId ? "Du eier sonen" : `${personName(t.profiles?.display_name)} eier sonen`} · ${km(t.distance_m / 1000)} km · ${duration(t.seconds)} å slå`}
             onPress={() =>
               router.push({ pathname: "/turf", params: { turfId: t.id } })
             }

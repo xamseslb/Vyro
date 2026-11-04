@@ -4,6 +4,8 @@ import { PlacePost as Place } from "../features/places/model";
 import { removePlace } from "../features/places/api";
 import { client, socialError } from "../features/social/api";
 import { Avatar } from "./SocialUi";
+import { ProfileLink } from "./ProfileLink";
+import { personName } from "../features/social/display";
 import { Button, Txt, useTheme } from "./ui";
 import SafetyActions from "./SafetyActions";
 export function PlacePost({
@@ -71,16 +73,18 @@ export function PlacePost({
       }}
     >
       <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
+        <ProfileLink id={post.author_id} name={post.profiles.display_name} style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 12 }}>
         <Avatar
-          name={post.profiles.display_name}
+          name={personName(post.profiles.display_name)}
           path={post.profiles.avatar_path}
         />
         <View style={{ flex: 1 }}>
-          <Txt weight="700">{post.profiles.display_name}</Txt>
+          <Txt weight="700">{personName(post.profiles.display_name)}</Txt>
           <Txt muted size={12}>
             {new Date(post.created_at).toLocaleDateString("nb-NO")} · Stedsbilde
           </Txt>
         </View>
+        </ProfileLink>
         <SafetyActions
           owner={userId}
           target={post.author_id}

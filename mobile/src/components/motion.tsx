@@ -224,10 +224,12 @@ export function ProgressLine({
   value,
   color,
   background,
+  label = "Fremgang mot ukemålet",
 }: {
   value: number;
   color: string;
   background: string;
+  label?: string;
 }) {
   const reduced = useReducedMotion();
   const clamped = Math.min(1, Math.max(0, Number.isFinite(value) ? value : 0));
@@ -240,7 +242,7 @@ export function ProgressLine({
   return (
     <View
       accessibilityRole="progressbar"
-      accessibilityLabel="Ukentlig distansemål"
+      accessibilityLabel={label}
       accessibilityValue={{ min: 0, max: 100, now: Math.round(clamped * 100) }}
       style={{
         height: 7,

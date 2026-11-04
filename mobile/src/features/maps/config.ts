@@ -3,7 +3,7 @@ export const mapboxToken = (
   process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN ?? ""
 ).trim();
 export const hasMapbox = mapboxToken.startsWith("pk.");
-// Mapbox is used only by the web preview. iOS uses Apple MapKit.
+// Shared style configuration; iOS keeps Apple MapKit as the default/fallback.
 export const mapStyle: StyleSpecification = {
   version: 8 as const,
   glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",

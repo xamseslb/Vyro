@@ -1,11 +1,15 @@
+import { personName } from "../features/social/display";
 import { useCallback, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
 import { Button, Card, Txt } from "./ui";
 import { client } from "../features/social/api";
 import { isMissingReadFunction } from "../features/social/feed";
 import { km } from "../features/activities/model";
+import { ProfileLink } from "./ProfileLink";
 type Event = {
   id: string;
+  actor_id?: string;
+  previous_owner_id?: string | null;
   turf_id: string;
   distance_m: number;
   extended: boolean;
@@ -25,8 +29,28 @@ export function TurfEvents({ userId }: { userId: string }) {
             .rpc("vyro_turf_events")
             .abortSignal(controller.signal);
           if (!result.error) {
+            const rows = result.data as Event[];
+            // The existing RPC omits identities. Resolve only its visible event
+            // IDs through RLS, never names (which are not unique).
+            if (rows.length) {
+              const identities = await client()
+                .from("turf_events")
+                .select("id,actor_id,previous_owner_id")
+                .in(
+                  "id",
+                  rows.map((event) => event.id),
+                )
+                .abortSignal(controller.signal);
+              if (identities.error) throw identities.error;
+              for (const event of rows) {
+                const identity = identities.data.find(
+                  (row) => row.id === event.id,
+                );
+                if (identity) Object.assign(event, identity);
+              }
+            }
             if (live) {
-              setEvents(result.data as Event[]);
+              setEvents(rows);
               setError(false);
             }
             return;
@@ -42,7 +66,7 @@ export function TurfEvents({ userId }: { userId: string }) {
           const r = await client()
             .from("turf_events")
             .select(
-              "id,turf_id,distance_m,extended,actor:profiles!turf_events_actor_id_fkey(display_name),previous:profiles!turf_events_previous_owner_id_fkey(display_name)",
+              "id,turf_id,actor_id,previous_owner_id,distance_m,extended,actor:profiles!turf_events_actor_id_fkey(display_name),previous:profiles!turf_events_previous_owner_id_fkey(display_name)",
             )
             .in("actor_id", [userId, ...f.data.map((p) => p.following_id)])
             .order("created_at", { ascending: false })
@@ -71,11 +95,27 @@ export function TurfEvents({ userId }: { userId: string }) {
     <>
       {events.map((e) => (
         <Card key={e.id}>
-          <Txt weight="700">
-            {e.previous
-              ? `${e.actor.display_name} har tatt over sonen til ${e.previous.display_name}.`
-              : `${e.actor.display_name} har opprettet en sone.`}
+          {e.actor_id ? (
+            <ProfileLink id={e.actor_id} name={e.actor.display_name}>
+              <Txt weight="700">{personName(e.actor.display_name)}</Txt>
+            </ProfileLink>
+          ) : (
+            <Txt weight="700">{personName(e.actor.display_name)}</Txt>
+          )}
+          <Txt>
+            {e.previous ? "Har tatt over sonen fra" : "Har opprettet en sone."}
           </Txt>
+          {e.previous &&
+            (e.previous_owner_id ? (
+              <ProfileLink
+                id={e.previous_owner_id}
+                name={e.previous.display_name}
+              >
+                <Txt weight="700">{personName(e.previous.display_name)}</Txt>
+              </ProfileLink>
+            ) : (
+              <Txt weight="700">{personName(e.previous.display_name)}</Txt>
+            ))}
           <Txt muted>
             {e.extended ? "Utvidet til" : "Løype på"} {km(e.distance_m / 1000)}{" "}
             km. Vil du utfordre den?

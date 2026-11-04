@@ -3,7 +3,6 @@ import { Pressable, TextInput, View } from "react-native";
 import { router } from "expo-router";
 import {
   Button,
-  Card,
   Chip,
   Icon,
   Screen,
@@ -13,7 +12,8 @@ import {
 } from "../components/ui";
 import LiveMap from "../components/LiveMap";
 import FootballMap from "../components/FootballMap";
-import WorkoutStats from "../components/WorkoutStats";
+import WorkoutOverview from "../components/WorkoutOverview";
+import { Page } from "../components/SettingsUi";
 import { storedRoute } from "../features/tracking/gps";
 import { footballMaxSpeed } from "../features/football/speed";
 import { workoutTypes, type WorkoutType } from "../features/activities/sports";
@@ -67,7 +67,13 @@ export default function Summary() {
       </Screen>
     );
   return (
-    <Screen
+    <Page
+      title="Lagre økt"
+      plain
+      onBack={() => {
+        event("return");
+        router.replace("/(tabs)/track");
+      }}
       footer={
         discard ? (
           <>
@@ -112,7 +118,7 @@ export default function Summary() {
                 if (id)
                   router.replace({
                     pathname: "/activity/[id]",
-                    params: { id },
+                    params: { id, saved: "1" },
                   });
                 else
                   setSaveError(
@@ -137,150 +143,133 @@ export default function Summary() {
         )
       }
     >
-      <View style={styles.row}>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => {
-            event("return");
-            router.replace("/(tabs)/track");
+      <View style={{ padding: 20, gap: 24 }}>
+        <WorkoutOverview
+          workout={{
+            title: r.sport,
+            sport: r.sport,
+            date: new Date().toISOString(),
+            seconds: r.seconds,
+            distance: r.distance,
+            source:
+              r.mode === "timer"
+                ? "timer"
+                : r.mode === "gps"
+                  ? "gps"
+                  : "simulation",
+            maxSpeedKmh: maxSpeed,
           }}
-          style={{ minHeight: 44, justifyContent: "center" }}
-        >
-          <Txt style={{ color: c.accent }}>Tilbake</Txt>
-        </Pressable>
-        <Txt size={22} weight="700">
-          Lagre aktivitet
-        </Txt>
-        <Icon name="lock" size={20} color={c.muted} />
-      </View>
-      <View style={{ gap: 6 }}>
-        <Txt size={14} muted>
-          {r.sport} · {new Date().toLocaleDateString("nb-NO")}
-        </Txt>
-        <WorkoutStats
-          sport={r.sport}
-          seconds={r.seconds}
-          distance={r.distance}
-          timerOnly={r.mode === "timer"}
-          maxSpeed={maxSpeed}
         />
-      </View>
-      {r.mode === "gps" && route.length > 1 && (
-        <View style={{ borderRadius: 18, overflow: "hidden" }}>
-          {r.sport === "Fotball" ? (
-            <FootballMap points={route} />
-          ) : (
-            <LiveMap height={180} route={r.route} />
-          )}
-        </View>
-      )}
-      <View style={{ gap: 8 }}>
-        <Txt weight="600">Navn på økten</Txt>
-        <TextInput
-          accessibilityLabel="Navn på økten"
-          maxLength={80}
-          value={title}
-          onChangeText={setTitle}
-          placeholder={`${r.sport} i dag`}
-          placeholderTextColor={c.muted}
-          style={input}
-        />
-      </View>
-      <View style={{ gap: 12 }}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ expanded: openType }}
-          onPress={() => setOpenType(!openType)}
-          style={[input, styles.row]}
-        >
-          <View style={{ gap: 4 }}>
-            <Txt muted size={12}>
-              Type økt
-            </Txt>
-            <Txt weight="600">{workoutType}</Txt>
-          </View>
-          <Icon name={openType ? "chevronUp" : "chevronDown"} color={c.muted} />
-        </Pressable>
-        {openType && (
-          <View style={styles.wrap}>
-            {workoutTypes.map((type) => (
-              <Chip
-                key={type}
-                title={type}
-                selected={type === workoutType}
-                onPress={() => {
-                  setType(type);
-                  setOpenType(false);
-                }}
-              />
-            ))}
+        {r.mode === "gps" && route.length > 1 && (
+          <View style={{ borderRadius: 18, overflow: "hidden" }}>
+            {r.sport === "Fotball" ? (
+              <FootballMap points={route} />
+            ) : (
+              <LiveMap height={180} route={r.route} />
+            )}
           </View>
         )}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ expanded: openEffort }}
-          onPress={() => setOpenEffort(!openEffort)}
-          style={[input, styles.row]}
-        >
-          <View style={{ flex: 1, gap: 4 }}>
-            <Txt muted size={12}>
-              Hvordan føltes aktiviteten?
-            </Txt>
-            <Txt weight="600">
-              {effort
-                ? `Anstrengelse: ${effort} av 10`
-                : "Velg anstrengelse (valgfritt)"}
-            </Txt>
-          </View>
-          <Icon
-            name={openEffort ? "chevronUp" : "chevronDown"}
-            color={c.muted}
+        <View style={{ gap: 8 }}>
+          <Txt weight="600">Navn på økten</Txt>
+          <TextInput
+            accessibilityLabel="Navn på økten"
+            maxLength={80}
+            value={title}
+            onChangeText={setTitle}
+            placeholder={`${r.sport} i dag`}
+            placeholderTextColor={c.muted}
+            style={input}
           />
-        </Pressable>
-        {openEffort && (
-          <View style={{ gap: 10 }}>
-            <Txt muted size={13}>
-              1 er svært lett · 10 er maksimal innsats
-            </Txt>
+        </View>
+        <View style={{ gap: 12 }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ expanded: openType }}
+            onPress={() => setOpenType(!openType)}
+            style={[input, styles.row]}
+          >
+            <View style={{ gap: 4 }}>
+              <Txt muted size={12}>
+                Type økt
+              </Txt>
+              <Txt weight="600">{workoutType}</Txt>
+            </View>
+            <Icon
+              name={openType ? "chevronUp" : "chevronDown"}
+              color={c.muted}
+            />
+          </Pressable>
+          {openType && (
             <View style={styles.wrap}>
-              {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+              {workoutTypes.map((type) => (
                 <Chip
-                  key={n}
-                  title={String(n)}
-                  selected={effort === n}
-                  onPress={() => setEffort(effort === n ? undefined : n)}
+                  key={type}
+                  title={type}
+                  selected={type === workoutType}
+                  onPress={() => {
+                    setType(type);
+                    setOpenType(false);
+                  }}
                 />
               ))}
             </View>
+          )}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ expanded: openEffort }}
+            onPress={() => setOpenEffort(!openEffort)}
+            style={[input, styles.row]}
+          >
+            <View style={{ flex: 1, gap: 4 }}>
+              <Txt muted size={12}>
+                Hvordan føltes aktiviteten?
+              </Txt>
+              <Txt weight="600">
+                {effort
+                  ? `Anstrengelse: ${effort} av 10`
+                  : "Velg anstrengelse (valgfritt)"}
+              </Txt>
+            </View>
+            <Icon
+              name={openEffort ? "chevronUp" : "chevronDown"}
+              color={c.muted}
+            />
+          </Pressable>
+          {openEffort && (
+            <View style={{ gap: 10 }}>
+              <Txt muted size={13}>
+                1 er svært lett · 10 er maksimal innsats
+              </Txt>
+              <View style={styles.wrap}>
+                {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                  <Chip
+                    key={n}
+                    title={String(n)}
+                    selected={effort === n}
+                    onPress={() => setEffort(effort === n ? undefined : n)}
+                  />
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
+        <View style={{ gap: 8 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Icon name="lock" size={16} color={c.muted} />
+            <Txt weight="600">Private notater</Txt>
           </View>
-        )}
-      </View>
-      <View style={{ gap: 8 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Icon name="lock" size={16} color={c.muted} />
-          <Txt weight="600">Private notater</Txt>
+          <TextInput
+            accessibilityLabel="Notater om økten"
+            maxLength={1000}
+            multiline
+            value={notes}
+            onChangeText={setNotes}
+            placeholder="Skriv noe du vil huske fra økten …"
+            placeholderTextColor={c.muted}
+            style={[input, { minHeight: 100, textAlignVertical: "top" }]}
+          />
         </View>
-        <TextInput
-          accessibilityLabel="Notater om økten"
-          maxLength={1000}
-          multiline
-          value={notes}
-          onChangeText={setNotes}
-          placeholder="Skriv noe du vil huske fra økten …"
-          placeholderTextColor={c.muted}
-          style={[input, { minHeight: 100, textAlignVertical: "top" }]}
-        />
       </View>
-      <Card>
-        <View style={styles.row}>
-          <Txt weight="700">Synlighet</Txt>
-          <Txt>Kun deg</Txt>
-        </View>
-        <Txt muted size={13}>
-          Økten lagres privat. Du kan dele den etterpå. Notater og anstrengelse
-          deles aldri i strømmen.
-        </Txt>
-      </Card>
-    </Screen>
+    </Page>
   );
 }

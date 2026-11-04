@@ -1,3 +1,5 @@
+import { ProfileLink } from "../../components/ProfileLink";
+import { personName } from "../social/display";
 import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -430,11 +432,11 @@ function ClubZonePanel({ club, userId }: { club: Club; userId: string }) {
                         padding: 3,
                       }}
                     >
-                      <Avatar
-                        name={zone.profiles?.display_name ?? "Medlem"}
+                      <ProfileLink id={zone.owner_id} name={zone.profiles?.display_name}><Avatar
+                        name={personName(zone.profiles?.display_name)}
                         path={zone.profiles?.avatar_path}
                         size={44}
-                      />
+                      /></ProfileLink>
                     </View>
                     <View
                       style={{ flex: 1, minWidth: compact ? 170 : 0, gap: 3 }}
@@ -442,11 +444,11 @@ function ClubZonePanel({ club, userId }: { club: Club; userId: string }) {
                       <Txt size={19} weight="700" numberOfLines={2}>
                         {zone.name}
                       </Txt>
-                      <Txt size={14} muted numberOfLines={1}>
+                      <ProfileLink id={zone.owner_id} name={zone.profiles?.display_name}><Txt size={14} muted numberOfLines={1}>
                         {zone.owner_id === userId
                           ? "Eies av deg"
-                          : `Eies av ${zone.profiles?.display_name ?? "medlem"}`}
-                      </Txt>
+                          : `Eies av ${personName(zone.profiles?.display_name)}`}
+                      </Txt></ProfileLink>
                       <Txt size={12} muted>
                         {km(zone.distance_m / 1000)} km ·{" "}
                         {duration(zone.seconds)} å slå
@@ -525,20 +527,22 @@ function ClubZonePanel({ club, userId }: { club: Club; userId: string }) {
                   <Txt size={18} weight="700" style={{ width: 28 }}>
                     {item.place}
                   </Txt>
+                  <ProfileLink id={item.user_id} name={personName(item.display_name)} style={{ flex: 1, flexDirection: "row", gap: 12, alignItems: "center" }}>
                   <Avatar
-                    name={item.display_name}
+                    name={personName(item.display_name)}
                     path={item.avatar_path}
                     size={42}
                   />
                   <View style={{ flex: 1 }}>
                     <Txt weight="700">
-                      {item.display_name}
+                      {personName(item.display_name)}
                       {item.user_id === userId ? " · deg" : ""}
                     </Txt>
                     <Txt muted size={13}>
                       {km(item.distance_m / 1000)} km løype
                     </Txt>
                   </View>
+                  </ProfileLink>
                   <Txt weight="700">
                     {item.zones} {item.zones === 1 ? "sone" : "soner"}
                   </Txt>

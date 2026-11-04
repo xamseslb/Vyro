@@ -1,3 +1,5 @@
+import { ProfileLink } from "../../components/ProfileLink";
+import { personName } from "../social/display";
 import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -68,13 +70,13 @@ export function TurfDetail({ userId, id }: { userId: string; id: string }) {
             <Txt size={28} weight="700">
               {turf.name}
             </Txt>
-            <Txt muted>
+            <ProfileLink id={turf.owner_id} name={turf.profiles?.display_name}><Txt muted>
               {owner
                 ? "Du eier denne sonen"
-                : `${turf.profiles?.display_name ?? "Løper"} eier sonen`}{" "}
+                : `${personName(turf.profiles?.display_name)} eier sonen`}{" "}
               ·{" "}
               {turf.club_id ? "Klubbens sone" : "Privat arkiv · tidligere sone"}
-            </Txt>
+            </Txt></ProfileLink>
             <WorkoutMap points={turf.route} height={230} />
             <Txt size={22} weight="700">
               {km(turf.distance_m / 1000)} km · {duration(turf.seconds)} å slå

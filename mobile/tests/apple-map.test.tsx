@@ -6,7 +6,7 @@ import type {
   MapOverlayProps,
   Camera,
 } from "react-native-maps";
-import AppleMap from "../src/components/LiveMap.ios";
+import AppleMap from "../src/components/AppleMap";
 import {
   appleInitialRegion,
   appleMapGeometry,
@@ -202,10 +202,12 @@ test.each(["standard", "satellite", "hybrid"] as const)(
     });
     await render(<AppleMap mapKind={mapKind} />);
     await act(async () => mockProps.onMapReady?.());
+    const imagery = mockProps.mapType;
     native = { center: c, altitude: 600, heading: 68, pitch: 0 };
     for (let i = 0; i < 10; i++) {
       const threeD = i % 2 === 0;
       await screen.rerender(<AppleMap mapKind={mapKind} threeD={threeD} />);
+      expect(mockProps.mapType).toBe(imagery);
       expect(
         native.altitude / Math.cos((native.pitch * Math.PI) / 180),
       ).toBeCloseTo(600, 5);
@@ -234,10 +236,10 @@ test("the iOS entry uses Apple with distinct modes and no automatic GPS collecti
   expect(mockProps.showsMyLocationButton).toBe(false);
   await act(async () => mockProps.onMapReady?.());
   await screen.rerender(<AppleMap mapKind="satellite" position={a} />);
-  expect(mockProps.mapType).toBe("satellite");
+  expect(mockProps.mapType).toBe("satelliteFlyover");
   expect(mockProps.showsPointsOfInterests).toBe(false);
   await screen.rerender(<AppleMap mapKind="hybrid" position={a} />);
-  expect(mockProps.mapType).toBe("hybrid");
+  expect(mockProps.mapType).toBe("hybridFlyover");
   expect(mockProps.showsPointsOfInterests).toBe(true);
   expect(mockMount).toHaveBeenCalledTimes(1);
 });
@@ -336,7 +338,7 @@ test("first render frames the actual route rather than loading Oslo before jumpi
 });
 
 test.each(["standard", "satellite", "hybrid"] as const)(
-  "%s switches between 2D and 3D without fitting again or changing distance/center/heading",
+  "%s keeps its imagery and distance/center/heading when switching between overhead and 3D",
   async (mapKind) => {
     const padding = { top: 170, right: 68, bottom: 350, left: 35 };
     const renderMap = (threeD: boolean) => (
@@ -349,6 +351,11 @@ test.each(["standard", "satellite", "hybrid"] as const)(
     );
     await render(renderMap(false));
     await act(async () => mockProps.onMapReady?.());
+    const imagery = mockProps.mapType;
+    expect(mockProps.pitchEnabled).toBe(false);
+    expect(mockSet).toHaveBeenLastCalledWith(
+      expect.objectContaining({ pitch: 0 }),
+    );
     mockFit.mockClear();
     mockSet.mockClear();
     mockAnimate.mockClear();
@@ -370,7 +377,7 @@ test.each(["standard", "satellite", "hybrid"] as const)(
       pitch: 55,
     });
     await screen.rerender(renderMap(false));
-    expect(mockProps.mapType).toBe(mapKind);
+    expect(mockProps.mapType).toBe(imagery);
     expect(mockProps.pitchEnabled).toBe(false);
     expect(mockSet).toHaveBeenLastCalledWith(camera);
     expect(mockFit).not.toHaveBeenCalled();
@@ -474,7 +481,7 @@ test("the native mode stays unchanged while its camera snapshot is pending", asy
   await act(async () =>
     finish({ center: c, altitude: 380, heading: 42, pitch: 55 }),
   );
-  expect(mockProps.mapType).toBe("satellite");
+  expect(mockProps.mapType).toBe("satelliteFlyover");
   expect(mockProps.pitchEnabled).toBe(false);
   expect(mockSet).toHaveBeenLastCalledWith({
     center: c,

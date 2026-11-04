@@ -5,7 +5,9 @@ import { client, Profile, socialError } from "../features/social/api";
 import { Button, Txt, styles } from "./ui";
 import { Avatar, Field } from "./SocialUi";
 import { changeFollow } from "../features/social/profiles";
-import { visibleUsername } from "../features/social/display";
+import { personName, visibleUsername } from "../features/social/display";
+import { ProfileLink } from "./ProfileLink";
+
 import SafetyActions from "./SafetyActions";
 
 export function cleanPeopleQuery(value: string) {
@@ -161,9 +163,10 @@ export function PeopleSearch({
       )}
       {visible.map((person) => (
         <View key={person.id} style={[styles.row, { gap: 12 }]}>
-          <Avatar name={person.display_name} path={person.avatar_path} />
+          <ProfileLink id={person.id} name={person.display_name} style={{ flex: 1, flexDirection: "row", gap: 12, alignItems: "center" }}>
+          <Avatar name={personName(person.display_name)} path={person.avatar_path} />
           <View style={{ flex: 1, gap: 3 }}>
-            <Txt weight="700">{person.display_name}</Txt>
+            <Txt weight="700">{personName(person.display_name)}</Txt>
             {visibleUsername(person.username) && (
               <Txt muted size={12} numberOfLines={1}>
                 {visibleUsername(person.username)}
@@ -175,6 +178,7 @@ export function PeopleSearch({
               </Txt>
             )}
           </View>
+          </ProfileLink>
           <Button
             title={
               busy === person.id

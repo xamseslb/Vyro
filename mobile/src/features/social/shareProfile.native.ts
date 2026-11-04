@@ -1,11 +1,12 @@
 import { Share } from "react-native";
 import type { Profile } from "./api";
+import { profileShareText } from "./profileShareText";
 export async function shareProfile(
   profile: Profile,
 ): Promise<"shared" | "copied" | "cancelled"> {
   const result = await Share.share({
     title: "Min VYRO-profil",
-    message: `Finn meg på VYRO: ${profile.display_name} (@${profile.username}). Åpne Finn venner i VYRO og søk etter @${profile.username}.`,
+    message: profileShareText(profile),
   });
   return result.action === Share.dismissedAction ? "cancelled" : "shared";
 }

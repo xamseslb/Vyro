@@ -28,6 +28,7 @@ jest.mock("../src/components/ui", () => {
   const { View, Text, Pressable } = jest.requireActual("react-native");
   return {
     Txt: Text,
+    Icon: () => null,
     styles: {},
     useTheme: () => ({}),
     Button: ({

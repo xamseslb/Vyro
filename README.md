@@ -12,9 +12,9 @@ npm ci
 npm start
 ```
 
-Native iOS-kart bruker Apple MapKit gjennom `react-native-maps@1.29.11`, uten kartnøkkel. Pakken er støttet i SDK 58-versjonen av Expo Go, men hele VYRO og bakgrunnsopptak må testes i et eget native bygg. En tidligere VYRO-installasjon trenger nytt bygg etter kartbyttet. Localhost er en web-forhåndsvisning med Mapbox, ikke Apple Maps.
+Native iOS-kart bruker Apple MapKit gjennom `react-native-maps@1.29.11` som standard, uten kartnøkkel. Mapbox kan prøves via Innstillinger → Kart med `@rnmapbox/maps@10.3.17`, og Apple beholdes som reserve. Mapbox krever et nytt native bygg og offentlig token; det finnes ikke i Expo Go eller eldre VYRO-bygg. Localhost er en web-forhåndsvisning med Mapbox, ikke Apple Maps.
 
-På en ny PC må `mobile/.env.local` kopieres fra det eksisterende lokale oppsettet eller fylles ut etter `mobile/.env.example`. Filen er ignorert av Git. Supabase krever prosjekt-URL og en publishable key. Bare web-forhåndsvisningen trenger Mapboxs offentlige `pk.`-nøkkel. Se [kartplattformene](docs/map-provider-options.md), [webkart-oppsett](docs/mapbox-setup.md) og [Supabase-oppsett](docs/supabase-setup.md). Backend kjører hos Supabase og har ingen egen lokal startkommando i dette prosjektet.
+På en ny PC må `mobile/.env.local` kopieres fra det eksisterende lokale oppsettet eller fylles ut etter `mobile/.env.example`. Filen er ignorert av Git. Supabase krever prosjekt-URL og en publishable key. Web og det valgfrie Mapbox-kartet på iPhone trenger Mapboxs offentlige `pk.`-nøkkel. Se [kartplattformene](docs/map-provider-options.md), [kartoppsett](docs/mapbox-setup.md) og [Supabase-oppsett](docs/supabase-setup.md). Backend kjører hos Supabase og har ingen egen lokal startkommando i dette prosjektet.
 
 ```sh
 npm run web -- --localhost --port 8081

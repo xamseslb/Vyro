@@ -28,7 +28,7 @@ export default function TabLayout() {
           height: 64 + Math.max(insets.bottom, 12),
           paddingBottom: Math.max(insets.bottom, 12),
         },
-        tabBarLabelStyle: { fontSize: 10, fontWeight: "600" },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
       }}
     >
       {tabs.map((t) => (

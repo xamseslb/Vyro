@@ -83,7 +83,8 @@
       ],
       "@bacons/apple-targets",
       "expo-web-browser",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      "@rnmapbox/maps"
     ],
     "extra": {
       "router": {

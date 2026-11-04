@@ -1,3 +1,4 @@
+import { personName } from "../../features/social/display";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { FlatList, Pressable, View } from "react-native";
@@ -55,10 +56,10 @@ function ProfileContent({ user }: { user?: User }) {
   const confirmation = useAuthStore((s) => s.confirmationEmail);
   const { profile, failed: profileFailed } = useOwnProfile();
   const counts = useConnectionCounts(user?.id);
-  const name =
+  const name = personName(
     profile?.display_name ||
     user?.user_metadata?.display_name ||
-    (user ? "Din profil" : localName || "Din profil");
+    (user ? "Din profil" : localName || "Din profil"));
   const details = user ? profileDetails(user, name) : null;
   const real = useMemo(
     () => ownTraining(workouts, user?.id),

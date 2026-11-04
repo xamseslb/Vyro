@@ -1,3 +1,4 @@
+import { personName } from "../features/social/display";
 import { TextInput, TextInputProps, Pressable, View, Image } from "react-native";
 import { useAvatar } from "../features/social/avatar";
 import { useState } from "react";
@@ -24,6 +25,8 @@ export function IconButton({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityShowsLargeContentViewer
+      accessibilityLargeContentTitle={label}
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
@@ -123,11 +126,11 @@ export function Avatar({
         justifyContent: "center",
       }}
     >
-      {uri && uri!==failedUri && !club ? <Image source={{uri}} onError={()=>setFailedUri(uri)} accessibilityLabel={`Profilbilde: ${name}`} style={{width:size,height:size,borderRadius:size/2}}/> : club ? (
+      {uri && uri!==failedUri && !club ? <Image source={{uri}} onError={()=>setFailedUri(uri)} accessibilityLabel={`Profilbilde: ${personName(name)}`} style={{width:size,height:size,borderRadius:size/2}}/> : club ? (
         <Icon name="club" color={c.accent} />
       ) : (
         <Txt size={size * 0.43} weight="700">
-          {name.trim().slice(0, 1).toLocaleUpperCase("nb-NO")}
+          {personName(name).slice(0, 1).toLocaleUpperCase("nb-NO")}
         </Txt>
       )}
     </View>

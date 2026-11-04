@@ -64,6 +64,9 @@ jest.mock("../src/components/ui", () => {
   };
 });
 jest.mock("../src/components/LiveMap", () => () => null);
+jest.mock("../src/components/SettingsUi", () => ({
+  Page: jest.requireMock("../src/components/ui").Screen,
+}));
 jest.mock("../src/components/FootballMap", () => () => null);
 jest.mock("expo-router", () => ({ router: { replace: jest.fn() } }));
 jest.mock("../src/lib/workoutStorage", () => ({
@@ -158,6 +161,16 @@ test("a GPS attempt with no route can be discarded even though saving is disable
 
 test("saving preserves the original measurements and does not need discard", async () => {
   await render(<Summary />);
+  expect(screen.queryByText("Synlighet")).toBeNull();
+  expect(screen.queryByText("Kun deg")).toBeNull();
+  await fireEvent.changeText(
+    screen.getByLabelText("Navn på økten"),
+    "Trening etter jobb",
+  );
+  await fireEvent.changeText(
+    screen.getByLabelText("Notater om økten"),
+    "Husk vann neste gang",
+  );
   await fireEvent.press(screen.getByRole("button", { name: "Lagre økten" }));
   expect(useAppStore.getState().workouts).toHaveLength(1);
   expect(useAppStore.getState().workouts[0]).toMatchObject({
@@ -165,5 +178,11 @@ test("saving preserves the original measurements and does not need discard", asy
     distance: 0.32,
     sport: "Fotball",
     visibility: "private",
+    title: "Trening etter jobb",
+    notes: "Husk vann neste gang",
+  });
+  expect(router.replace).toHaveBeenCalledWith({
+    pathname: "/activity/[id]",
+    params: { id: useAppStore.getState().workouts[0].id, saved: "1" },
   });
 });
