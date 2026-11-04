@@ -1,5 +1,9 @@
 # Leveranseplan
 
+## iPhone-bygg 17 — 4. november 2026
+
+[Preview 17](https://expo.dev/accounts/xamse10/projects/vyro/builds/e111aadd-0758-4ccd-90c9-9a6629391d11) er **FINISHED**, versjon 0.1.0 (17), med de lokale UX-/profil-/kartendringene. EAS-preview har nå offentlig Mapbox-token. Apple forblir standard og reserve. Kartleverandørens 429-bruksbegrensning består; neste steg er installasjon og fysisk testing etter at kontotilgang er ordnet. Ingen Git-push eller TestFlight-innsending er utført.
+
 ## Mapbox som valgfritt iPhone-kart — 4. november 2026
 
 Apple beholdes som standard og fallback; Mapbox kan velges i Innstillinger → Kart i et nytt native bygg. De to motorene deler GPS-/rutedata uten å endre opptak. Mapbox dekker treningskart, rutekart og klubbsoner med profilnåler, separate standard-/satellitt-/hybridvisninger, 2D/3D og høydekurver. Fotballvarmekart bruker midlertidig privat cache. Låseskjerm, Watch og stedssøk bruker fortsatt Apple.

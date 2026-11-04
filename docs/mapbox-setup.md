@@ -18,7 +18,7 @@ Live Activity/låseskjerm, Watch og stedssøk bruker fortsatt Apple. Mapbox dele
 
 ## Kontostatus 4. november 2026
 
-Lesetest med eksisterende public token: standardstil 200, satellittstil 200, TileJSON 200, faktisk satellittbilde **429**. Brukerens konsoll viser «Usage limited» og «Add payment info to remove them». Kontobegrensningen må avklares før reelle bilder kan sammenlignes ved Triaden/Lørenskog. Ikke lov nyere bilder enn Apple uten fysisk sammenligning. Koden er forberedt lokalt; ingen signert Mapbox-testversjon er bygget eller installert ennå.
+Lesetest med eksisterende public token: standardstil 200, satellittstil 200, TileJSON 200, faktisk satellittbilde **429**. Brukerens konsoll viser «Usage limited» og «Add payment info to remove them». Kontobegrensningen må avklares før reelle bilder kan sammenlignes ved Triaden/Lørenskog. Ikke lov nyere bilder enn Apple uten fysisk sammenligning. Offentlig token er satt i EAS-preview, og [Preview 17](https://expo.dev/accounts/xamse10/projects/vyro/builds/e111aadd-0758-4ccd-90c9-9a6629391d11) er ferdig kompilert/signert 4. november. Installasjon og fysisk Mapbox-test er ikke bekreftet. Apple er standard; velg Mapbox under Innstillinger → Kart når kontotilgangen er ordnet.
 
 Kilder: [Tokens](https://docs.mapbox.com/help/dive-deeper/access-tokens/), [native installasjon](https://rnmapbox.github.io/docs/install), [Standard-stiler](https://docs.mapbox.com/map-styles/guides/standard-styles/), [Expo 58 FileSystem](https://docs.expo.dev/versions/v58.0.0/sdk/filesystem/).
 

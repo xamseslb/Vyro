@@ -1,5 +1,9 @@
 # Til Codex på PC: fortsett herfra
 
+## iPhone-bygg 17 ferdig — 4. november 2026
+
+Brukeren ba om nytt installasjonsbygg. [Preview 17](https://expo.dev/accounts/xamse10/projects/vyro/builds/e111aadd-0758-4ccd-90c9-9a6629391d11), versjon 0.1.0 (17), er **FINISHED** 22:29:42 UTC (23:29 norsk tid), fra `e4b3f10` med alle lokale endringer. Eksisterende signering for iPhone/widget/Watch er gjenbrukt. Offentlig Mapbox-token er nå satt som Sensitive i EAS-miljøet `preview`; ingen verdi er lagret i dokumentasjon/Git. Typecheck, lint, 16 karttester og EAS-miljøkontroll består på nytt, og native kompilering/signering er fullført. Karttilgang er fortsatt begrenset: ekte satellittflis gir 429. Apple er standard/fallback; bruker må håndtere kontoens bruksbegrensning før Mapbox kan vurderes fysisk. Installer over eksisterende VYRO. Fysisk iPhone-/Watch-test og sammenligning av kartbilder gjenstår. Ingen Git-push, TestFlight-innsending eller databaseendring.
+
 ## Valgfritt Mapbox-kart — 4. november 2026
 
 Brukeren vil prøve Mapbox på iPhone uten å miste Apple-koden. `@rnmapbox/maps@10.3.17` og Expo-plugin er installert; Apple er fortsatt standard/fallback. Innstillinger → Kart har leverandørvalg. LiveMap og klubbkart har begge motorer; låseskjerm/Watch/stedssøk forblir Apple. Typecheck/lint, 604 ulike tester (fullkjøring + målrettet rettest), Expo-konfigurasjon og iOS/Hermes-kodeeksport består. Native kompilering/fysisk kartvisning er utestet. Ingen EAS-bygg, push, betaling eller databaseendring er startet i denne runden.

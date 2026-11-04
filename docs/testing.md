@@ -1,5 +1,12 @@
 # Testing
 
+## iPhone-bygg 17 — 4. november 2026
+
+- Typecheck, Expo lint og 16 kart-/leverandør-/varmekarttester i fire suiter består på nytt.
+- EAS-konto/prosjekt og eksisterende signering er kontrollert. Offentlig Mapbox-token er lagt i `preview`-miljøet; utgivelsesmiljøkontrollen består.
+- Kartkontroll: standardstil, satellittstil og TileJSON gir 200, men faktisk satellittflis gir fortsatt 429. Kontobegrensningen er ikke løst av appbyggingen.
+- [Preview 17](https://expo.dev/accounts/xamse10/projects/vyro/builds/e111aadd-0758-4ccd-90c9-9a6629391d11) er **FINISHED** 22:29:42 UTC, versjon 0.1.0 (17), med den lokale arbeidskopien på `e4b3f10`. Native kompilering og signering for iPhone/widget/Watch er fullført. Installasjon, fysisk kartvisning, GPS/kartbytte og Watch-funksjon er fortsatt uverifisert. Apple er standard/fallback; installer over eksisterende app.
+
 ## Valgfritt native Mapbox-kart — 4. november 2026
 
 - TypeScript og Expo lint består uten feil/varsler etter endringen. Expo prebuild-konfigurasjon løses med Mapbox-plugin og samme bundle-ID `app.vyro.xamse10`. iOS/Hermes-kodeeksport består (2467 moduler, ca. 6,4 MB). Første eksport ble hindret av sandboxens temp-mappetilgang; ny eksport med midlertidig mappe under `.expo` bestod. Dette er ikke native Swift/CocoaPods-kompilering eller et signert iPhone-bygg.
