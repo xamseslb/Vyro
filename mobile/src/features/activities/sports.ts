@@ -172,6 +172,10 @@ export type Sport = keyof typeof sportCatalog;
 // Keep the complete catalog for reading existing workouts and backups.
 export const sports = Object.keys(sportCatalog) as Sport[];
 const retiredSportNames = [
+  "Rulleskøyter",
+  "Klatring",
+  "Pilates",
+  "Truger",
   "Basketball",
   "Volleyball",
   "Badminton",

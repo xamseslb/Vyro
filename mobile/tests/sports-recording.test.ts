@@ -170,8 +170,8 @@ test("timer recordings remain private across account changes and count in minute
 });
 
 test("Norwegian sport search and favorites do not duplicate or lose choices", () => {
-  expect(sportSections("  SKØYTER ").flatMap((s) => s.data)).toEqual([
-    "Rulleskøyter",
+  expect(sportSections( "  RULLESKI ").flatMap((s) => s.data)).toEqual([
+    "Rulleski",
   ]);
   const sections = sportSections("", ["Yoga", "Fotball"]);
   expect(sections[0].title).toBe("Dine idretter");
@@ -185,6 +185,7 @@ test("Norwegian sport search and favorites do not duplicate or lose choices", ()
 
 test("retired choices cannot return through search or favorites; old workouts remain supported", () => {
   const retired = [
+    "Truger", "Rulleskøyter", "Klatring", "Pilates",
     "Basketball",
     "Volleyball",
     "Badminton",
@@ -207,5 +208,5 @@ test("retired choices cannot return through search or favorites; old workouts re
       sport,
     );
   }
-  expect(selectableSports).toContain("Rulleskøyter");
+  expect(selectableSports).toContain("Rulleski");
 });

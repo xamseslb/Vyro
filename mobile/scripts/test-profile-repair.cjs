@@ -104,6 +104,26 @@ async function main() {
     );
     await db.exec("reset role; set role anon");
     await assert.rejects(db.query("select * from public.profiles"));
+    await db.exec("reset role; alter table auth.users add column raw_app_meta_data jsonb default '{}'");
+    await db.exec(migration("202611050001_registration_usernames.sql"));
+    const signup = (provider, handle) => db.query(
+      "insert into auth.users (id,raw_app_meta_data,raw_user_meta_data) values(gen_random_uuid(),$1,$2) returning id",
+      [{provider}, {vyro_username:handle}],
+    );
+    const available = async (handle) => (await db.query(
+      "select public.vyro_username_available($1) as available", [handle]
+    )).rows[0].available;
+    assert.equal(await available("test_loper"),true);
+    await signup("email","test_loper");
+    assert.equal(await available("test_loper"),false);
+    await assert.rejects(signup("email","test_loper"), e => e.code === "23505");
+    await assert.rejects(signup("email","runner_fake"), e => e.code === "22023");
+    const google = (await signup("google","test_loper")).rows[0].id;
+    assert.match((await db.query("select username from public.profiles where id=$1",[google])).rows[0].username,/^runner_/);
+    await assert.rejects(db.query("update public.profiles set username='test_loper' where id=$1",[google]), e=> e.code === "23505");
+    await db.query("update public.profiles set username='annen_loper' where id=$1",[google]);
+    assert.equal(await available("annen_loper"),false);
+    console.log("Email signup, OAuth placeholders and atomic duplicate rejection passed.");
     console.log(
       "8 profile repair checks passed: backfill, public fields, preserved edits, idempotence, signup, authenticated read, insert denial, anonymous denial.",
     );

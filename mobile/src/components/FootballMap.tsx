@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import LiveMap from "./LiveMap";
+import { useAppStore } from "../stores/useAppStore";
 import { Txt, useTheme } from "./ui";
 import { routeSegments, type RoutePoint } from "../features/tracking/gps";
 import { footballHeatmap } from "../features/football/heatmap";
@@ -14,6 +15,7 @@ export default function FootballMap({
   height?: number;
 }) {
   const c = useTheme();
+  const mapKind = useAppStore(s => s.defaultMapKind);
   const [mode, setMode] = useState<"route" | "heat">("route");
   const route = useMemo(() => routeSegments(points), [points]);
   const heatmap = useMemo(() => footballHeatmap(points), [points]);
@@ -61,7 +63,7 @@ export default function FootballMap({
           <LiveMap
             route={route}
             height={height}
-            mapKind="satellite"
+            mapKind={mapKind}
             heatmap={mode === "heat" ? heatmap : null}
           />
         ) : (

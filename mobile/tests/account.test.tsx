@@ -9,6 +9,7 @@ jest.mock("expo-linking", () => ({
 }));
 jest.mock("../src/lib/supabase", () => ({
   supabase: {
+    rpc: jest.fn(async () => ({data: true, error: null})),
     auth: {
       signInWithPassword: jest.fn(),
       signUp: jest.fn(),
@@ -55,6 +56,20 @@ import { router } from "expo-router";
 import { supabase } from "../src/lib/supabase";
 import { useAuthStore } from "../src/stores/useAuthStore";
 const auth = supabase!.auth;
+test("signup blocks missing and occupied handles before creating a user", async () => {
+  await render(<Account />);
+  await tap("Ny her? Opprett konto");
+  await fillLogin();
+  await fireEvent.changeText(screen.getByLabelText("Visningsnavn"), "Ada");
+  await fireEvent.changeText(screen.getByLabelText("Bekreft passord"), "a-long-password");
+  await tap("Opprett konto");
+  expect(screen.getByText(/Bruk 3–24/)).toBeTruthy();
+  await fireEvent.changeText(screen.getByLabelText("Brukernavn"), "@Ada");
+  (supabase!.rpc as jest.Mock).mockResolvedValueOnce({ data:false, error:null });
+  await tap("Opprett konto");
+  expect(screen.getByText(/brukernavnet er opptatt/)).toBeTruthy();
+  expect(auth.signUp).not.toHaveBeenCalled();
+});
 test("password changes require a session and matching passwords", async () => {
   await render(<NewPassword />);
   expect(screen.queryByLabelText("Nytt passord")).toBeNull();
@@ -86,6 +101,7 @@ test("registration server failure never shows a confirmation success", async () 
   });
   await render(<Account />);
   await tap("Ny her? Opprett konto");
+  await fireEvent.changeText(screen.getByLabelText("Brukernavn"), "@Team10");
   await fillLogin();
   await fireEvent.changeText(screen.getByLabelText("Visningsnavn"), "Løper");
   await fireEvent.changeText(
@@ -167,6 +183,7 @@ test("registration validates passwords, keeps login available, and supports rese
   (auth.resend as jest.Mock).mockResolvedValue({ error: null });
   await render(<Account />);
   await tap("Ny her? Opprett konto");
+  await fireEvent.changeText(screen.getByLabelText("Brukernavn"), "@Team10");
   await fillLogin();
   await fireEvent.changeText(screen.getByLabelText("Visningsnavn"), "Løper");
   await tap("Opprett konto");
@@ -180,7 +197,7 @@ test("registration validates passwords, keeps login available, and supports rese
   expect(auth.signUp).toHaveBeenCalledWith(
     expect.objectContaining({
       options: {
-        data: { display_name: "Løper" },
+        data: { display_name: "Løper", vyro_username: "team10" },
         emailRedirectTo: "vyro://auth/callback",
       },
     }),
@@ -213,6 +230,7 @@ test("signup keeps an optional surname separate from the public display name and
   });
   await render(<Account />);
   await tap("Ny her? Opprett konto");
+  await fireEvent.changeText(screen.getByLabelText("Brukernavn"), "@Team10");
   await fillLogin();
   await fireEvent.changeText(
     screen.getByLabelText("Visningsnavn"),
@@ -237,7 +255,7 @@ test("signup keeps an optional surname separate from the public display name and
   expect(auth.signUp).toHaveBeenCalledWith(
     expect.objectContaining({
       options: {
-        data: { display_name: "Xamse", last_name: "Sulub" },
+        data: { display_name: "Xamse", last_name: "Sulub", vyro_username: "team10" },
         emailRedirectTo: "vyro://auth/callback",
       },
     }),

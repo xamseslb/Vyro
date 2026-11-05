@@ -2,6 +2,7 @@ import { isSuggestedRoute } from "../features/routes/model";
 import { workoutStorage } from "../lib/workoutStorage";
 import { create } from "zustand";
 import {
+  selectableSports,
   isSport,
   sportInfo,
   validWorkoutDetails,
@@ -46,6 +47,7 @@ type State = {
   experience: string;
   theme: "dark" | "light" | "system";
   defaultMapKind: "standard" | "satellite" | "hybrid";
+  mapKindsByOwner: Record<string, "standard" | "satellite" | "hybrid">;
   homeFeed: "following" | "reposted" | "own";
   sharingAudienceByOwner: Record<string, "followers" | "everyone">;
   examplesVisible: boolean;
@@ -115,7 +117,7 @@ type SavedState = Pick<
   | "hiddenBackups"
   | "experience"
   | "theme"
-  | "defaultMapKind"
+  | "mapKindsByOwner"
   | "homeFeed"
   | "sharingAudienceByOwner"
   | "examplesVisible"
@@ -182,6 +184,7 @@ export const useAppStore = create<State>()(
       experience: "Litt erfaring",
       theme: "light",
       defaultMapKind: "standard",
+      mapKindsByOwner: {},
       homeFeed: "following",
       sharingAudienceByOwner: {},
       examplesVisible: false,
@@ -190,7 +193,12 @@ export const useAppStore = create<State>()(
       joined: false,
       liked: false,
       setReady: (error) => set({ ready: !error, storageError: error ?? null }),
-      preferences: (patch) => set(patch),
+      preferences: (patch) => {
+        const id = useAuthStore.getState().session?.user.id;
+        if (id && patch.defaultMapKind) {
+          set({ ...patch, mapKindsByOwner: { ...get().mapKindsByOwner, [id]: patch.defaultMapKind } });
+        } else set(patch);
+      },
       sport: (sport) => {
         if (get().recording.status === "idle" && isSport(sport))
           set({
@@ -408,12 +416,13 @@ export const useAppStore = create<State>()(
         return {
           ...current,
           ...saved,
+          defaultMapKind: saved.mapKindsByOwner?.[useAuthStore.getState().session?.user.id ?? ""] ?? "standard",
           examplesVisible: false,
           // An old developer simulation must never resume as a real GPS workout.
           // Historical records are retained privately; user screens show GPS only.
           recording:
-            recording.mode === "simulation"
-              ? { ...initialRecording, sport: recording.sport }
+            recording.mode === "simulation" || (recording.status === "idle" && !selectableSports.includes(recording.sport))
+              ? { ...initialRecording, sport: selectableSports.includes(recording.sport) ? recording.sport : "Løping" }
               : recording,
         };
       },
@@ -434,7 +443,7 @@ export const useAppStore = create<State>()(
         hiddenBackups: s.hiddenBackups,
         experience: s.experience,
         theme: s.theme,
-        defaultMapKind: s.defaultMapKind,
+        mapKindsByOwner: s.mapKindsByOwner,
         homeFeed: s.homeFeed,
         sharingAudienceByOwner: s.sharingAudienceByOwner,
         examplesVisible: s.examplesVisible,
@@ -455,3 +464,11 @@ export const useAppStore = create<State>()(
     },
   ),
 );
+
+useAuthStore.subscribe((next, previous) => {
+  const id = next.session?.user.id;
+  const state = useAppStore.getState();
+  if (id !== previous.session?.user.id && state.ready) {
+    useAppStore.setState({ defaultMapKind: (id && state.mapKindsByOwner[id]) || "standard" });
+  }
+});

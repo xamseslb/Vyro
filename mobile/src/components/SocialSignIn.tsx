@@ -95,8 +95,7 @@ export function SocialSignIn({
         </Pressable>
       )}
       <Txt muted size={13} style={{ textAlign: "center" }}>
-        Ny i VYRO? Kontoen opprettes når du fortsetter. Har du konto fra før,
-        blir du logget inn. Du trenger ikke et eget VYRO-passord.
+        Ny i VYRO? Kontoen opprettes når du fortsetter.
       </Txt>
       <Txt muted size={13} style={{ textAlign: "center", marginVertical: 4 }}>
         eller bruk e-post

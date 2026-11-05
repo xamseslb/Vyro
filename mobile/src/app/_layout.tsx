@@ -23,6 +23,7 @@ import { observeWorkoutActivity } from "../features/tracking/liveActivity";
 import { observeWatch } from "../features/watch/sync";
 import { observeRecording } from "../features/tracking/lifecycle";
 import NotificationObserver from "../components/NotificationObserver";
+import { UsernameGate } from "../components/UsernameGate";
 export { RouteError as ErrorBoundary } from "../components/RouteError";
 
 export default function RootLayout() {
@@ -123,6 +124,7 @@ export default function RootLayout() {
           </Stack>
         )}
         <LaunchSignature ready={ready} idle={idle} />
+        {ready && <UsernameGate />}
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

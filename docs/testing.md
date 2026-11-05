@@ -1,5 +1,11 @@
 # Testing
 
+## Registrering med brukernavn — 5. november 2026
+
+TypeScript og Expo lint bestod. EAS fullførte [signert internt bygg 19](https://expo.dev/accounts/xamse10/projects/vyro/builds/f84cfdd6-1ef2-4162-a846-6461c7b91190).
+
+591 Jest-tester i 95 suiter bestod, inkludert navnevalg for en OAuth-profil, gjenbruk av valgt navn, obligatorisk felt ved e-postregistrering, opptatt navn, adskilte kartvalg og filtrering av eldre idretter. Den isolerte PostgreSQL-testen kontrollerte profilopprettelse, gyldige og reserverte navn, unikhetskonflikter og valg etter OAuth. Migreringen `202611050001_registration_usernames.sql` er aktivert. Lesetest mot Supabase bekreftet RPC-tilgang før innlogging og installert registreringstrigger. Fysisk Google-innlogging, e-postbekreftelse og visuell kontroll på iPhone gjenstår.
+
 ## Apple Kart på iPhone — 5. november 2026
 
 EAS fullførte det signerte interne iPhone-bygget og ga [installasjonslenken til Preview 18](https://expo.dev/accounts/xamse10/projects/vyro/builds/37493295-9e64-404c-959c-447ea4f4dc4e). Fysisk oppstart må bekreftes på den registrerte iPhonen.

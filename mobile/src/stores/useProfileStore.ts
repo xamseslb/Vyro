@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { isGeneratedUsername } from "../features/social/display";
+import { usernameTaken } from "../features/auth/username";
 import { supabase } from "../lib/supabase";
 import { useAuthStore } from "./useAuthStore";
 import { profileColumns, type Profile } from "../features/social/api";
@@ -95,6 +97,22 @@ export async function saveDisplayName(userId: string, name: string) {
     loadedAt: Date.now(),
     errorFor: null,
   });
+}
+
+export async function claimUsername(userId: string, previous: string, username: string) {
+  if (!supabase || !ownsSession(userId)) throw new Error("Logg inn på nytt.");
+  // A second device cannot overwrite the first choice.
+  const { data, error } = await supabase.from("profiles").update({ username })
+    .eq("id", userId).eq("username", previous).select(profileColumns).single();
+  if (error?.code === "23505") throw new Error(usernameTaken);
+  if (!ownsSession(userId)) return;
+  if (error || !data) {
+    const latest = await loadOwnProfile(userId, new AbortController().signal, true);
+    if (latest && !isGeneratedUsername(latest.username)) return;
+    throw new Error("Kunne ikke lagre brukernavnet. Prøv igjen.");
+  }
+  revision++;
+  useProfileStore.setState({ profile: data, loadedAt: Date.now(), errorFor: null });
 }
 
 // No persistent cache: clear another account's profile immediately on account change.

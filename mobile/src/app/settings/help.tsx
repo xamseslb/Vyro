@@ -83,8 +83,13 @@ export default function Help() {
       </SettingsGroup>
       <SettingsGroup
         title="Ikoner og illustrasjoner"
-        note="Idrettsikonene er laget av Magnific og hentet fra Flaticon. Brukt med kreditering etter Flaticons lisens."
+        note="Idrettsikoner fra Magnific på Flaticon og Material Design Icons fra Pictogrammers."
       >
+        <SettingsRow
+          title="Pictogrammers"
+          description="Ikoner for fotball og trappemaskin"
+          onPress={() => void openCredit("https://pictogrammers.com/library/mdi/")}
+        />
         <SettingsRow
           title="Magnific"
           description="Designeren bak idrettsikonene"

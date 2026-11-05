@@ -11,6 +11,8 @@ import { ProfileLink } from "./ProfileLink";
 import SafetyActions from "./SafetyActions";
 
 export function cleanPeopleQuery(value: string) {
+  const handle = value.trim().toLowerCase();
+  if (/^@[a-z0-9_]{1,40}$/.test(handle)) return handle;
   return value
     .replace(/[^\p{L}\p{N}_ '’-]/gu, "")
     .trim()
@@ -55,7 +57,9 @@ export function PeopleSearch({
             .order("display_name")
             .order("id")
             .limit(50);
-          if (query)
+          if (query.startsWith("@"))
+            q = q.eq("username", query.slice(1));
+          else if (query)
             q = q.or(`display_name.ilike.%${query}%,username.ilike.%${query}%`);
           const result = await q.abortSignal(controller.signal);
           if (result.error) throw result.error;

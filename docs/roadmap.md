@@ -1,5 +1,9 @@
 # Leveranseplan
 
+## Brukernavn, kartlag og idrettsvalg — 5. november 2026
+
+E-postregistrering inkluderer eget unikt brukernavn. Profiler med automatisk navn, inkludert nye Google-profiler, får navnevalget etter innlogging. Et eksakt @brukernavn kan brukes i personsøket. Kartlag velges per konto på enheten, og en ny gjesteøkt starter med Standard. Rulleskøyter, klatring, pilates og truger er tatt ut av velgeren. Tidligere økter kan fortsatt leses. Neste kontroll er første registrering og kontobytte på fysisk iPhone.
+
 ## Apple Kart på iPhone — 5. november 2026
 
 [Preview 18](https://expo.dev/accounts/xamse10/projects/vyro/builds/37493295-9e64-404c-959c-447ea4f4dc4e) er klar til installasjon.

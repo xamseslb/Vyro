@@ -48,10 +48,10 @@ test("search selects an indoor sport and closes the picker", async () => {
   );
   await fireEvent.changeText(
     screen.getByLabelText("Søk etter idrett"),
-    "pilates",
+    "styrke",
   );
-  await fireEvent.press(screen.getByRole("radio", { name: "Pilates" }));
-  expect(select).toHaveBeenCalledWith("Pilates");
+  await fireEvent.press(screen.getByRole("radio", { name: "Styrketrening" }));
+  expect(select).toHaveBeenCalledWith("Styrketrening");
   expect(close).toHaveBeenCalledTimes(1);
 });
 

@@ -1,5 +1,7 @@
 # Til Codex på PC: fortsett herfra
 
+[Preview 19 for iPhone](https://expo.dev/accounts/xamse10/projects/vyro/builds/f84cfdd6-1ef2-4162-a846-6461c7b91190) er ferdig 5. november 2026 med unike brukernavn, ny registreringsside, kartlag per konto og oppdatert idrettsvelger. Registreringsfunksjonen er aktivert i Supabase. Typecheck, Expo lint, 591 Jest-tester og den isolerte databasetesten bestod. Første registrering på fysisk iPhone gjenstår.
+
 [Preview 18 for iPhone](https://expo.dev/accounts/xamse10/projects/vyro/builds/37493295-9e64-404c-959c-447ea4f4dc4e) ble ferdig 5. november 2026 med Apple Kart og de lokale endringene. EAS ga en installasjonslenke for registrerte enheter. Neste kontroll er oppdatering fra bygg 17 på fysisk iPhone.
 
 ## Apple Kart på iPhone — 5. november 2026

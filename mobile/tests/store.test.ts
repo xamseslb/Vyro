@@ -431,6 +431,7 @@ test("repeat route is limited to own saved GPS routes and never carries competit
 });
 
 test("appearance, map and Home preferences survive reload without changing privacy or workouts", async () => {
+  useAuthStore.setState({session: {user: {id:"owner"}} as Session});
   const initial = useAppStore.getInitialState();
   expect(initial.sharingAudienceByOwner).toEqual({});
   expect(initial.defaultMapKind).toBe("standard");
@@ -445,7 +446,7 @@ test("appearance, map and Home preferences survive reload without changing priva
   const raw = JSON.parse((await AsyncStorage.getItem("vyro-prototype-v1"))!);
   expect(raw.state).toMatchObject({
     theme: "system",
-    defaultMapKind: "hybrid",
+    mapKindsByOwner: {owner:"hybrid"},
     homeFeed: "own",
     sharingAudienceByOwner: { a: "everyone", b: "followers" },
     workouts: [],
@@ -456,4 +457,19 @@ test("appearance, map and Home preferences survive reload without changing priva
   expect(useAppStore.getState().theme).toBe("system");
   expect(useAppStore.getState().defaultMapKind).toBe("hybrid");
   expect(useAppStore.getState().homeFeed).toBe("own");
+});
+
+test("guests and accounts choose their own map layer", () => {
+  useAppStore.setState({ ready: true, mapKindsByOwner: {}, defaultMapKind: "standard" });
+  useAuthStore.setState({ session: null });
+  useAppStore.getState().preferences({ defaultMapKind: "hybrid" });
+  useAuthStore.setState({ session: {user:{id:"one"}} as Session });
+  expect(useAppStore.getState().defaultMapKind).toBe("standard");
+  useAppStore.getState().preferences({defaultMapKind:"satellite"});
+  useAuthStore.setState({ session: {user:{id:"two"}} as Session });
+  expect(useAppStore.getState().defaultMapKind).toBe("standard");
+  useAuthStore.setState({ session: {user:{id:"one"}} as Session });
+  expect(useAppStore.getState().defaultMapKind).toBe("satellite");
+  useAuthStore.setState({ session: null });
+  expect(useAppStore.getState().defaultMapKind).toBe("standard");
 });

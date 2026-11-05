@@ -1,6 +1,9 @@
 import { preparePushSignOut } from "../features/social/push";
 import { useRef, useState } from "react";
-import { TextInput, View } from "react-native";
+import { Pressable, TextInput, View } from "react-native";
+import { BrandWordmark } from "../components/Brand";
+import { UsernameField } from "../components/UsernameField";
+import { normalizeUsername, usernameProblem, usernameTaken } from "../features/auth/username";
 import { router, useLocalSearchParams } from "expo-router";
 import { Button, Txt, useTheme } from "../components/ui";
 import { supabase } from "../lib/supabase";
@@ -27,6 +30,7 @@ export default function Account() {
     params.mode === "register" ? "register" : "login",
   );
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState(confirmationEmail ?? "");
   const [password, setPassword] = useState("");
@@ -66,6 +70,7 @@ export default function Account() {
 
   async function submit() {
     if (!supabase || pending.current) return;
+    const handle = normalizeUsername(username);
     const validation = validateAccount({
       mode,
       name,
@@ -73,7 +78,7 @@ export default function Account() {
       email,
       password,
       confirmation,
-    });
+    }) || (register ? usernameProblem(handle) : undefined);
     if (validation) {
       setMessage(validation);
       return;
@@ -97,12 +102,18 @@ export default function Account() {
           );
           return;
         }
+        if (register) {
+          const available = await client.rpc("vyro_username_available", { candidate: handle });
+          if (available.error) throw available.error;
+          if (available.data !== true) { setMessage(usernameTaken); return; }
+        }
         const { data, error } = register
           ? await client.auth.signUp({
               email: email.trim(),
               password,
               options: {
                 data: {
+                  vyro_username: handle,
                   display_name: name.trim(),
                   ...(lastName.trim() ? { last_name: lastName.trim() } : {}),
                 },
@@ -113,7 +124,13 @@ export default function Account() {
               email: email.trim(),
               password,
             });
-        if (error) throw error;
+        if (error) {
+          if (register && error.status === 500) {
+            const check = await client.rpc("vyro_username_available", { candidate: handle });
+            if (check.data === false) { setMessage(usernameTaken); return; }
+          }
+          throw error;
+        }
         setPassword("");
         setConfirmation("");
         if (data.session) {
@@ -170,12 +187,16 @@ export default function Account() {
       backDisabled={!!busy}
       plain
     >
-      <View style={{ padding: 22, gap: 18 }}>
-        {!session && (
+      <View style={{ padding: 22, gap: 16, width: "100%", maxWidth: 480, alignSelf: "center" }}>
+        {!session && register ? (
+          <View style={{ gap: 12, paddingVertical: 16 }}>
+            <BrandWordmark width={118} color={c.text} />
+            <Txt size={30} weight="700">Opprett din profil</Txt>
+            <Txt muted>Registrer deg med e-post eller fortsett med en konto under.</Txt>
+          </View>
+        ) : !session && (
           <Txt muted size={15}>
-            {register
-              ? "Ta turen videre med VYRO. Øktene dine er private til du velger å dele dem."
-              : mode === "reset"
+            {mode === "reset"
                 ? "Vi sender deg en lenke for å velge et nytt passord."
                 : "Velkommen tilbake. Turene dine venter."}
           </Txt>
@@ -221,6 +242,8 @@ export default function Account() {
             )}
             {register && (
               <>
+                <UsernameField value={username} onChange={setUsername} disabled={!!busy} />
+                <Txt weight="700">Om deg</Txt>
                 <TextInput
                   accessibilityLabel="Visningsnavn"
                   placeholder="Visningsnavn"
@@ -295,12 +318,10 @@ export default function Account() {
                     style={input}
                   />
                 )}
-                <Button
-                  secondary
-                  title={visible ? "Skjul passord" : "Vis passord"}
-                  disabled={!!busy}
-                  onPress={() => setVisible(!visible)}
-                />
+                <Pressable accessibilityRole="button" onPress={() => setVisible(!visible)} disabled={!!busy}
+                  style={{ minHeight: 44, justifyContent: "center", alignSelf: "flex-end" }}>
+                  <Txt weight="600">{visible ? "Skjul passord" : "Vis passord"}</Txt>
+                </Pressable>
               </>
             )}
             {register && (
