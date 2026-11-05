@@ -126,7 +126,7 @@ export default function Settings() {
           onPress={() => router.push("/settings/appearance")}
         />
         <SettingsRow
-            title="Kart"
+          title="Standardkart"
           value={
             { standard: "Standard", satellite: "Satellitt", hybrid: "Hybrid" }[
               mapKind

@@ -1,5 +1,11 @@
 # Testing
 
+## Apple Kart på iPhone — 5. november 2026
+
+EAS fullførte det signerte interne iPhone-bygget og ga [installasjonslenken til Preview 18](https://expo.dev/accounts/xamse10/projects/vyro/builds/37493295-9e64-404c-959c-447ea4f4dc4e). Fysisk oppstart må bekreftes på den registrerte iPhonen.
+
+TypeScript, Expo lint og 96 tester i 18 suiter bestod etter fjerning av native Mapbox. Dekningen inkluderer kart på iOS og web, kameravinkel, nåværende posisjon, klubbsoner og profil- og treningsendringer. Expo-autolinking for iOS finner `react-native-maps` og utelater `@rnmapbox/maps`. iOS-kodeeksporten med Hermes bestod. Fysisk installering over bygg 17 og kartvisning på iPhone gjenstår.
+
 ## iPhone-bygg 17 — 4. november 2026
 
 - Typecheck, Expo lint og 16 kart-/leverandør-/varmekarttester i fire suiter består på nytt.

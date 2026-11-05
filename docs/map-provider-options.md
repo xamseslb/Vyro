@@ -1,5 +1,7 @@
 # Kartleverandører
 
+Fra 5. november 2026 bruker iPhone Apple MapKit som eneste kartmotor. Nettleserforhåndsvisningen bruker Mapbox GL JS. Avsnittene under beskriver tidligere vurderinger og forsøket i bygg 17.
+
 ## Valgfri Mapbox-prøve — 4. november 2026
 
 Etter brukerens ønske beholdes Apple som standard/reserve, mens native Mapbox kan velges i Innstillinger → Kart i et nytt iPhone-bygg. `@rnmapbox/maps@10.3.17` er installert via Expo, med config-plugin; GPS-opptak, private økter, Apple Watch og låseskjerm er ikke byttet. Ruter, fotballvarmekart og klubbsoner har Mapbox-visning. Manglende støtte/nøkkel eller lastingsfeil gir Apple-kart tilbake. Se [oppsett og kontobegrensning](mapbox-setup.md) og [teststatus](testing.md).

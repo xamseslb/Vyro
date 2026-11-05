@@ -6,7 +6,7 @@ import type {
   MapOverlayProps,
   Camera,
 } from "react-native-maps";
-import AppleMap from "../src/components/AppleMap";
+import AppleMap from "../src/components/LiveMap.ios";
 import {
   appleInitialRegion,
   appleMapGeometry,

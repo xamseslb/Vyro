@@ -77,8 +77,7 @@ function RoutesMap() {
   const [sheet, setSheet] = useState<"layers" | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const mapKind = useAppStore((s) => s.defaultMapKind ?? "standard");
-  const provider = useAppStore((s) => s.mapProvider);
-  const apple = Platform.OS === "ios" && provider !== "mapbox";
+  const apple = Platform.OS === "ios";
   const setMapKind = (defaultMapKind: MapKind) =>
     useAppStore.getState().preferences({ defaultMapKind });
   const [poi, setPoi] = useState(true);

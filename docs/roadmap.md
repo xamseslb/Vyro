@@ -1,5 +1,11 @@
 # Leveranseplan
 
+## Apple Kart på iPhone — 5. november 2026
+
+[Preview 18](https://expo.dev/accounts/xamse10/projects/vyro/builds/37493295-9e64-404c-959c-447ea4f4dc4e) er klar til installasjon.
+
+Mapbox-forsøket er avsluttet. iPhone bruker Apple Kart for økter, ruter og klubbsoner. Web bruker Mapbox GL JS. Neste fysiske kontroll er å oppdatere fra bygg 17 med Mapbox som tidligere lagret valg og prøve kart og klubbsoner med Apple.
+
 ## iPhone-bygg 17 — 4. november 2026
 
 [Preview 17](https://expo.dev/accounts/xamse10/projects/vyro/builds/e111aadd-0758-4ccd-90c9-9a6629391d11) er **FINISHED**, versjon 0.1.0 (17), med de lokale UX-/profil-/kartendringene. EAS-preview har nå offentlig Mapbox-token. Apple forblir standard og reserve. Kartleverandørens 429-bruksbegrensning består; neste steg er installasjon og fysisk testing etter at kontotilgang er ordnet. Ingen Git-push eller TestFlight-innsending er utført.
