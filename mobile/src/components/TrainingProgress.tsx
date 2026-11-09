@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { useCallback, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -18,7 +19,7 @@ import { trainingProgress } from "../features/activities/progress";
 export function trainingTime(seconds: number) {
   const minutes = Math.floor(seconds / 60);
   return minutes >= 60
-    ? `${Math.floor(minutes / 60)} t ${minutes % 60} min`
+    ? uiText("{0} t {1} min", Math.floor(minutes / 60), minutes % 60)
     : `${minutes} min`;
 }
 export function TrainingProgress({
@@ -62,7 +63,7 @@ export function TrainingProgress({
       <View style={card}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Velg idrett for fremgang"
+          accessibilityLabel={uiText("Velg idrett for fremgang")}
           accessibilityState={{ expanded: chooseSport }}
           onPress={() => setChooseSport(!chooseSport)}
           style={{
@@ -89,7 +90,7 @@ export function TrainingProgress({
             size={20}
           />
           <Txt size={13} weight="600" style={{ color: c.accent }}>
-            {sport === "Alle" ? "Alle aktiviteter" : sport}
+            {sport === "Alle" ? uiText("Alle aktiviteter") : uiText(sport)}
           </Txt>
           <Icon name="chevronDown" color={c.accent} size={15} />
         </Pressable>
@@ -108,9 +109,7 @@ export function TrainingProgress({
             ))}
           </View>
         )}
-        <Txt size={22} weight="700">
-          Denne uken
-        </Txt>
+        <Txt size={22} weight="700">{uiText("Denne uken")}</Txt>
         <View style={{ flexDirection: "row", gap: 14 }}>
           {[
             ["Distanse", `${km(data.current.distance)} km`],
@@ -119,7 +118,7 @@ export function TrainingProgress({
           ].map(([label, value]) => (
             <View key={label} style={{ flex: 1, gap: 6 }}>
               <Txt muted size={12}>
-                {label}
+                {uiText(label)}
               </Txt>
               <Txt size={20} weight="700">
                 {value}
@@ -127,19 +126,15 @@ export function TrainingProgress({
             </View>
           ))}
         </View>
-        <Txt size={13}>De siste 12 ukene</Txt>
+        <Txt size={13}>{uiText("De siste 12 ukene")}</Txt>
         <WeeklyChart weeks={data.weeks} />
-        <Txt muted size={11}>
-          Bare dine egne økter teller.
-        </Txt>
+        <Txt muted size={11}>{uiText("Bare dine egne økter teller.")}</Txt>
       </View>
       <View style={card}>
         <View style={styles.row}>
-          <Txt size={18} weight="700">
-            Uker på rad
-          </Txt>
+          <Txt size={18} weight="700">{uiText("Uker på rad")}</Txt>
           <Txt muted size={12}>
-            {now.toLocaleDateString("nb-NO", { month: "long" })}
+            {now.toLocaleDateString(displayLocale(), { month: "long" })}
           </Txt>
         </View>
         <View style={{ flexDirection: "row", gap: 20, alignItems: "center" }}>
@@ -153,7 +148,7 @@ export function TrainingProgress({
             </Txt>
           </View>
           <View
-            accessibilityLabel={`${data.month.filter((d) => d.active).length} aktive dager denne måneden`}
+            accessibilityLabel={uiText("{0} aktive dager denne måneden", data.month.filter((d) => d.active).length)}
             style={{ flex: 1, flexDirection: "row", flexWrap: "wrap", gap: 0 }}
           >
             {Array.from({ length: data.monthOffset }, (_, i) => (
@@ -173,7 +168,7 @@ export function TrainingProgress({
                 }}
               >
                 <View
-                  accessibilityLabel={`${d.day}.: ${d.active ? "økt" : d.today ? "i dag" : "ingen økt"}`}
+                  accessibilityLabel={`${d.day}.: ${d.active ? uiText("økt") : d.today ? uiText("i dag") : uiText("ingen økt")}`}
                   style={{
                     width: 15,
                     height: 15,
@@ -188,29 +183,23 @@ export function TrainingProgress({
             ))}
           </View>
         </View>
-        <Txt muted size={12}>
-          Minst én økt per uke. Du har ut denne uken på å fortsette rekken.
-        </Txt>
+        <Txt muted size={12}>{uiText("Minst én økt per uke. Du har ut denne uken på å fortsette rekken.")}</Txt>
       </View>
       <View style={card}>
         <View style={styles.row}>
-          <Txt size={18} weight="700">
-            Ukemålet ditt
-          </Txt>
+          <Txt size={18} weight="700">{uiText("Ukemålet ditt")}</Txt>
           {owner && (
             <Pressable
               accessibilityRole="button"
               onPress={() => router.push("/training-goal")}
               style={{ minHeight: 44, justifyContent: "center" }}
             >
-              <Txt weight="600" size={13} style={{ color: c.accent }}>
-                Endre mål
-              </Txt>
+              <Txt weight="600" size={13} style={{ color: c.accent }}>{uiText("Endre mål")}</Txt>
             </Pressable>
           )}
         </View>
         <Txt size={24} weight="700">
-          {progress.value.toLocaleString("nb-NO", { maximumFractionDigits: 1 })}{" "}
+          {progress.value.toLocaleString(displayLocale(), { maximumFractionDigits: 1 })}{" "}
           <Txt muted size={15}>
             / {goal.target} {goalUnit(goal)}
           </Txt>
@@ -221,25 +210,21 @@ export function TrainingProgress({
           background={c.raised}
         />
         <Txt muted size={13}>
-          {goal.sport} ·{" "}
+          {uiText(goal.sport)} ·{" "}
           {progress.remaining === 0
-            ? "Målet er nådd!"
-            : `${progress.remaining.toLocaleString("nb-NO", { maximumFractionDigits: 1 })} ${goalUnit(goal)} igjen`}
+            ? uiText("Målet er nådd!")
+            : uiText("{0} {1} igjen", progress.remaining.toLocaleString("nb-NO", { maximumFractionDigits: 1 }), goalUnit(goal))}
         </Txt>
       </View>
       {!!records.longest && (
         <View style={card}>
-          <Txt size={18} weight="700">
-            Dine milepæler
-          </Txt>
-          <Txt>Lengste tur: {km(records.longest.distance)} km</Txt>
-          <Txt muted size={14}>
-            Mest aktive uke: {records.bestWeek} økter
-          </Txt>
+          <Txt size={18} weight="700">{uiText("Dine milepæler")}</Txt>
+          <Txt>{uiText("Lengste tur:") + " "}{km(records.longest.distance)} km</Txt>
+          <Txt muted size={14}>{uiText("Mest aktive uke:") + " "}{records.bestWeek}{" " + uiText("økter")}</Txt>
         </View>
       )}
       {!workouts.length && (
-        <Button title="Start en økt" onPress={() => router.push("/track")} />
+        <Button title={uiText("Start en økt")} onPress={() => router.push("/track")} />
       )}
     </View>
   );
@@ -264,7 +249,7 @@ function WeeklyChart({
       height={170}
       viewBox="0 0 320 168"
       accessibilityRole="image"
-      accessibilityLabel={`Distanse de siste 12 ukene: ${weeks.map((w) => `${w.date.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}: ${km(w.distance)} km`).join("; ")}`}
+      accessibilityLabel={uiText("Distanse de siste 12 ukene: {0}", weeks.map((w) => `${w.date.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}: ${km(w.distance)} km`).join("; "))}
     >
       {[0, max / 2, max].map((tick) => (
         <ViewlessTick
@@ -302,7 +287,7 @@ function WeeklyChart({
           fill={c.muted}
           fontSize={10}
         >
-          {weeks[i].date.toLocaleDateString("nb-NO", {
+          {weeks[i].date.toLocaleDateString(displayLocale(), {
             day: "numeric",
             month: "short",
           })}

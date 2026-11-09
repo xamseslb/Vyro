@@ -1,3 +1,4 @@
+import { setDisplayLanguage } from "../src/i18n/language";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   enablePush,
@@ -113,4 +114,17 @@ test("notification navigation only accepts the current account and known screen"
   expect(
     isOwnNotification({ screen: "notifications", recipientId: "owner" }),
   ).toBe(false);
+});
+
+test("changing language refreshes an opted-in installation without asking for permission", async () => {
+  try {
+    setDisplayLanguage("en");
+    await enablePush("owner");
+    setDisplayLanguage("nb");
+    await enablePush("owner", false);
+    expect(mockRpc.mock.calls.map(([, params]) => params.p_language)).toEqual(["en", "nb"]);
+    expect(mockRequest).not.toHaveBeenCalled();
+  } finally {
+    setDisplayLanguage("nb");
+  }
 });

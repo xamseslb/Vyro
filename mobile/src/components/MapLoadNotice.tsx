@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { Txt } from "./ui";
@@ -46,8 +47,8 @@ export function MapLoadNotice({
       <View accessible accessibilityRole="alert" style={{ gap: 4 }}>
         <Txt weight="700" size={14} style={{ color: "#11182C" }}>
           {imagery
-            ? "Satellittkartet kunne ikke lastes"
-            : "Kartet kunne ikke lastes"}
+            ? uiText("Satellittkartet kunne ikke lastes")
+            : uiText("Kartet kunne ikke lastes")}
         </Txt>
         <Txt size={13} style={{ color: "#53617B" }}>
           {message}
@@ -55,7 +56,7 @@ export function MapLoadNotice({
       </View>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Prøv kartet på nytt"
+        accessibilityLabel={uiText("Prøv kartet på nytt")}
         accessibilityState={{ disabled: waiting }}
         disabled={waiting}
         onPress={onRetry}
@@ -66,7 +67,7 @@ export function MapLoadNotice({
         }}
       >
         <Txt size={14} weight="700" style={{ color: "#356618" }}>
-          {waiting ? "Vent litt …" : "Prøv kartet på nytt"}
+          {waiting ? uiText("Vent litt …") : uiText("Prøv kartet på nytt")}
         </Txt>
       </Pressable>
     </View>

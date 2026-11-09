@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import type { RoutePoint } from "../tracking/gps";
 export const routeSports = ["Løping", "Gange", "Fottur"] as const;
 export type RouteSport = (typeof routeSports)[number];
@@ -89,5 +90,5 @@ export function routeMessage(error: unknown) {
     return messages.ROUTES_NOT_CONFIGURED;
   if (e?.message?.includes("ROUTE_LIBRARY_FULL"))
     return messages.ROUTE_LIBRARY_FULL;
-  return "Kunne ikke hente eller lagre løypa. Kontroller forbindelsen og prøv igjen.";
+  return uiText("Kunne ikke hente eller lagre løypa. Kontroller forbindelsen og prøv igjen.");
 }

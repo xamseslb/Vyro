@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { View } from "react-native";
 import type { AppleSignInButtonProps } from "./AppleSignInButton";
@@ -16,7 +17,7 @@ export function AppleSignInButton({
         buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
         cornerRadius={12}
         style={{ width: "100%", height: 54 }}
-        accessibilityLabel="Fortsett med Apple"
+        accessibilityLabel={uiText("Fortsett med Apple")}
         accessibilityState={{ disabled }}
         onPress={() => {
           if (!disabled) onPress();

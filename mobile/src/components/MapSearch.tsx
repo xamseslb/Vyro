@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect, useRef, useState, type ComponentRef } from "react";
 import {
   ActivityIndicator,
@@ -69,10 +70,10 @@ export function MapSearch({
       if (controller.signal.aborted) return;
       setResults(places);
       if (!places.length)
-        setError("Ingen steder funnet. Prøv med gatenavn og sted.");
+        setError(uiText("Ingen steder funnet. Prøv med gatenavn og sted."));
     } catch (e) {
       if (!controller.signal.aborted)
-        setError(e instanceof Error ? e.message : "Søket feilet. Prøv igjen.");
+        setError(e instanceof Error ? e.message : uiText("Søket feilet. Prøv igjen."));
     } finally {
       if (!controller.signal.aborted) {
         request.current = null;
@@ -91,8 +92,8 @@ export function MapSearch({
         )}
         <TextInput
           ref={input}
-          accessibilityLabel="Søk etter sted"
-          placeholder="Søk etter sted"
+          accessibilityLabel={uiText("Søk etter sted")}
+          placeholder={uiText("Søk etter sted")}
           placeholderTextColor={palettes.light.muted}
           value={query}
           onFocus={() => {
@@ -115,7 +116,7 @@ export function MapSearch({
           <>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Søk"
+              accessibilityLabel={uiText("Søk")}
               accessibilityState={{
                 disabled: searching || !query.trim(),
                 busy: searching,
@@ -136,24 +137,22 @@ export function MapSearch({
             </Pressable>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Avbryt søk"
+              accessibilityLabel={uiText("Avbryt søk")}
               onPress={close}
               style={s.action}
             >
-              <Text style={s.actionText}>Avbryt</Text>
+              <Text style={s.actionText}>{uiText("Avbryt")}</Text>
             </Pressable>
           </>
         ) : (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Vis lagrede ruter"
+            accessibilityLabel={uiText("Vis lagrede ruter")}
             accessibilityState={{ selected: savedOnly }}
             onPress={onToggleSaved}
             style={s.action}
           >
-            <Text style={[s.actionText, savedOnly && { color: brand.route }]}>
-              ☆ Lagret
-            </Text>
+            <Text style={[s.actionText, savedOnly && { color: brand.route }]}>{uiText("☆ Lagret")}</Text>
           </Pressable>
         )}
       </View>
@@ -163,14 +162,14 @@ export function MapSearch({
           contentContainerStyle={{ paddingHorizontal: 16 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
-          accessibilityLabel="Stedssøkresultater"
+          accessibilityLabel={uiText("Stedssøkresultater")}
         >
           {results.length ? (
             results.map((place) => (
               <Pressable
                 key={place.id}
                 accessibilityRole="button"
-                accessibilityLabel={`Vis ${place.name} på kartet`}
+                accessibilityLabel={uiText("Vis {0} på kartet", place.name)}
                 onPress={() => {
                   setQuery(place.name);
                   close();
@@ -186,8 +185,8 @@ export function MapSearch({
           ) : (
             <Text accessibilityLiveRegion="polite" style={[s.text, s.hint]}>
               {searching
-                ? "Søker …"
-                : error || "Skriv en adresse eller et sted, og trykk Søk."}
+                ? uiText("Søker …")
+                : error || uiText("Skriv en adresse eller et sted, og trykk Søk.")}
             </Text>
           )}
         </ScrollView>

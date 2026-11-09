@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { useState } from "react";
 import { View, TextInput, Pressable } from "react-native";
 import { ActivityPost, people } from "../features/social/demo";
@@ -26,11 +27,11 @@ export function SocialPost({ post }: { post: ActivityPost }) {
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
           <Txt weight="700">
-            {person?.name ?? "Du"}
-            {w.source === "example" ? " · eksempelprofil" : ""}
+            {person?.name ?? uiText("Du")}
+            {w.source === "example" ? uiText(" · eksempelprofil") : ""}
           </Txt>
           <Txt size={12} muted>
-            {new Date(w.date).toLocaleDateString("nb-NO")} · {w.sport}
+            {new Date(w.date).toLocaleDateString(displayLocale())} · {uiText(w.sport ?? "")}
           </Txt>
         </View>
         {person && (
@@ -40,7 +41,7 @@ export function SocialPost({ post }: { post: ActivityPost }) {
             style={{ minHeight: 44, justifyContent: "center" }}
           >
             <Txt size={13} style={{ color: c.accent }}>
-              {s.following.includes(person.id) ? "Følger" : "Følg"}
+              {s.following.includes(person.id) ? uiText("Følger") : uiText("Følg")}
             </Txt>
           </Pressable>
         )}
@@ -67,8 +68,8 @@ export function SocialPost({ post }: { post: ActivityPost }) {
       <WorkoutMap height={220} points={w.route ?? []} />
       <Txt size={11} muted>
         {w.source === "example"
-          ? "Eksempeløkt og illustrert løype på ekte kart"
-          : "GPS-rute · lokal forhåndsvisning"}
+          ? uiText("Eksempeløkt og illustrert løype på ekte kart")
+          : uiText("GPS-rute · lokal forhåndsvisning")}
       </Txt>
       <PostActions
         liked={s.likes.includes(post.id)}
@@ -81,9 +82,7 @@ export function SocialPost({ post }: { post: ActivityPost }) {
         onComment={() => setExpanded(!expanded)}
       />
       {s.reposts.includes(post.id) && (
-        <Txt muted size={12}>
-          Delt på nytt i lokal forhåndsvisning · original forfatter beholdes
-        </Txt>
+        <Txt muted size={12}>{uiText("Delt på nytt i lokal forhåndsvisning · original forfatter beholdes")}</Txt>
       )}
       {expanded && (
         <View style={{ gap: 12 }}>
@@ -95,22 +94,20 @@ export function SocialPost({ post }: { post: ActivityPost }) {
               </Txt>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Slett kommentaren"
+                accessibilityLabel={uiText("Slett kommentaren")}
                 onPress={() => s.removeComment(comment.id)}
                 style={{ minHeight: 44, justifyContent: "center" }}
               >
-                <Txt size={12} muted>
-                  Slett
-                </Txt>
+                <Txt size={12} muted>{uiText("Slett")}</Txt>
               </Pressable>
             </View>
           ))}
           <TextInput
-            accessibilityLabel="Skriv kommentar"
+            accessibilityLabel={uiText("Skriv kommentar")}
             value={text}
             onChangeText={setText}
             maxLength={500}
-            placeholder="Skriv en kommentar"
+            placeholder={uiText("Skriv en kommentar")}
             placeholderTextColor={c.muted}
             style={{
               padding: 12,
@@ -121,7 +118,7 @@ export function SocialPost({ post }: { post: ActivityPost }) {
             }}
           />
           <Button
-            title="Legg til kommentar"
+            title={uiText("Legg til kommentar")}
             disabled={!text.trim()}
             onPress={() => {
               if (s.comment(post.id, text)) setText("");
@@ -131,7 +128,7 @@ export function SocialPost({ post }: { post: ActivityPost }) {
       )}
       {post.authorId === "me" && (
         <Button
-          title="Trekk tilbake deling"
+          title={uiText("Trekk tilbake deling")}
           secondary
           onPress={() => s.unshare(post.id)}
         />

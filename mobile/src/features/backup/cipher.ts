@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import {
   AESEncryptionKey,
   AESSealedData,
@@ -9,7 +10,7 @@ import {
 export function normalizeRecoveryCode(code: string) {
   const key = code.replace(/[\s-]/g, "").toLowerCase();
   if (!/^[a-f0-9]{64}$/.test(key))
-    throw new Error("Skriv inn hele gjenopprettingskoden (64 tegn).");
+    throw new Error(uiText("Skriv inn hele gjenopprettingskoden (64 tegn)."));
   return key;
 }
 export async function newRecoveryCode() {
@@ -42,7 +43,7 @@ export async function openBackup(
   keyId: string,
 ) {
   if (typeof ciphertext !== "string" || ciphertext.length > 3_500_000)
-    throw new Error("Ugyldig sikkerhetskopi.");
+    throw new Error(uiText("Ugyldig sikkerhetskopi."));
   const plain = await aesDecryptAsync(
     AESSealedData.fromCombined(ciphertext),
     await AESEncryptionKey.import(normalizeRecoveryCode(code), "hex"),

@@ -1,13 +1,14 @@
+import { message as uiText } from "../../i18n/language";
 import { ChoiceRow, Page, SettingsGroup } from "../../components/SettingsUi";
 import { useAppStore } from "../../stores/useAppStore";
 export default function AppearanceSettings() {
   const theme = useAppStore((s) => s.theme);
   const preferences = useAppStore((s) => s.preferences);
   return (
-    <Page title="Utseende">
+    <Page title={uiText("Utseende")}>
       <SettingsGroup
-        title="Velg utseende"
-        note="Valget lagres på denne enheten og gjelder hele appen. Kartet har egne farger for god lesbarhet."
+        title={uiText("Velg utseende")}
+        note={uiText("Valget lagres på denne enheten og gjelder hele appen. Kartet har egne farger for god lesbarhet.")}
       >
         {(
           [
@@ -22,8 +23,8 @@ export default function AppearanceSettings() {
         ).map(([value, title, description]) => (
           <ChoiceRow
             key={value}
-            title={title}
-            description={description}
+            title={uiText(title)}
+            description={uiText(description)}
             selected={theme === value}
             onPress={() => preferences({ theme: value })}
           />

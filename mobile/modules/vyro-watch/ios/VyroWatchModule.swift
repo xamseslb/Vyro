@@ -21,6 +21,7 @@ public final class VyroWatchModule: Module {
       }
     }
     OnDestroy { DispatchQueue.main.async { WatchBridge.shared.changed = nil } }
+    AsyncFunction("setLanguage") { (language: String) in try WatchBridge.shared.setLanguage(language) }.runOnQueue(.main)
     AsyncFunction("setOwner") { (owner: String) in try WatchBridge.shared.setOwner(owner) }.runOnQueue(.main)
     AsyncFunction("status") { WatchBridge.shared.status() }.runOnQueue(.main)
     AsyncFunction("pending") { (owner: String) in try WatchBridge.shared.pending(owner) }
@@ -66,6 +67,11 @@ private final class WatchBridge: NSObject, WCSessionDelegate {
   private func file(id: String, owner: String) throws -> URL {
     try directory().appendingPathComponent("\(identifier(owner))-\(identifier(id)).json")
   }
+  func setLanguage(_ language: String) throws {
+    guard ["en", "nb"].contains(language), WCSession.isSupported() else { return }
+    UserDefaults.standard.set(language, forKey: "vyro.language")
+    if WCSession.default.applicationContext["language"] as? String != language { try publishOwner() }
+  }
   func setOwner(_ owner: String) throws {
     guard WCSession.isSupported() else { return }
     if !owner.isEmpty { _ = try identifier(owner) }
@@ -79,6 +85,7 @@ private final class WatchBridge: NSObject, WCSessionDelegate {
   private func publishOwner() throws {
     guard WCSession.isSupported(), WCSession.default.activationState == .activated else { return }
     try WCSession.default.updateApplicationContext([
+      "language": UserDefaults.standard.string(forKey: "vyro.language") ?? "",
       "version": 1, "ownerId": UserDefaults.standard.string(forKey: ownerKey) ?? ""
     ])
   }

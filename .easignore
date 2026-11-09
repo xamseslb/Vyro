@@ -34,3 +34,4 @@ supabase/.temp/
 # Keep presentation material in the repository; it is not needed by EAS.
 /docs/
 /.github/
+/support-site/

@@ -25,7 +25,7 @@ jest.mock("react-native-maps", () => {
   return {
     __esModule: true,
     PROVIDER_DEFAULT: undefined,
-    default: React.forwardRef((props: MapViewProps, ref: unknown) => {
+    default: React.forwardRef(function MockMapView(props: MapViewProps, ref: unknown) {
       mockProps = props;
       React.useLayoutEffect(() => {
         mockNativeModeChange?.();

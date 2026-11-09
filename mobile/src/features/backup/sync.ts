@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { AppState } from "react-native";
 import { create } from "zustand";
 import { supabase } from "../../lib/supabase";
@@ -32,9 +33,9 @@ export function cancelBackup() {
 function explain(error: unknown) {
   const e = error as { code?: string; message?: string };
   if (["42P01", "PGRST205"].includes(e?.code ?? ""))
-    return "Sikkerhetskopiering er ikke aktivert på serveren ennå. Øktene er beholdt på enheten.";
+    return uiText("Sikkerhetskopiering er ikke aktivert på serveren ennå. Øktene er beholdt på enheten.");
   if (e?.code === "P0001")
-    return "Mange økter er sendt. Synkroniseringen fortsetter automatisk om litt.";
+    return uiText("Mange økter er sendt. Synkroniseringen fortsetter automatisk om litt.");
   return error instanceof Error && !/fetch|network|abort/i.test(error.message)
     ? error.message
     : "Kunne ikke synkronisere. Øktene er beholdt på enheten; prøver igjen når appen er åpen.";
@@ -65,7 +66,7 @@ export function syncBackup(owner: string): Promise<void> {
       }) => {
         if (row.key_id !== key.keyId)
           throw new Error(
-            "Sikkerhetskopien bruker en annen gjenopprettingskode.",
+            uiText("Sikkerhetskopien bruker en annen gjenopprettingskode."),
           );
         const payload: unknown = JSON.parse(
           await openBackup(
@@ -78,7 +79,7 @@ export function syncBackup(owner: string): Promise<void> {
         );
         if (!validBackup(payload, owner, row.local_id))
           throw new Error(
-            "Sikkerhetskopien kunne ikke verifiseres. Lokale økter er beholdt.",
+            uiText("Sikkerhetskopien kunne ikke verifiseres. Lokale økter er beholdt."),
           );
         return backupPayload(payload, owner);
       };
@@ -116,7 +117,7 @@ export function syncBackup(owner: string): Promise<void> {
         if (read.error) throw read.error;
         if (!sameBackup(await decrypt(read.data), payload))
           throw new Error(
-            "Kopiene av denne økten er ulike. Begge er beholdt; ingen data er overskrevet.",
+            uiText("Kopiene av denne økten er ulike. Begge er beholdt; ingen data er overskrevet."),
           );
         return current();
       };
@@ -134,7 +135,7 @@ export function syncBackup(owner: string): Promise<void> {
       for (const row of legacy.data ?? []) {
         if (!validBackup(row.payload, owner, row.local_id))
           throw new Error(
-            "En eldre sikkerhetskopi kunne ikke leses. Den er beholdt.",
+            uiText("En eldre sikkerhetskopi kunne ikke leses. Den er beholdt."),
           );
         if (!(await upload(backupPayload(row.payload, owner)))) return;
         const removed = await client

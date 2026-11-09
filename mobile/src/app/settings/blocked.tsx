@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { personName } from "../../features/social/display";
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
@@ -47,16 +48,16 @@ function BlockedList({ owner }: { owner: string }) {
     }, [load]),
   );
   return (
-    <Page title="Blokkerte brukere" plain>
-      <PageNote>Oppheving gjenoppretter ikke tidligere følgeforhold.</PageNote>
+    <Page title={uiText("Blokkerte brukere")} plain>
+      <PageNote>{uiText("Oppheving gjenoppretter ikke tidligere følgeforhold.")}</PageNote>
       <View style={{ padding: 22, gap: 18 }}>
-        {busy && <Txt muted>Henter …</Txt>}
-        {!busy && !error && !rows.length && <Txt>Ingen blokkerte brukere.</Txt>}
+        {busy && <Txt muted>{uiText("Henter …")}</Txt>}
+        {!busy && !error && !rows.length && <Txt>{uiText("Ingen blokkerte brukere.")}</Txt>}
         {rows.map((p) => (
           <View key={p.id} style={{ gap: 8 }}>
             <Txt weight="700">{personName(p.display_name)}</Txt>
             <Button
-              title="Opphev blokkering"
+              title={uiText("Opphev blokkering")}
               secondary
               disabled={busy}
               onPress={async () => {
@@ -86,7 +87,7 @@ function BlockedList({ owner }: { owner: string }) {
           <>
             <Txt>{error}</Txt>
             <Button
-              title="Prøv igjen"
+              title={uiText("Prøv igjen")}
               secondary
               onPress={() => {
                 void load();

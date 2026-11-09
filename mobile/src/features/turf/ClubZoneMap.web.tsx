@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { personName } from "../social/display";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -187,7 +188,7 @@ export default function ClubZoneMap({
           ? createPortal(
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={`Se sonen ${shape.turf.name}`}
+                accessibilityLabel={uiText("Se sonen {0}", shape.turf.name)}
                 onPress={() => onSelect(shape.turf.id)}
               >
                 <ZonePin
@@ -214,10 +215,7 @@ export default function ClubZoneMap({
             borderRadius: 16,
           }}
         >
-          <Txt>
-            Kartet er ikke tilgjengelig nå. Du kan fortsatt se rangeringen under
-            Resultater.
-          </Txt>
+          <Txt>{uiText("Kartet er ikke tilgjengelig nå. Du kan fortsatt se rangeringen under Resultater.")}</Txt>
         </View>
       )}
     </View>

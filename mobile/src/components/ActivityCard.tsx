@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { Pressable, View } from "react-native";
 import { router } from "expo-router";
 import { Workout } from "../features/activities/model";
@@ -9,7 +10,7 @@ export function ActivityCard({ workout }: { workout: Workout }) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Åpne ${workout.title}`}
+      accessibilityLabel={uiText("Åpne {0}", workout.title)}
       onPress={() =>
         router.push({ pathname: "/activity/[id]", params: { id: workout.id } })
       }
@@ -43,8 +44,8 @@ export function ActivityCard({ workout }: { workout: Workout }) {
             <View style={{ flex: 1 }}>
               <Txt weight="600">{workout.title}</Txt>
               <Txt size={12} muted>
-                {workout.sport} ·{" "}
-                {new Date(workout.date).toLocaleDateString("nb-NO", {
+                {uiText(workout.sport)} ·{" "}
+                {new Date(workout.date).toLocaleDateString(displayLocale(), {
                   day: "numeric",
                   month: "short",
                 })}
@@ -64,12 +65,10 @@ export function ActivityCard({ workout }: { workout: Workout }) {
           {workout.source === "example"
             ? "EKSEMPELDATA"
             : workout.source === "gps"
-              ? "GPS-ØKT"
+              ? uiText("GPS-ØKT")
               : workout.source === "timer"
                 ? "TIDTAKING"
-                : "SIMULERT ØKT"}{" "}
-          · PRIVAT
-        </Txt>
+                : uiText("SIMULERT ØKT")}{" "}{uiText("· PRIVAT")}</Txt>
       </Card>
     </Pressable>
   );

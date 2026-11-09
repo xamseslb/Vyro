@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import * as Location from "expo-location";
 import { create } from "zustand";
 import type { GpsFix } from "../features/tracking/gps";
@@ -40,7 +41,7 @@ export const useLocationStore = create<State>()((set, get) => ({
       return permission;
     } catch {
       if (revision === permissionRevision)
-        set({ error: "Posisjon er ikke tilgjengelig på denne enheten." });
+        set({ error: uiText("Posisjon er ikke tilgjengelig på denne enheten.") });
       return get().permission;
     }
   },

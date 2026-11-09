@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { View } from "react-native";
 import { Txt } from "./ui";
 import { palettes } from "../theme/tokens";
@@ -20,9 +21,7 @@ export default function MapUnavailable({
         gap: 8,
       }}
     >
-      <Txt weight="600" style={{ color: palettes.light.text }}>
-        Kart utilgjengelig
-      </Txt>
+      <Txt weight="600" style={{ color: palettes.light.text }}>{uiText("Kart utilgjengelig")}</Txt>
       <Txt style={{ textAlign: "center", color: palettes.light.muted }}>
         {message}
       </Txt>

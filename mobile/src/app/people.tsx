@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useLocalSearchParams } from "expo-router";
 import { AccountGate } from "../components/AccountGate";
 import { PeopleSearch } from "../components/PeopleSearch";
@@ -10,10 +11,8 @@ export default function People() {
   return (
     <AccountGate>
       {id && (
-        <Page title="Finn venner" fallback="/profile" plain>
-          <PageNote>
-            Søk etter personer og følg dem for å se turene og stedene de deler.
-          </PageNote>
+        <Page title={uiText("Finn venner")} fallback="/profile" plain>
+          <PageNote>{uiText("Søk etter personer og følg dem for å se turene og stedene de deler.")}</PageNote>
           <View style={{ paddingHorizontal: 22 }}>
             <PeopleSearch
               key={`${id}:${query}`}

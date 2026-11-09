@@ -1,3 +1,5 @@
+import { message as uiText } from "../i18n/language";
+import { LanguagePicker } from "../components/LanguagePicker";
 import { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { Stack } from "expo-router";
@@ -27,6 +29,7 @@ import { UsernameGate } from "../components/UsernameGate";
 export { RouteError as ErrorBoundary } from "../components/RouteError";
 
 export default function RootLayout() {
+  const language = useAppStore((s) => s.language);
   const ready = useAppStore((s) => s.ready);
   const storageError = useAppStore((s) => s.storageError);
   const [retrying, setRetrying] = useState(false);
@@ -64,7 +67,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <LocationWatcher />
         <WorkoutAwake />
-        {ready && <NotificationObserver/>}
+        {ready && language && <NotificationObserver language={language}/>}
         <StatusBar style={c.bg === "#0B1120" ? "light" : "dark"} />
         {!ready ? (
           <View
@@ -78,15 +81,10 @@ export default function RootLayout() {
           >
             {storageError ? (
               <>
-                <Txt size={24} weight="700">
-                  Kunne ikke åpne treningsloggen
-                </Txt>
-                <Txt>
-                  De lagrede dataene er beholdt. Prøv igjen når enheten er låst
-                  opp og har ledig lagringsplass.
-                </Txt>
+                <Txt size={24} weight="700">{uiText("Kunne ikke åpne treningsloggen")}</Txt>
+                <Txt>{uiText("De lagrede dataene er beholdt. Prøv igjen når enheten er låst opp og har ledig lagringsplass.")}</Txt>
                 <Button
-                  title={retrying ? "Prøver igjen …" : "Prøv igjen"}
+                  title={retrying ? uiText("Prøver igjen …") : uiText("Prøv igjen")}
                   disabled={retrying}
                   onPress={async () => {
                     setRetrying(true);
@@ -101,10 +99,12 @@ export default function RootLayout() {
             ) : (
               <ActivityIndicator
                 color={c.accent}
-                accessibilityLabel="Laster VYRO"
+                accessibilityLabel={uiText("Laster VYRO")}
               />
             )}
           </View>
+        ) : !language ? (
+          <LanguagePicker />
         ) : (
           <Stack
             screenOptions={{
@@ -124,7 +124,7 @@ export default function RootLayout() {
           </Stack>
         )}
         <LaunchSignature ready={ready} idle={idle} />
-        {ready && <UsernameGate />}
+        {ready && language && <UsernameGate />}
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
@@ -34,9 +35,9 @@ export default function Activity() {
   if (!w)
     return (
       <Screen>
-        <Txt size={24}>Økten finnes ikke.</Txt>
+        <Txt size={24}>{uiText("Økten finnes ikke.")}</Txt>
         <Button
-          title="Til historikken"
+          title={uiText("Til historikken")}
           onPress={() => router.replace("/(tabs)/profile")}
         />
       </Screen>
@@ -51,13 +52,13 @@ export default function Activity() {
   };
   return (
     <Page
-      title={saved === "1" ? "Økten er lagret" : "Øktdetaljer"}
+      title={saved === "1" ? uiText("Økten er lagret") : uiText("Øktdetaljer")}
       plain
       onBack={back}
       footer={
         recorded && (
           <>
-            <Button title="Lag innlegg" icon="share" onPress={openComposer} />
+            <Button title={uiText("Lag innlegg")} icon="share" onPress={openComposer} />
             <Pressable
               accessibilityRole="button"
               onPress={() => router.replace("/(tabs)/profile")}
@@ -68,7 +69,7 @@ export default function Activity() {
               }}
             >
               <Txt weight="600">
-                {saved === "1" ? "Behold privat" : "Til treningsloggen"}
+                {saved === "1" ? uiText("Behold privat") : uiText("Til treningsloggen")}
               </Txt>
             </Pressable>
           </>
@@ -94,7 +95,7 @@ export default function Activity() {
         </View>
         {!!w.splits?.length && (
           <View style={{ gap: 14 }}>
-            <Txt weight="700">Kilometertider</Txt>
+            <Txt weight="700">{uiText("Kilometertider")}</Txt>
             {w.splits.map((split) => (
               <View key={split.kilometer} style={styles.row}>
                 <Txt>Km {split.kilometer}</Txt>
@@ -116,24 +117,21 @@ export default function Activity() {
               style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
             >
               <Icon name="lock" size={16} color={c.muted} />
-              <Txt weight="600">Dine notater</Txt>
+              <Txt weight="600">{uiText("Dine notater")}</Txt>
             </View>
             {!!w.notes && <Txt>{w.notes}</Txt>}
             {w.effort !== undefined && (
               <Txt muted size={14}>
-                Anstrengelse: {w.effort} av 10
-              </Txt>
+                Anstrengelse: {w.effort}{" " + uiText("av 10")}</Txt>
             )}
-            <Txt muted size={12}>
-              Bare du ser dette, også når du deler økten.
-            </Txt>
+            <Txt muted size={12}>{uiText("Bare du ser dette, også når du deler økten.")}</Txt>
           </View>
         )}
         {recorded && (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Del med følgerne dine"
-            accessibilityHint="Åpner forhåndsvisning før du publiserer."
+            accessibilityLabel={uiText("Del med følgerne dine")}
+            accessibilityHint={uiText("Åpner forhåndsvisning før du publiserer.")}
             onPress={openComposer}
             style={({ pressed }) => ({
               backgroundColor: pressed ? c.raised : c.surface,
@@ -156,12 +154,8 @@ export default function Activity() {
               <Icon name="people" color={c.accent} />
             </View>
             <View style={{ flex: 1, gap: 5 }}>
-              <Txt size={17} weight="700">
-                Del med følgerne dine
-              </Txt>
-              <Txt size={14} muted>
-                Lag et innlegg av økten. Du ser over det før du deler.
-              </Txt>
+              <Txt size={17} weight="700">{uiText("Del med følgerne dine")}</Txt>
+              <Txt size={14} muted>{uiText("Lag et innlegg av økten. Du ser over det før du deler.")}</Txt>
             </View>
             <Icon name="chevronRight" size={20} color={c.accent} />
           </Pressable>
@@ -178,9 +172,7 @@ export default function Activity() {
             paddingTop: 10,
           }}
         >
-          <Txt weight="600" muted>
-            Flere valg
-          </Txt>
+          <Txt weight="600" muted>{uiText("Flere valg")}</Txt>
           <Icon
             name={more ? "chevronUp" : "chevronDown"}
             color={c.muted}
@@ -192,7 +184,7 @@ export default function Activity() {
             {w.source === "gps" && !!w.route && w.route.length > 1 && (
               <>
                 <Button
-                  title="Gjenta denne ruten"
+                  title={uiText("Gjenta denne ruten")}
                   icon="map"
                   secondary
                   onPress={() => {
@@ -202,16 +194,14 @@ export default function Activity() {
                   }}
                 />
                 {repeatError && (
-                  <Txt muted>
-                    Fullfør den pågående økten før du velger en ny rute.
-                  </Txt>
+                  <Txt muted>{uiText("Fullfør den pågående økten før du velger en ny rute.")}</Txt>
                 )}
               </>
             )}
             <ExportWorkout key={w.id} workout={w} />
             {w.source === "gps" && w.sport === "Løping" && (
               <Button
-                title={w.turfId ? "Send soneforsøk" : "Legg ut som sone"}
+                title={w.turfId ? uiText("Send soneforsøk") : uiText("Legg ut som sone")}
                 icon="trophy"
                 secondary
                 onPress={() =>
@@ -226,13 +216,10 @@ export default function Activity() {
               />
             )}
             {confirm && (
-              <Txt muted size={13}>
-                Økten fjernes fra denne enheten. Eventuell sikkerhetskopi og
-                delte innlegg beholdes. Du kan trekke tilbake innlegg fra Hjem.
-              </Txt>
+              <Txt muted size={13}>{uiText("Økten fjernes fra denne enheten. Eventuell sikkerhetskopi og delte innlegg beholdes. Du kan trekke tilbake innlegg fra Hjem.")}</Txt>
             )}
             <Button
-              title={confirm ? "Bekreft sletting" : "Slett fra denne enheten"}
+              title={confirm ? uiText("Bekreft sletting") : uiText("Slett fra denne enheten")}
               secondary={!confirm}
               danger={confirm}
               onPress={() => {
@@ -245,7 +232,7 @@ export default function Activity() {
             />
             {confirm && (
               <Button
-                title="Avbryt sletting"
+                title={uiText("Avbryt sletting")}
                 secondary
                 onPress={() => setConfirm(false)}
               />

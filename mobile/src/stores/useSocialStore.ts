@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { workoutStorage } from "../lib/workoutStorage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -135,7 +136,7 @@ export const useSocialStore = create<State>()(
           } catch {
             if (!useSocialStore.getState().error)
               useSocialStore.setState({
-                error: "Kunne ikke lagre lokale sosiale valg.",
+                error: uiText("Kunne ikke lagre lokale sosiale valg."),
               });
           }
         },

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { personName } from "../social/display";
 import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
@@ -89,13 +90,13 @@ function TurfList({
   }
   return (
     <Page
-      title="Soner"
+      title={uiText("Soner")}
       fallback="/(tabs)/map"
       scroll={false}
       right={
         <IconButton
           name="refresh"
-          label="Oppdater soner"
+          label={uiText("Oppdater soner")}
           disabled={loading || more}
           onPress={() => setReload((n) => n + 1)}
         />
@@ -103,7 +104,7 @@ function TurfList({
     >
       <View style={{ padding: 16, gap: 16, backgroundColor: c.surface }}>
         <Button
-          title="Legg ut sone"
+          title={uiText("Legg ut sone")}
           icon="plus"
           onPress={() =>
             router.push({ pathname: "/turf", params: { mode: "new" } })
@@ -139,14 +140,14 @@ function TurfList({
           <View style={{ padding: 20, gap: 8 }}>
             <Txt muted size={14}>
               {scope === "all"
-                ? "Utforsk løypene andre har delt."
+                ? uiText("Utforsk løypene andre har delt.")
                 : scope === "mine"
-                  ? "Soner du har laget eller eier nå."
-                  : "Dine soner og soner fra løpere du følger."}
+                  ? uiText("Soner du har laget eller eier nå.")
+                  : uiText("Dine soner og soner fra løpere du følger.")}
             </Txt>
             {loading && (
               <ActivityIndicator
-                accessibilityLabel="Henter soner"
+                accessibilityLabel={uiText("Henter soner")}
                 color={c.accent}
               />
             )}
@@ -156,8 +157,8 @@ function TurfList({
           <SettingsRow
             title={t.name}
             icon="map"
-            label={`Se ${t.name}`}
-            description={`${t.owner_id === userId ? "Du eier sonen" : `${personName(t.profiles?.display_name)} eier sonen`} · ${km(t.distance_m / 1000)} km · ${duration(t.seconds)} å slå`}
+            label={uiText("Se {0}", t.name)}
+            description={uiText("{0} · {1} km · {2} å slå", t.owner_id === userId ? uiText("Du eier sonen") : uiText("{0} eier sonen", personName(t.profiles?.display_name)), km(t.distance_m / 1000), duration(t.seconds))}
             onPress={() =>
               router.push({ pathname: "/turf", params: { turfId: t.id } })
             }
@@ -167,15 +168,12 @@ function TurfList({
           !loading && !error ? (
             <View style={{ padding: 22, gap: 12 }}>
               <Txt size={22} weight="700">
-                {scope === "all" ? "Vær først ute" : "Her kommer sonene dine"}
+                {scope === "all" ? uiText("Vær først ute") : uiText("Her kommer sonene dine")}
               </Txt>
-              <Txt muted>
-                Legg ut en sone fra en lagret løpetur. Andre kan se løypa og
-                prøve å slå tiden din.
-              </Txt>
+              <Txt muted>{uiText("Legg ut en sone fra en lagret løpetur. Andre kan se løypa og prøve å slå tiden din.")}</Txt>
               {scope === "circle" && (
                 <Button
-                  title="Finn venner"
+                  title={uiText("Finn venner")}
                   secondary
                   onPress={() => router.push("/people")}
                 />
@@ -188,7 +186,7 @@ function TurfList({
             {!!error && <Txt accessibilityRole="alert">{error}</Txt>}
             {!!error && !page.next && (
               <Button
-                title="Prøv igjen"
+                title={uiText("Prøv igjen")}
                 secondary
                 disabled={loading}
                 onPress={() => setReload((n) => n + 1)}
@@ -198,10 +196,10 @@ function TurfList({
               <Button
                 title={
                   more
-                    ? "Henter flere …"
+                    ? uiText("Henter flere …")
                     : error
-                      ? "Prøv å hente flere igjen"
-                      : "Vis flere soner"
+                      ? uiText("Prøv å hente flere igjen")
+                      : uiText("Vis flere soner")
                 }
                 secondary
                 disabled={loading || more}

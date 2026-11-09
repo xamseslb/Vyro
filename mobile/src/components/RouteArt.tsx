@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import Svg, { Circle, Path, Rect, Text as SvgText } from "react-native-svg";
 import { useTheme } from "./ui";
 export function RouteArt({ height = 210 }: { height?: number }) {
@@ -8,7 +9,7 @@ export function RouteArt({ height = 210 }: { height?: number }) {
       height={height}
       viewBox="0 0 360 270"
       preserveAspectRatio="xMidYMid slice"
-      accessibilityLabel="Illustrert eksempelrute, ikke et navigasjonskart"
+      accessibilityLabel={uiText("Illustrert eksempelrute, ikke et navigasjonskart")}
     >
       <Rect width={360} height={270} fill={light ? "#E8EEE2" : "#172237"} />
       <Path

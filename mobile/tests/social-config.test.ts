@@ -8,7 +8,14 @@ jest.mock("../src/lib/supabase", () => ({ supabaseConfigured: true }));
 
 const originalGoogle = process.env.EXPO_PUBLIC_GOOGLE_AUTH_ENABLED;
 const originalApple = process.env.EXPO_PUBLIC_APPLE_AUTH_ENABLED;
+const originalIosApple = process.env.EXPO_PUBLIC_IOS_APPLE_AUTH_ENABLED;
+beforeEach(() => {
+  delete process.env.EXPO_PUBLIC_IOS_APPLE_AUTH_ENABLED;
+});
 afterEach(() => {
+  if (originalIosApple === undefined)
+    delete process.env.EXPO_PUBLIC_IOS_APPLE_AUTH_ENABLED;
+  else process.env.EXPO_PUBLIC_IOS_APPLE_AUTH_ENABLED = originalIosApple;
   if (originalGoogle === undefined)
     delete process.env.EXPO_PUBLIC_GOOGLE_AUTH_ENABLED;
   else process.env.EXPO_PUBLIC_GOOGLE_AUTH_ENABLED = originalGoogle;
@@ -47,6 +54,19 @@ test.each([
     });
   },
 );
+
+test.each([
+  ["ios", "standalone", true],
+  ["ios", "storeClient", false],
+  ["web", "standalone", false],
+])("native Apple setting on %s/%s", (os, environment, expected) => {
+  jest.resetModules();
+  require("react-native").Platform.OS = os;
+  require("expo-constants").default.executionEnvironment = environment;
+  process.env.EXPO_PUBLIC_APPLE_AUTH_ENABLED = "false";
+  process.env.EXPO_PUBLIC_IOS_APPLE_AUTH_ENABLED = "true";
+  expect(require("../src/features/auth/socialConfig").socialConfig.apple).toBe(expected);
+});
 
 test("Google remains available when Apple availability fails", () => {
   jest.resetModules();

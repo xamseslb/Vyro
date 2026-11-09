@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import LiveMap from "./LiveMap";
@@ -40,7 +41,7 @@ export default function FootballMap({
           <Pressable
             key={value}
             accessibilityRole="tab"
-            accessibilityLabel={label}
+            accessibilityLabel={uiText(label)}
             accessibilityState={{ selected: mode === value }}
             onPress={() => setMode(value)}
             style={{
@@ -53,7 +54,7 @@ export default function FootballMap({
             }}
           >
             <Txt weight="700" size={14}>
-              {label}
+              {uiText(label)}
             </Txt>
           </Pressable>
         ))}
@@ -67,9 +68,7 @@ export default function FootballMap({
             heatmap={mode === "heat" ? heatmap : null}
           />
         ) : (
-          <Txt muted size={13}>
-            Ingen synlig rute i kartet.
-          </Txt>
+          <Txt muted size={13}>{uiText("Ingen synlig rute i kartet.")}</Txt>
         )}
       </View>
       {mode === "heat" &&
@@ -78,9 +77,7 @@ export default function FootballMap({
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >
-              <Txt muted size={12}>
-                Mindre
-              </Txt>
+              <Txt muted size={12}>{uiText("Mindre")}</Txt>
               <View
                 style={{
                   flex: 1,
@@ -98,19 +95,12 @@ export default function FootballMap({
                   ),
                 )}
               </View>
-              <Txt muted size={12}>
-                Mer bevegelse
-              </Txt>
+              <Txt muted size={12}>{uiText("Mer bevegelse")}</Txt>
             </View>
-            <Txt muted size={12}>
-              Viser hvor du beveget deg mest, ikke tiden du sto stille. GPS kan
-              avvike fra banen.
-            </Txt>
+            <Txt muted size={12}>{uiText("Viser hvor du beveget deg mest, ikke tiden du sto stille. GPS kan avvike fra banen.")}</Txt>
           </>
         ) : (
-          <Txt muted size={12}>
-            For lite sammenhengende GPS-rute til å vise varmekart.
-          </Txt>
+          <Txt muted size={12}>{uiText("For lite sammenhengende GPS-rute til å vise varmekart.")}</Txt>
         ))}
     </View>
   );

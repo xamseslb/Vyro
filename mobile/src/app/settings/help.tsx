@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useState } from "react";
 import { View } from "react-native";
 import Constants from "expo-constants";
@@ -10,6 +11,7 @@ import {
   SettingsRow,
 } from "../../components/SettingsUi";
 import { Txt } from "../../components/ui";
+import { VyroPublicLinks } from "../../components/VyroPublicLinks";
 const questions = [
   [
     "Virker opptak med låst skjerm?",
@@ -44,36 +46,37 @@ export default function Help() {
     try {
       await openURL(url);
     } catch {
-      setLinkError("Kunne ikke åpne lenken. Prøv igjen når du er på nett.");
+      setLinkError(uiText("Kunne ikke åpne lenken. Prøv igjen når du er på nett."));
     }
   }
   return (
-    <Page title="Hjelp og om VYRO">
-      <SettingsGroup title="Vanlige spørsmål">
+    <Page title={uiText("Hjelp og om VYRO")}>
+      <VyroPublicLinks />
+      <SettingsGroup title={uiText("Vanlige spørsmål")}>
         {questions.map(([question, answer], i) => (
           <View key={question}>
             <SettingsRow
-              title={question}
+              title={uiText(question)}
               onPress={() => setOpen(open === i ? null : i)}
               value={open === i ? "−" : "+"}
             />
             {open === i && (
               <View style={{ padding: 22, paddingTop: 8 }}>
                 <Txt muted size={14}>
-                  {answer}
+                  {uiText(answer)}
                 </Txt>
               </View>
             )}
           </View>
         ))}
       </SettingsGroup>
-      <SettingsGroup title="Snarveier">
+      <SettingsGroup title={uiText("Snarveier")}>
         <SettingsRow
-          title="GPS og opptaksinnstillinger"
+          title={uiText("GPS og opptaksinnstillinger")}
           onPress={() => router.push("/training-settings")}
         />
         <SettingsRow
-          title="Personvern og deling"
+          title={uiText("Personvern og deling")}
           onPress={() => router.push("/settings/privacy")}
         />
         <SettingsRow
@@ -82,38 +85,36 @@ export default function Help() {
         />
       </SettingsGroup>
       <SettingsGroup
-        title="Ikoner og illustrasjoner"
-        note="Idrettsikoner fra Magnific på Flaticon og Material Design Icons fra Pictogrammers."
+        title={uiText("Ikoner og illustrasjoner")}
+        note={uiText("Idrettsikoner fra Magnific på Flaticon og Material Design Icons fra Pictogrammers.")}
       >
         <SettingsRow
           title="Pictogrammers"
-          description="Ikoner for fotball og trappemaskin"
+          description={uiText("Ikoner for fotball og trappemaskin")}
           onPress={() => void openCredit("https://pictogrammers.com/library/mdi/")}
         />
         <SettingsRow
           title="Magnific"
-          description="Designeren bak idrettsikonene"
+          description={uiText("Designeren bak idrettsikonene")}
           onPress={() =>
             void openCredit("https://www.flaticon.com/authors/magnific")
           }
         />
         <SettingsRow
           title="Flaticon"
-          description="Se ikonbiblioteket"
+          description={uiText("Se ikonbiblioteket")}
           onPress={() => void openCredit("https://www.flaticon.com/")}
         />
         <SettingsRow
-          title="Lisens for ikonene"
-          description="Flaticons bruksvilkår"
+          title={uiText("Lisens for ikonene")}
+          description={uiText("Flaticons bruksvilkår")}
           onPress={() => void openCredit("https://www.flaticon.com/legal")}
         />
       </SettingsGroup>
       {!!linkError && <PageNote>{linkError}</PageNote>}
       <PageNote>
         VYRO {Constants.expoConfig?.version ?? "0.1.0"}
-        {"\n"}Et sted for turene dine, menneskene du følger og løypene du vil
-        tilbake til.
-      </PageNote>
+        {"\n"}{uiText("Et sted for turene dine, menneskene du følger og løypene du vil tilbake til.")}</PageNote>
     </Page>
   );
 }

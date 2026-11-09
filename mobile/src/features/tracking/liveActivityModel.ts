@@ -1,9 +1,11 @@
+import { message as uiText, displayLocale } from "../../i18n/language";
 import { duration, km, pace } from "../activities/model";
 import { snapshot, type Recording } from "./simulator";
 import type { Coord } from "./gps";
 import { sportInfo } from "../activities/sports";
 
 export type WorkoutActivityProps = {
+  english?: boolean;
   timerOnly?: boolean;
   paceLabel?: string;
   sport: string;
@@ -45,24 +47,25 @@ export function workoutActivityProps(
   const speed = sportInfo(r.sport).metric === "speed";
   return {
     timerOnly: r.mode === "timer",
-    sport: r.sport,
+    english: displayLocale() === "en-GB",
+    sport: uiText(r.sport),
     paused: r.status === "paused",
     seconds: duration(current.seconds),
     timerStart: now - current.seconds * 1000,
     distance: km(current.distance),
-    paceLabel: speed ? "Snitt km/t" : "Snitt /km",
+    paceLabel: uiText(speed ? "Snitt km/t" : "Snitt /km"),
     pace:
       current.distance >= 0.1
         ? speed
           ? ((current.distance * 3600) / Math.max(1, current.seconds))
               .toFixed(1)
-              .replace(".", ",")
+              .replace(".", displayLocale() === "nb-NO" ? "," : ".")
           : pace(current.distance, current.seconds)
         : "—",
     mapUri: r.mode === "timer" ? null : mapUri,
     mapTime:
       r.mode !== "timer" && mapAt
-        ? new Date(mapAt).toLocaleTimeString("nb-NO", {
+        ? new Date(mapAt).toLocaleTimeString(displayLocale(), {
             hour: "2-digit",
             minute: "2-digit",
           })

@@ -1,12 +1,13 @@
+import { message as uiText } from "../../i18n/language";
 import { ChoiceRow, Page, SettingsGroup } from "../../components/SettingsUi";
 import { useAppStore } from "../../stores/useAppStore";
 export default function MapSettings() {
   const selected = useAppStore((s) => s.defaultMapKind ?? "standard");
   return (
-    <Page title="Standardkart">
+    <Page title={uiText("Standardkart")}>
       <SettingsGroup
-        title="Kartlag"
-        note="Valget brukes i Kart og under trening. Du kan også bytte kartlag direkte i kartet."
+        title={uiText("Kartlag")}
+        note={uiText("Valget brukes i Kart og under trening. Du kan også bytte kartlag direkte i kartet.")}
       >
         {(
           [
@@ -21,8 +22,8 @@ export default function MapSettings() {
         ).map(([value, title, description]) => (
           <ChoiceRow
             key={value}
-            title={title}
-            description={description}
+            title={uiText(title)}
+            description={uiText(description)}
             selected={selected === value}
             onPress={() =>
               useAppStore.getState().preferences({ defaultMapKind: value })

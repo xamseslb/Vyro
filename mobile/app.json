@@ -2,6 +2,10 @@
   "expo": {
     "name": "VYRO",
     "slug": "vyro",
+    "locales": {
+      "en": "./locales/en.json",
+      "nb": "./locales/nb.json"
+    },
     "platforms": [
       "ios",
       "web"

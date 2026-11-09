@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useState } from "react";
 import { Image, Text, View } from "react-native";
 import { useAvatar } from "../social/avatar";
@@ -21,7 +22,7 @@ export function ZonePin({
   return (
     <View
       accessible
-      accessibilityLabel={`${name} eier sonen`}
+      accessibilityLabel={uiText("{0} eier sonen", name)}
       onLayout={onReady}
       style={{ alignItems: "center", width: 112, paddingTop: 4 }}
     >

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -101,18 +102,18 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
   const owner = club?.owner_id === userId;
   return (
     <Screen>
-      <SocialHeader title="Klubb" back />
+      <SocialHeader title={uiText("Klubb")} back />
       {!!error && (
         <>
           <Txt>{error}</Txt>
           <Button
-            title="Prøv igjen"
+            title={uiText("Prøv igjen")}
             secondary
             onPress={() => setRevision((n) => n + 1)}
           />
         </>
       )}
-      {!club && !error && <Txt muted>Laster klubb …</Txt>}
+      {!club && !error && <Txt muted>{uiText("Laster klubb …")}</Txt>}
       {club && (
         <>
           <Avatar club name={club.name} />
@@ -122,13 +123,13 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
           {!!club.description && <Txt muted>{club.description}</Txt>}
           <Txt muted size={13}>
             {club.visibility === "open"
-              ? "Åpen klubb"
-              : "Privat klubb · kun inviterte"}
+              ? uiText("Åpen klubb")
+              : uiText("Privat klubb · kun inviterte")}
           </Txt>
-          {joined && <Button title="Klubbens soner" icon="map" onPress={() => router.push({ pathname: "/(tabs)/map", params: { view: "zones", clubId: id } })} />}
+          {joined && <Button title={uiText("Klubbens soner")} icon="map" onPress={() => router.push({ pathname: "/(tabs)/map", params: { view: "zones", clubId: id } })} />}
           {!joined && club.visibility === "open" && (
             <Button
-              title={busy ? "Blir med …" : "Bli med"}
+              title={busy ? uiText("Blir med …") : uiText("Bli med")}
               disabled={busy}
               onPress={() =>
                 void action(async () => {
@@ -140,14 +141,14 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
           )}
           {!joined && club.visibility === "private" && (
             <Button
-              title="Se invitasjonen din"
+              title={uiText("Se invitasjonen din")}
               secondary
               onPress={() => router.replace("/community")}
             />
           )}
           {owner && (
             <Button
-              title={invite ? "Lukk personsøk" : "Inviter personer"}
+              title={invite ? uiText("Lukk personsøk") : uiText("Inviter personer")}
               icon="plus"
               onPress={() => setInvite(!invite)}
             />
@@ -165,15 +166,13 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
                 if (result.error) throw result.error;
                 setPending((v) => [...v, person.id]);
                 setNotice(
-                  `Invitasjon sendt til ${personName(person.display_name)}. Den vises under Klubber hos mottakeren.`,
+                  uiText("Invitasjon sendt til {0}. Den vises under Klubber hos mottakeren.", personName(person.display_name)),
                 );
               }}
             />
           )}
           {joined && (
-            <Txt size={21} weight="700">
-              Medlemmer
-            </Txt>
+            <Txt size={21} weight="700">{uiText("Medlemmer")}</Txt>
           )}
           {members.map((member) => (
             <View key={member.user_id} style={[styles.row, { gap: 12 }]}>
@@ -182,14 +181,14 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
               <View style={{ flex: 1 }}>
                 <Txt weight="700">{personName(member.profiles.display_name)}</Txt>
                 <Txt muted size={12}>
-                  {member.user_id === club.owner_id ? "Eier" : "Medlem"}
+                  {member.user_id === club.owner_id ? uiText("Eier") : uiText("Medlem")}
                 </Txt>
               </View>
               </ProfileLink>
               {owner && member.user_id !== userId && (
                 <Button
                   title={
-                    confirm === member.user_id ? "Bekreft fjerning" : "Fjern"
+                    confirm === member.user_id ? uiText("Bekreft fjerning") : uiText("Fjern")
                   }
                   secondary
                   disabled={busy}
@@ -212,29 +211,25 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
             </View>
           ))}
           {members.length === 200 && (
-            <Txt muted size={12}>
-              Viser de første 200 medlemmene.
-            </Txt>
+            <Txt muted size={12}>{uiText("Viser de første 200 medlemmene.")}</Txt>
           )}
           {owner && pending.length > 0 && (
             <Txt muted size={14}>
               {pending.length}{" "}
               {pending.length === 1
-                ? "invitasjon venter"
-                : "invitasjoner venter"}{" "}
-              på svar.
-            </Txt>
+                ? uiText("invitasjon venter")
+                : uiText("invitasjoner venter")}{" "}{uiText("på svar.")}</Txt>
           )}
           {owner && (
             <Button
               title={
                 confirm === "visibility"
                   ? club.visibility === "private"
-                    ? "Bekreft: alle kan bli med"
-                    : "Bekreft: kun inviterte"
+                    ? uiText("Bekreft: alle kan bli med")
+                    : uiText("Bekreft: kun inviterte")
                   : club.visibility === "private"
-                    ? "Gjør klubben åpen"
-                    : "Gjør klubben privat"
+                    ? uiText("Gjør klubben åpen")
+                    : uiText("Gjør klubben privat")
               }
               secondary
               disabled={busy}
@@ -258,8 +253,8 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
           {confirm === "visibility" && (
             <Txt size={13} muted>
               {club.visibility === "private"
-                ? "Navn og beskrivelse blir synlige under Åpne klubber. Alle med konto kan bli med."
-                : "Klubben fjernes fra Åpne klubber. Nåværende medlemmer blir værende."}
+                ? uiText("Navn og beskrivelse blir synlige under Åpne klubber. Alle med konto kan bli med.")
+                : uiText("Klubben fjernes fra Åpne klubber. Nåværende medlemmer blir værende.")}
             </Txt>
           )}
           {joined && (
@@ -267,11 +262,11 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
               title={
                 confirm === "leave"
                   ? owner
-                    ? "Bekreft: slett klubben"
-                    : "Bekreft: forlat klubben"
+                    ? uiText("Bekreft: slett klubben")
+                    : uiText("Bekreft: forlat klubben")
                   : owner
-                    ? "Slett klubb"
-                    : "Forlat klubb"
+                    ? uiText("Slett klubb")
+                    : uiText("Forlat klubb")
               }
               secondary
               disabled={busy}
@@ -292,7 +287,7 @@ function ClubDetail({ id, userId }: { id: string; userId: string }) {
             />
           )}
           {confirm && (
-            <Button title="Avbryt" secondary onPress={() => setConfirm(null)} />
+            <Button title={uiText("Avbryt")} secondary onPress={() => setConfirm(null)} />
           )}
         </>
       )}

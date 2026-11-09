@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -26,7 +27,7 @@ export function ClubPicker({
     <>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Velg klubb${selected ? `, ${selected.name}` : ""}`}
+        accessibilityLabel={uiText("Velg klubb{0}", selected ? `, ${selected.name}` : "")}
         onPress={() => setOpen(true)}
         style={{
           minHeight: 76,
@@ -41,12 +42,12 @@ export function ClubPicker({
       >
         <View style={{ flex: 1 }}>
           <Txt size={20} weight="700" numberOfLines={1}>
-            {selected?.name ?? "Velg klubb"}
+            {selected?.name ?? uiText("Velg klubb")}
           </Txt>
           <Txt size={13} muted>
             {selected
               ? `${selected.member_count ?? ""} ${selected.member_count === 1 ? "medlem" : "medlemmer"}`.trim()
-              : "Konkurrer med klubben din"}
+              : uiText("Konkurrer med klubben din")}
           </Txt>
         </View>
         <Icon name="chevronDown" color={c.text} size={22} />
@@ -116,7 +117,7 @@ function ClubChoices({
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Lukk klubbvelger"
+        accessibilityLabel={uiText("Lukk klubbvelger")}
         onPress={onClose}
         style={{ flex: 1 }}
       />
@@ -138,10 +139,8 @@ function ClubChoices({
             justifyContent: "space-between",
           }}
         >
-          <Txt size={23} weight="700">
-            Dine klubber
-          </Txt>
-          <IconButton name="close" label="Lukk" onPress={onClose} />
+          <Txt size={23} weight="700">{uiText("Dine klubber")}</Txt>
+          <IconButton name="close" label={uiText("Lukk")} onPress={onClose} />
         </View>
         <FlatList
           data={page.items}
@@ -171,13 +170,13 @@ function ClubChoices({
             </Pressable>
           )}
         />
-        {busy && <ActivityIndicator accessibilityLabel="Henter klubber" />}
+        {busy && <ActivityIndicator accessibilityLabel={uiText("Henter klubber")} />}
         {!!error && (
           <>
             <Txt accessibilityRole="alert">{error}</Txt>
             <Button
               secondary
-              title="Prøv igjen"
+              title={uiText("Prøv igjen")}
               onPress={() => {
                 setError("");
                 setRetry((n) => n + 1);
@@ -187,7 +186,7 @@ function ClubChoices({
         )}
         {page.more && (
           <Button
-            title="Vis flere klubber"
+            title={uiText("Vis flere klubber")}
             secondary
             disabled={busy}
             onPress={async () => {
@@ -215,10 +214,10 @@ function ClubChoices({
           />
         )}
         {!busy && !page.items.length && !error && (
-          <Txt muted>Du er ikke med i en klubb ennå.</Txt>
+          <Txt muted>{uiText("Du er ikke med i en klubb ennå.")}</Txt>
         )}
         <Button
-          title="Finn eller opprett klubb"
+          title={uiText("Finn eller opprett klubb")}
           secondary
           onPress={() => {
             onClose();

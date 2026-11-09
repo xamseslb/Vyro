@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 import MapView, {
@@ -350,7 +351,7 @@ export default function AppleMap({
       {position && (
         <Marker
           coordinate={position}
-          title="Posisjon på kartet"
+          title={uiText("Posisjon på kartet")}
           anchor={{ x: 0.5, y: 0.5 }}
           tracksViewChanges={false}
           zIndex={3}

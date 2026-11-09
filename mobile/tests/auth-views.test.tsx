@@ -9,6 +9,8 @@ import {
 } from "@testing-library/react-native";
 import Profile from "../src/app/(tabs)/profile";
 import Settings from "../src/app/settings";
+import { Welcome } from "../src/components/Welcome";
+import { router } from "expo-router";
 import { AccountGate } from "../src/components/AccountGate";
 import { observeAuth, useAuthStore } from "../src/stores/useAuthStore";
 import { supabase } from "../src/lib/supabase";
@@ -75,8 +77,8 @@ jest.mock("../src/stores/useAppStore", () => {
     storageError: null,
   };
   return {
-    useAppStore: (selector?: (value: typeof state) => unknown) =>
-      selector ? selector(state) : state,
+    useAppStore: Object.assign((selector?: (value: typeof state) => unknown) =>
+      selector ? selector(state) : state, { getState: () => state }),
   };
 });
 jest.mock("../src/features/activities/useVisibleWorkouts", () => ({
@@ -108,12 +110,12 @@ jest.mock("../src/components/ui", () => {
     Chip: () => null,
     styles: { row: {} },
     useTheme: () => ({ border: "#ddd", text: "#111", muted: "#555" }),
-    Button: ({ title, disabled }: { title: string; disabled?: boolean }) =>
+    Button: ({ title, disabled, onPress }: { title: string; disabled?: boolean; onPress?: () => void }) =>
       React.createElement(
         Pressable,
         {
           accessibilityRole: "button",
-          accessibilityLabel: title,
+          accessibilityLabel: title, onPress,
           accessibilityState: { disabled },
         },
         React.createElement(Text, null, title),
@@ -216,13 +218,13 @@ test("Home never flashes the sign-in page during slow recovery or a stale initia
     await jest.advanceTimersByTimeAsync(9_000);
   });
   expect(screen.getByText(/gjenopprette innloggingen/)).toBeTruthy();
-  expect(screen.queryByRole("button", { name: "Kom i gang" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Opprett konto" })).toBeNull();
   await act(() => acceptAuthSession({ user: { id: "signed-in" } } as Session));
   await act(() => event("INITIAL_SESSION", null));
   expect(screen.getByText("Turer å dele.")).toBeTruthy();
-  expect(screen.queryByRole("button", { name: "Kom i gang" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Opprett konto" })).toBeNull();
   await act(() => event("SIGNED_OUT", null));
-  expect(screen.getByRole("button", { name: "Kom i gang" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Opprett konto" })).toBeTruthy();
   stop?.();
   jest.useRealTimers();
 });
@@ -333,3 +335,15 @@ test.each(["cancelled", "error", "copied"])(
     if (result === "cancelled") expect(screen.queryByRole("alert")).toBeNull();
   },
 );
+
+test("both welcome pages offer signup and login without completing a tour", async () => {
+  await render(<Welcome standalone />);
+  for (const [i, title] of ["Finn folk å løpe med.", "Følg turen fra første steg."].entries()) {
+    await fireEvent.press(screen.getByRole("button", { name: "Vis introduksjon " + (i + 1) + ": " + title }));
+    expect(screen.getByRole("header", { name: title })).toBeTruthy();
+    for (const [label, mode] of [["Opprett konto", "register"], ["Logg inn", "login"]]) {
+      await fireEvent.press(screen.getByRole("button", { name: label }));
+      expect(router.push).toHaveBeenLastCalledWith({ pathname: "/account", params: { mode } });
+    }
+  }
+});

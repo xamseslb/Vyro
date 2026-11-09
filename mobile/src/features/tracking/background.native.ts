@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import Constants, { ExecutionEnvironment } from "expo-constants";
@@ -30,7 +31,7 @@ const ownsRecording = () => {
 export async function requestBackgroundAccess() {
   if (!backgroundSupported || !(await TaskManager.isAvailableAsync()))
     throw new Error(
-      "Bakgrunnsopptak krever et nytt mobilbygg på denne enheten.",
+      uiText("Bakgrunnsopptak krever et nytt mobilbygg på denne enheten."),
     );
   // iOS continuous updates started by the user in the foreground work with
   // When In Use + the location background mode and visible location indicator.
@@ -52,7 +53,7 @@ export function startBackground() {
     if (!ownsRecording()) return;
     if (AppState.currentState !== "active")
       throw new Error(
-        "Hold VYRO åpen mens opptaket starter, og trykk Fortsett.",
+        uiText("Hold VYRO åpen mens opptaket starter, og trykk Fortsett."),
       );
     await Location.startLocationUpdatesAsync(TASK, {
       accuracy: Location.Accuracy.BestForNavigation,
@@ -77,7 +78,7 @@ export function startBackground() {
     }
     if (!(await Location.hasStartedLocationUpdatesAsync(TASK)))
       throw new Error(
-        "GPS-opptak med låst skjerm startet ikke. Prøv Start eller Fortsett igjen.",
+        uiText("GPS-opptak med låst skjerm startet ikke. Prøv Start eller Fortsett igjen."),
       );
     if (!ownsRecording()) {
       await Location.stopLocationUpdatesAsync(TASK);
@@ -117,7 +118,7 @@ export async function verifyBackgroundRecording() {
   useAppStore.getState().event("pause");
   useTrackingStatus.setState({
     error:
-      "GPS-opptaket ble stoppet av telefonen. Økten er pauset. Sjekk posisjonstillatelsen og trykk Fortsett.",
+      uiText("GPS-opptaket ble stoppet av telefonen. Økten er pauset. Sjekk posisjonstillatelsen og trykk Fortsett."),
   });
 }
 export function stopBackground() {
@@ -137,7 +138,7 @@ if (!TaskManager.isTaskDefined(TASK))
         if (error) {
           useAppStore.getState().event("pause");
           useTrackingStatus.setState({
-            error: "GPS-opptaket ble avbrutt. Åpne appen for å fortsette.",
+            error: uiText("GPS-opptaket ble avbrutt. Åpne appen for å fortsette."),
           });
         }
         await stopBackground();
@@ -172,7 +173,7 @@ useAppStore.subscribe((state, previous) => {
     void stopBackground().catch(() =>
       useTrackingStatus.setState({
         error:
-          "Kunne ikke stoppe GPS-tjenesten. Slå av posisjon i telefoninnstillingene.",
+          uiText("Kunne ikke stoppe GPS-tjenesten. Slå av posisjon i telefoninnstillingene."),
       }),
     );
 });

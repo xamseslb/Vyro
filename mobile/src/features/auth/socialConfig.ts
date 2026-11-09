@@ -13,6 +13,12 @@ const expoGo =
   Platform.OS !== "web" &&
   Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 const supported = Platform.OS === "web" || (Platform.OS === "ios" && !expoGo);
+// Browser OAuth needs its own Services ID; the iPhone uses its bundle ID.
+const appleEnabled =
+  Platform.OS === "ios"
+    ? (process.env.EXPO_PUBLIC_IOS_APPLE_AUTH_ENABLED ??
+        process.env.EXPO_PUBLIC_APPLE_AUTH_ENABLED)
+    : process.env.EXPO_PUBLIC_APPLE_AUTH_ENABLED;
 export const googleNeedsOwnBuild =
   supabaseConfigured && googleEnabled && expoGo;
 export const socialConfig = {
@@ -20,7 +26,7 @@ export const socialConfig = {
   apple:
     supabaseConfigured &&
     supported &&
-    process.env.EXPO_PUBLIC_APPLE_AUTH_ENABLED === "true",
+    appleEnabled === "true",
 };
 
 export function visibleSocialProviders(appleAvailable: boolean) {

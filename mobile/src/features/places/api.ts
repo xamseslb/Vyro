@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { client } from "../social/api";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { stripPhotoMetadata, validatePlace } from "./model";
@@ -12,7 +13,7 @@ export async function publishPlace(
   validatePlace(caption, place);
   const sameAccount = () => {
     if (useAuthStore.getState().session?.user.id !== owner)
-      throw new Error("Kontoen er endret. Åpne innlegget på nytt.");
+      throw new Error(uiText("Kontoen er endret. Åpne innlegget på nytt."));
   };
   sameAccount();
   const path = `${owner}/${photo.id}.jpg`;
@@ -39,7 +40,7 @@ export async function publishPlace(
 }
 export async function removePlace(id: string, owner: string, path: string) {
   if (useAuthStore.getState().session?.user.id !== owner)
-    throw new Error("Kontoen er endret.");
+    throw new Error(uiText("Kontoen er endret."));
   const result = await client()
     .from("place_posts")
     .delete()
@@ -48,7 +49,7 @@ export async function removePlace(id: string, owner: string, path: string) {
     .select("id");
   if (result.error) throw result.error;
   if (!result.data?.length)
-    throw new Error("Innlegget finnes ikke eller er allerede fjernet.");
+    throw new Error(uiText("Innlegget finnes ikke eller er allerede fjernet."));
   // Removing the row immediately revokes other users' media access. Storage
   // deletion is best-effort; a failed cleanup never restores a shared post.
   if (useAuthStore.getState().session?.user.id === owner)

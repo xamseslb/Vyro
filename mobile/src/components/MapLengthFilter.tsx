@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import {
   useCallback,
   useEffect,
@@ -64,14 +65,14 @@ export function MapLengthFilter({
       <View ref={anchor} collapsable={false}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Filtrer på lengde"
-          accessibilityValue={{ text: choices[value] }}
+          accessibilityLabel={uiText("Filtrer på lengde")}
+          accessibilityValue={{ text: uiText(choices[value]) }}
           accessibilityState={{ expanded: position !== null }}
           onPress={open}
           style={styles.chip}
         >
           <Text style={styles.chipText}>
-            {value === 0 ? "Lengde" : choices[value]}
+            {value === 0 ? uiText("Lengde") : uiText(choices[value])}
           </Text>
           <Icon name="chevronDown" size={15} color={palettes.light.text} />
         </Pressable>
@@ -86,13 +87,13 @@ export function MapLengthFilter({
         <View style={styles.overlay}>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Lukk lengdevalg"
+            accessibilityLabel={uiText("Lukk lengdevalg")}
             onPress={() => setPosition(null)}
             style={StyleSheet.absoluteFill}
           />
           <View
             accessibilityRole="menu"
-            accessibilityLabel="Lengde på ruten"
+            accessibilityLabel={uiText("Lengde på ruten")}
             style={[styles.menu, position, { width: menuWidth }]}
           >
             {choices.map((label, index) => (
@@ -106,7 +107,7 @@ export function MapLengthFilter({
                 }}
                 style={[styles.option, value === index && styles.selected]}
               >
-                <Text style={styles.optionText}>{label}</Text>
+                <Text style={styles.optionText}>{uiText(label)}</Text>
                 {value === index && (
                   <Icon name="check" size={18} color={brand.route} />
                 )}

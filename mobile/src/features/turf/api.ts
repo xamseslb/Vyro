@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { client, socialError } from "../social/api";
 import type { Workout } from "../activities/model";
 import type { GrowingTurf } from "./growth";
@@ -91,7 +92,7 @@ export async function loadTurf(id: string, signal?: AbortSignal) {
   if (error) throw error;
   if (!data)
     throw new Error(
-      "Sonen finnes ikke lenger. Den kan ha blitt trukket tilbake av eieren.",
+      uiText("Sonen finnes ikke lenger. Den kan ha blitt trukket tilbake av eieren."),
     );
   return data as unknown as GrowingTurf;
 }
@@ -126,15 +127,15 @@ export async function submitTurf(
     workout.source !== "gps" ||
     workout.sport !== "Løping"
   )
-    throw new Error("Velg din egen GPS-løpetur.");
+    throw new Error(uiText("Velg din egen GPS-løpetur."));
   // Recover committed results after a lost response, even if the workout is now old.
   const receipt = await loadTurfReceipt(userId, workout.id, signal);
   if (signal?.aborted) throw new Error("VYRO_REQUEST_CANCELLED");
   if (receipt) return { result: receipt, existing: true };
   const selectedClub = turf?.club_id ?? clubId;
-  if (!selectedClub) throw new Error("Velg klubben som skal konkurrere om sonen.");
+  if (!selectedClub) throw new Error(uiText("Velg klubben som skal konkurrere om sonen."));
   if (!turf && (!name.trim() || name.trim().length > 80))
-    throw new Error("Gi sonen et navn på mellom 1 og 80 tegn.");
+    throw new Error(uiText("Gi sonen et navn på mellom 1 og 80 tegn."));
   const { samples } = turfPreview(workout, turf, extend);
   let query = client().rpc("submit_club_turf_run", {
     p_club_id: selectedClub,
@@ -157,7 +158,7 @@ export async function submitTurf(
   if (error) throw error;
   if (!data?.turf_id || typeof data.won !== "boolean")
     throw new Error(
-      "Vi fikk ingen bekreftelse. Prøv igjen; samme økt lager ikke en ekstra sone.",
+      uiText("Vi fikk ingen bekreftelse. Prøv igjen; samme økt lager ikke en ekstra sone."),
     );
   return {
     result: data as TurfResult,
@@ -174,30 +175,30 @@ export async function withdrawTurf(id: string, userId: string) {
     .select("id");
   if (error) throw error;
   if (!data.length)
-    throw new Error("Sonen har endret eier. Oppdater for å se gjeldende sone.");
+    throw new Error(uiText("Sonen har endret eier. Oppdater for å se gjeldende sone."));
 }
 
 export function turfError(error: unknown) {
   const message = (error as { message?: string })?.message ?? "";
-  if (message.includes("TURF_CLUB_MEMBERSHIP")) return "Du må være medlem av klubben for å se eller utfordre sonene. Velg en av klubbene dine.";
-  if (message.includes("TURF_WORKOUT_OTHER_CLUB")) return "Denne løpeturen er allerede brukt i en annen klubb. Velg en ny løpetur.";
+  if (message.includes("TURF_CLUB_MEMBERSHIP")) return uiText("Du må være medlem av klubben for å se eller utfordre sonene. Velg en av klubbene dine.");
+  if (message.includes("TURF_WORKOUT_OTHER_CLUB")) return uiText("Denne løpeturen er allerede brukt i en annen klubb. Velg en ny løpetur.");
   if (message.includes("TURF_CHANGED"))
-    return "Sonen er endret. Åpne sonen på nytt for å se den nye løypa før du sender forsøket.";
+    return uiText("Sonen er endret. Åpne sonen på nytt for å se den nye løypa før du sender forsøket.");
   if (message.includes("TURF_NOT_FOUND"))
-    return "Sonen er trukket tilbake. Velg en annen sone.";
-  if (message.includes("TURF_ALREADY_OWNER")) return "Du eier allerede sonen.";
+    return uiText("Sonen er trukket tilbake. Velg en annen sone.");
+  if (message.includes("TURF_ALREADY_OWNER")) return uiText("Du eier allerede sonen.");
   if (message.includes("TURF_NOT_FASTER"))
-    return "Slå tiden på den opprinnelige sonen før du utvider den.";
+    return uiText("Slå tiden på den opprinnelige sonen før du utvider den.");
   if (message.includes("TURF_EXTENSION_SHORT"))
-    return "Utvidelsen må være minst 100 meter.";
+    return uiText("Utvidelsen må være minst 100 meter.");
   if (message.includes("TURF_GPS_GAP"))
-    return "GPS-sporet har avbrudd eller for høy fart. Velg en annen løpetur med sammenhengende GPS-opptak.";
+    return uiText("GPS-sporet har avbrudd eller for høy fart. Velg en annen løpetur med sammenhengende GPS-opptak.");
   if (message.includes("TURF_DISTANCE"))
-    return "Det må være minst 200 meter sammenhengende løype igjen etter at start og slutt er skjermet. Velg en lengre tur (maks 100 km synlig løype).";
+    return uiText("Det må være minst 200 meter sammenhengende løype igjen etter at start og slutt er skjermet. Velg en lengre tur (maks 100 km synlig løype).");
   if (message.includes("TURF_WRONG_ROUTE"))
-    return "Økten følger ikke hele den gjeldende sonen i riktig retning. Velg turen du løp langs denne sonen.";
+    return uiText("Økten følger ikke hele den gjeldende sonen i riktig retning. Velg turen du løp langs denne sonen.");
   if (message.includes("TURF_"))
-    return "Opptaket kunne ikke godkjennes. Velg en GPS-løpetur fra de siste 7 dagene med presis posisjon og uten avbrudd.";
+    return uiText("Opptaket kunne ikke godkjennes. Velg en GPS-løpetur fra de siste 7 dagene med presis posisjon og uten avbrudd.");
   if (
     error instanceof Error &&
     !(error as { code?: string }).code &&

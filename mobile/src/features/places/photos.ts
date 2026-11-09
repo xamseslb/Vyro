@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import * as ImagePicker from "expo-image-picker";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { randomUUID } from "expo-crypto";
@@ -19,7 +20,7 @@ export async function choosePhoto(avatar = false): Promise<PreparedPhoto | null>
   if (picked.canceled || !picked.assets.length) return null;
   const asset = picked.assets[0];
   if ((asset.fileSize ?? 0) > 25 * 1024 * 1024)
-    throw new Error("Velg et bilde under 25 MB.");
+    throw new Error(uiText("Velg et bilde under 25 MB."));
   const context = ImageManipulator.manipulate(asset.uri, { maxWidth: 1600 });
   try {
     if (asset.width > 1600 || asset.height > 1600)
@@ -34,7 +35,7 @@ export async function choosePhoto(avatar = false): Promise<PreparedPhoto | null>
         compress: 0.82,
         base64: true,
       });
-      if (!result.base64) throw new Error("Bildet kunne ikke klargjøres.");
+      if (!result.base64) throw new Error(uiText("Bildet kunne ikke klargjøres."));
       const bytes = stripPhotoMetadata(
         Uint8Array.from(atob(result.base64), (char) => char.charCodeAt(0)),
       );

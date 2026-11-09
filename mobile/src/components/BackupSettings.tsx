@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { useState } from "react";
 import { TextInput, View } from "react-native";
 import { Button, Txt, useTheme } from "./ui";
@@ -51,7 +52,7 @@ export function BackupSettings({ owner }: { owner: string }) {
       setSetup(true);
     } catch {
       setError(
-        "Kunne ikke åpne sikkerhetskopien. Kontroller forbindelsen og prøv igjen.",
+        uiText("Kunne ikke åpne sikkerhetskopien. Kontroller forbindelsen og prøv igjen."),
       );
     } finally {
       setWorking(false);
@@ -78,34 +79,27 @@ export function BackupSettings({ owner }: { owner: string }) {
         paddingTop: 24,
       }}
     >
-      <Txt weight="700">Kryptert sikkerhetskopi</Txt>
-      <Txt muted size={14}>
-        Ta vare på økter ved bytte av telefon. Når du aktiverer dette, lagres
-        hele rutene, tidene og notatene kryptert før de sendes. Bare enhetene
-        dine og gjenopprettingskoden kan åpne kopien. Delte innlegg påvirkes
-        ikke. Eldre kopier konverteres og verifiseres i grupper mens appen er
-        åpen.
-      </Txt>
+      <Txt weight="700">{uiText("Kryptert sikkerhetskopi")}</Txt>
+      <Txt muted size={14}>{uiText("Ta vare på økter ved bytte av telefon. Når du aktiverer dette, lagres hele rutene, tidene og notatene kryptert før de sendes. Bare enhetene dine og gjenopprettingskoden kan åpne kopien. Delte innlegg påvirkes ikke. Eldre kopier konverteres og verifiseres i grupper mens appen er åpen.")}</Txt>
       <Txt size={14}>
         {enabled
-          ? `${pending} økter venter på sikkerhetskopi`
-          : "Av på denne enheten"}
+          ? uiText("{0} økter venter på sikkerhetskopi", pending)
+          : uiText("Av på denne enheten")}
       </Txt>
       {status.owner === owner && !!status.error && <Txt>{status.error}</Txt>}
       {status.owner === owner && !!status.lastSynced && !status.error && (
-        <Txt size={12} muted>
-          Sist synkronisert{" "}
-          {new Date(status.lastSynced).toLocaleString("nb-NO")}
+        <Txt size={12} muted>{uiText("Sist synkronisert")}{" "}
+          {new Date(status.lastSynced).toLocaleString(displayLocale())}
         </Txt>
       )}
       {!supabaseConfigured && (
-        <Txt muted>Skytjenesten er ikke konfigurert i dette bygget.</Txt>
+        <Txt muted>{uiText("Skytjenesten er ikke konfigurert i dette bygget.")}</Txt>
       )}
       <Button
         title={
           enabled
-            ? "Slå av sikkerhetskopiering"
-            : "Aktiver privat sikkerhetskopi"
+            ? uiText("Slå av sikkerhetskopiering")
+            : uiText("Aktiver privat sikkerhetskopi")
         }
         secondary={enabled}
         disabled={!supabaseConfigured || working || (!enabled && busy)}
@@ -116,24 +110,21 @@ export function BackupSettings({ owner }: { owner: string }) {
         <View style={{ gap: 14 }}>
           <Txt weight="700">
             {generated
-              ? "Ta vare på gjenopprettingskoden"
-              : "Åpne sikkerhetskopien"}
+              ? uiText("Ta vare på gjenopprettingskoden")
+              : uiText("Åpne sikkerhetskopien")}
           </Txt>
-          <Txt muted size={14}>
-            Lagre koden i en passordbehandler. Hvis du mister både enheten og
-            koden, kan vi ikke gjenopprette øktene. Send aldri koden til andre.
-          </Txt>
+          <Txt muted size={14}>{uiText("Lagre koden i en passordbehandler. Hvis du mister både enheten og koden, kan vi ikke gjenopprette øktene. Send aldri koden til andre.")}</Txt>
           {!!generated && (
             <Txt selectable size={16}>
               {generated}
             </Txt>
           )}
           <TextInput
-            accessibilityLabel="Gjenopprettingskode"
+            accessibilityLabel={uiText("Gjenopprettingskode")}
             placeholder={
               generated
-                ? "Skriv inn koden for å bekrefte at du har lagret den"
-                : "Gjenopprettingskode"
+                ? uiText("Skriv inn koden for å bekrefte at du har lagret den")
+                : uiText("Gjenopprettingskode")
             }
             placeholderTextColor={c.muted}
             value={code}
@@ -152,7 +143,7 @@ export function BackupSettings({ owner }: { owner: string }) {
             }}
           />
           <Button
-            title={working ? "Bekrefter …" : "Bekreft og aktiver"}
+            title={working ? uiText("Bekrefter …") : uiText("Bekreft og aktiver")}
             disabled={working || !code}
             onPress={async () => {
               setWorking(true);
@@ -164,7 +155,7 @@ export function BackupSettings({ owner }: { owner: string }) {
                     normalizeRecoveryCode(generated)
                 )
                   throw new Error(
-                    "Koden stemmer ikke. Kontroller alle tegnene.",
+                    uiText("Koden stemmer ikke. Kontroller alle tegnene."),
                   );
                 await unlockVault(owner, code);
                 requireOwner(owner);
@@ -184,7 +175,7 @@ export function BackupSettings({ owner }: { owner: string }) {
                 setError(
                   e instanceof Error
                     ? e.message
-                    : "Kunne ikke aktivere sikkerhetskopien.",
+                    : uiText("Kunne ikke aktivere sikkerhetskopien."),
                 );
               } finally {
                 setWorking(false);
@@ -192,7 +183,7 @@ export function BackupSettings({ owner }: { owner: string }) {
             }}
           />
           <Button
-            title="Avbryt"
+            title={uiText("Avbryt")}
             secondary
             disabled={working}
             onPress={() => {
@@ -206,7 +197,7 @@ export function BackupSettings({ owner }: { owner: string }) {
       {enabled && (
         <>
           <Button
-            title="Skriv inn gjenopprettingskode"
+            title={uiText("Skriv inn gjenopprettingskode")}
             secondary
             disabled={working || busy}
             onPress={() => {
@@ -214,7 +205,7 @@ export function BackupSettings({ owner }: { owner: string }) {
             }}
           />
           <Button
-            title="Vis min gjenopprettingskode"
+            title={uiText("Vis min gjenopprettingskode")}
             secondary
             disabled={working || busy}
             onPress={async () => {
@@ -228,7 +219,7 @@ export function BackupSettings({ owner }: { owner: string }) {
                 setSetup(true);
               } catch {
                 setError(
-                  "Koden er ikke lagret på denne enheten. Bruk koden du tok vare på ved aktivering.",
+                  uiText("Koden er ikke lagret på denne enheten. Bruk koden du tok vare på ved aktivering."),
                 );
               } finally {
                 setWorking(false);
@@ -236,7 +227,7 @@ export function BackupSettings({ owner }: { owner: string }) {
             }}
           />
           <Button
-            title={busy ? "Synkroniserer …" : "Synkroniser nå"}
+            title={busy ? uiText("Synkroniserer …") : uiText("Synkroniser nå")}
             secondary
             disabled={busy}
             onPress={() => {
@@ -244,7 +235,7 @@ export function BackupSettings({ owner }: { owner: string }) {
             }}
           />
           <Button
-            title="Gjenopprett også lokalt slettede økter"
+            title={uiText("Gjenopprett også lokalt slettede økter")}
             secondary
             disabled={busy}
             onPress={() => {
@@ -253,16 +244,12 @@ export function BackupSettings({ owner }: { owner: string }) {
           />
         </>
       )}
-      <Txt muted size={12}>
-        Lokal sletting fjerner ikke sikkerhetskopien. Å slå av stopper nye
-        overføringer fra denne enheten. Gjenopprettingskoden lagres beskyttet på
-        enheten og sendes aldri til serveren. Konkurransebevis kopieres ikke.
-      </Txt>
+      <Txt muted size={12}>{uiText("Lokal sletting fjerner ikke sikkerhetskopien. Å slå av stopper nye overføringer fra denne enheten. Gjenopprettingskoden lagres beskyttet på enheten og sendes aldri til serveren. Konkurransebevis kopieres ikke.")}</Txt>
       <Button
         title={
           confirm
-            ? "Bekreft sletting av alle sikkerhetskopier"
-            : "Slett sikkerhetskopier i skyen"
+            ? uiText("Bekreft sletting av alle sikkerhetskopier")
+            : uiText("Slett sikkerhetskopier i skyen")
         }
         secondary={!confirm}
         danger={confirm}
@@ -277,11 +264,8 @@ export function BackupSettings({ owner }: { owner: string }) {
       />
       {confirm && (
         <>
-          <Txt muted size={12}>
-            Lokale økter beholdes. Slå også av sikkerhetskopiering på andre
-            enheter hvis de ikke skal sende nye økter.
-          </Txt>
-          <Button title="Avbryt" secondary onPress={() => setConfirm(false)} />
+          <Txt muted size={12}>{uiText("Lokale økter beholdes. Slå også av sikkerhetskopiering på andre enheter hvis de ikke skal sende nye økter.")}</Txt>
+          <Button title={uiText("Avbryt")} secondary onPress={() => setConfirm(false)} />
         </>
       )}
     </View>

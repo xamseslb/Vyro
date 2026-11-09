@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { AppState, Platform } from "react-native";
 import { locationDeadline } from "./locationDeadline";
 
@@ -16,7 +17,7 @@ export async function waitForRecordingForeground() {
       }),
     );
   } catch {
-    throw new Error("Hold VYRO åpen mens opptaket starter, og prøv igjen.");
+    throw new Error(uiText("Hold VYRO åpen mens opptaket starter, og prøv igjen."));
   } finally {
     subscription?.remove();
   }

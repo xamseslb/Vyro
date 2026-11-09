@@ -1,0 +1,22 @@
+* { box-sizing:border-box }
+:root { color-scheme:light; font:100%/1.65 system-ui,sans-serif; color:#122036; background:#f7f9f6 }
+body { max-width:52rem; margin:auto; padding:0 clamp(1rem,5vw,3rem) }
+header,nav { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem }
+header,footer { padding:1.4rem 0 }
+nav a { padding:.45rem .25rem }
+a { color:#245333; text-underline-offset:.2em; overflow-wrap:anywhere }
+a:focus-visible,summary:focus-visible { outline:3px solid #5f49a6; outline-offset:4px }
+.brand { font-size:1.35rem; font-weight:850; color:#122036; text-decoration:none }
+[aria-current=page] { font-weight:750 }
+main { background:#fff; border:1px solid #dbe4d8; padding:clamp(1.1rem,5vw,3rem); border-radius:1.4rem }
+h1,h2,h3 { line-height:1.2; text-wrap:balance }
+h1 { font-size:clamp(2.25rem,8vw,4rem); margin:.1em 0 .4em; letter-spacing:-.045em }
+h2 { margin:1.6em 0 .45em; font-size:1.35rem }
+p { margin:.6em 0 1em }
+.lead { font-size:1.15rem }
+.date,footer { color:#526250; font-size:.92rem }
+.button { display:inline-block; padding:.65rem 1.15rem; margin:.3rem 0; border-radius:2rem; background:#b1fa79; font-weight:700; color:#172717 }
+details { padding:1rem 0; border-top:1px solid #dbe4d8 }
+summary { font-weight:650; cursor:pointer }
+.skip { position:absolute; left:-10000px }
+.skip:focus { left:.5rem; top:.5rem; background:white; padding:.5rem }

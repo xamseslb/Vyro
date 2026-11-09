@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import type { Workout } from "../activities/model";
 import { competitionTrace } from "./trace";
 import { WORKOUT_SHARING_RADIUS_METERS } from "../social/routePrivacy";
@@ -11,21 +12,21 @@ export function turfPreview(
   now = Date.now(),
 ) {
   if (workout.source !== "gps" || workout.sport !== "Løping")
-    throw new Error("Velg en GPS-økt registrert som løping.");
+    throw new Error(uiText("Velg en GPS-økt registrert som løping."));
   if (!workout.turfTrace?.length)
     throw new Error(
-      "Denne økten mangler GPS-data for soner. Ta opp en ny løpetur i VYRO.",
+      uiText("Denne økten mangler GPS-data for soner. Ta opp en ny løpetur i VYRO."),
     );
   const samples = competitionTrace(workout);
   if (samples.length < 2)
     throw new Error(
-      `Ingen sammenhengende løype er igjen når ${WORKOUT_SHARING_RADIUS_METERS} meter rundt start og slutt skjermes. Prøv en lengre tur uten avbrudd.`,
+      uiText("Ingen sammenhengende løype er igjen når {0} meter rundt start og slutt skjermes. Prøv en lengre tur uten avbrudd.", WORKOUT_SHARING_RADIUS_METERS),
     );
   if (samples.some((p) => p.timestamp < now - 7 * 86400000))
-    throw new Error("Økten er eldre enn 7 dager. Velg en nyere løpetur.");
+    throw new Error(uiText("Økten er eldre enn 7 dager. Velg en nyere løpetur."));
   if (samples.some((p) => p.timestamp > now + 60000))
     throw new Error(
-      "GPS-tiden ligger i fremtiden. Kontroller dato og klokkeslett på telefonen.",
+      uiText("GPS-tiden ligger i fremtiden. Kontroller dato og klokkeslett på telefonen."),
     );
   return { samples, value: previewGrowth(samples, turf, extend) };
 }

@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import { Button, Chip, Txt, styles, useTheme } from "./ui";
@@ -24,23 +25,19 @@ export function TrainingHistoryFilters({
   return (
     <View style={{ padding: 20, gap: 14, backgroundColor: c.surface }}>
       <View style={styles.row}>
-        <Txt size={20} weight="700">
-          Treningslogg
-        </Txt>
+        <Txt size={20} weight="700">{uiText("Treningslogg")}</Txt>
         <Pressable
           accessibilityRole="button"
           accessibilityState={{ expanded: open }}
           onPress={() => setOpen(!open)}
           style={{ minHeight: 44, justifyContent: "center" }}
         >
-          <Txt size={14} style={{ color: c.accent }}>
-            Filtrer
-          </Txt>
+          <Txt size={14} style={{ color: c.accent }}>{uiText("Filtrer")}</Txt>
         </Pressable>
       </View>
       <TextInput
-        accessibilityLabel="Søk i treningsloggen"
-        placeholder="Finn en tur etter navn"
+        accessibilityLabel={uiText("Søk i treningsloggen")}
+        placeholder={uiText("Finn en tur etter navn")}
         placeholderTextColor={c.muted}
         value={filter.search}
         onChangeText={(search) => change({ ...filter, search })}
@@ -56,12 +53,12 @@ export function TrainingHistoryFilters({
         <>
           <View style={styles.wrap}>
             <Chip
-              title="Alle idretter"
+              title={uiText("Alle idretter")}
               selected={filter.sport === "Alle"}
               onPress={() => change({ ...filter, sport: "Alle" })}
             />
             <Chip
-              title={filter.sport === "Alle" ? "Velg idrett" : filter.sport}
+              title={filter.sport === "Alle" ? uiText("Velg idrett") : uiText(filter.sport)}
               selected={filter.sport !== "Alle"}
               onPress={() => setSelectSport(true)}
             />
@@ -83,7 +80,7 @@ export function TrainingHistoryFilters({
             ))}
           </View>
           <Button
-            title="Nullstill filtre"
+            title={uiText("Nullstill filtre")}
             secondary
             onPress={() =>
               change({ ...initialHistoryFilter, source: filter.source })
@@ -99,10 +96,10 @@ export function TrainingHistoryFilters({
         />
       )}
       <Txt muted size={12}>
-        {count} økter ·{" "}
+        {count}{" " + uiText("økter ·")}{" "}
         {["recorded", "gps", "timer"].includes(filter.source)
-          ? "privat treningshistorikk"
-          : "teller ikke i mål eller milepæler"}
+          ? uiText("privat treningshistorikk")
+          : uiText("teller ikke i mål eller milepæler")}
       </Txt>
     </View>
   );

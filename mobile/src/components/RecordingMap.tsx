@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect, useMemo, useState } from "react";
 import {
   Pressable,
@@ -108,15 +109,15 @@ export default function RecordingMap({
   );
   const simulation = useMemo(() => [demoRoute], []);
   const status = timerOnly
-    ? "Tidtaking · uten GPS"
+    ? uiText("Tidtaking · uten GPS")
     : idle
-      ? "Klar til start"
+      ? uiText("Klar til start")
       : !gps
-        ? "Simulering · ikke GPS"
+        ? uiText("Simulering · ikke GPS")
         : error ||
           (!fresh
-            ? "Venter på presist GPS-signal"
-            : "GPS aktiv · privat opptak");
+            ? uiText("Venter på presist GPS-signal")
+            : uiText("GPS aktiv · privat opptak"));
   function control(
     label: string,
     action: () => void,
@@ -126,7 +127,7 @@ export default function RecordingMap({
     return (
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={label}
+        accessibilityLabel={uiText(label)}
         onPress={action}
         style={s.control}
       >
@@ -151,11 +152,9 @@ export default function RecordingMap({
             <SportIcon sport={r.sport} size={72} />
           </View>
           <Txt size={30} weight="700" style={{ color: "#11182C" }}>
-            {r.sport}
+            {uiText(r.sport ?? "")}
           </Txt>
-          <Txt size={15} style={{ color: "#596579", textAlign: "center" }}>
-            Din tid. Ditt tempo.
-          </Txt>
+          <Txt size={15} style={{ color: "#596579", textAlign: "center" }}>{uiText("Din tid. Ditt tempo.")}</Txt>
         </View>
       ) : (
         <LiveMap
@@ -177,7 +176,7 @@ export default function RecordingMap({
       )}
       <View style={[s.top, { top: insets.top + 12 }]}>
         {control(
-          idle ? "Til kartet" : "Minimer økten",
+          idle ? uiText("Til kartet") : uiText("Minimer økten"),
           () => router.replace("/(tabs)/map"),
           "back",
         )}
@@ -216,12 +215,10 @@ export default function RecordingMap({
         <View style={[s.challenge, { top: insets.top + 70 }]}>
           <Txt size={12} weight="700" style={{ color: "#4F3593" }}>
             {r.challenge
-              ? `SONE · ${r.challenge.name}`
-              : `RUTE · ${r.guide?.name}`}
+              ? uiText("SONE · {0}", r.challenge.name)
+              : uiText("RUTE · {0}", r.guide?.name)}
           </Txt>
-          <Txt size={11} style={{ color: "#4F3593" }}>
-            Lilla: valgt løype · grønn: ditt spor
-          </Txt>
+          <Txt size={11} style={{ color: "#4F3593" }}>{uiText("Lilla: valgt løype · grønn: ditt spor")}</Txt>
           {!!r.guide?.attribution && (
             <Txt size={10} style={{ color: "#4F3593" }}>
               {r.guide.attribution}
@@ -230,13 +227,11 @@ export default function RecordingMap({
           {idle && (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Fjern valgt rute"
+              accessibilityLabel={uiText("Fjern valgt rute")}
               onPress={() => useAppStore.getState().event("discard")}
               style={{ minHeight: 44, justifyContent: "center" }}
             >
-              <Txt size={13} weight="700" style={{ color: "#4F3593" }}>
-                Fjern rute
-              </Txt>
+              <Txt size={13} weight="700" style={{ color: "#4F3593" }}>{uiText("Fjern rute")}</Txt>
             </Pressable>
           )}
         </View>
@@ -265,12 +260,12 @@ export default function RecordingMap({
                 "N ↑",
               )}
               {control(
-                kind === "standard" ? "Vis satellittkart" : "Vis standardkart",
+                kind === "standard" ? uiText("Vis satellittkart") : uiText("Vis standardkart"),
                 () => setKind(kind === "standard" ? "hybrid" : "standard"),
                 "layers",
               )}
               {control(
-                threeD ? "Vis i 2D" : "Vis i 3D",
+                threeD ? uiText("Vis i 2D") : uiText("Vis i 3D"),
                 () => setThreeD(!threeD),
                 undefined,
                 threeD ? "2D" : "3D",
@@ -309,12 +304,12 @@ export default function RecordingMap({
               weight="700"
               style={{ color: paused ? "#4F3593" : idle ? "#11182C" : "white" }}
             >
-              {paused ? "Satt på pause" : r.sport}
+              {paused ? uiText("Satt på pause") : uiText(r.sport)}
             </Txt>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={
-                expanded ? "Vis kompakte målinger" : "Forstørr målinger"
+                expanded ? uiText("Vis kompakte målinger") : uiText("Forstørr målinger")
               }
               accessibilityState={{ expanded }}
               onPress={() => setExpanded(!expanded)}
@@ -346,7 +341,7 @@ export default function RecordingMap({
                             .replace(".", ",")
                         : pace(r.distance, r.seconds)
                       : "—",
-                    info.metric === "speed" ? "Snitt · km/t" : "Snitt /km",
+                    info.metric === "speed" ? uiText("Snitt · km/t") : uiText("Snitt /km"),
                   ],
                   [km(r.distance), "Distanse · km"],
                 ]
@@ -364,7 +359,7 @@ export default function RecordingMap({
                   {value}
                 </Txt>
                 <Txt size={11} style={{ color: "#596579" }}>
-                  {label}
+                  {uiText(label)}
                 </Txt>
               </View>
             ))}
@@ -391,7 +386,7 @@ export default function RecordingMap({
               <View style={s.startActions}>
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={`Velg idrett, ${r.sport}`}
+                  accessibilityLabel={uiText("Velg idrett, {0}", r.sport)}
                   disabled={tracking.starting}
                   onPress={chooseSport}
                   style={s.sideAction}
@@ -406,13 +401,13 @@ export default function RecordingMap({
                     weight="600"
                     style={{ color: "#11182C", textAlign: "center" }}
                   >
-                    {r.sport}
+                    {uiText(r.sport ?? "")}
                   </Txt>
                 </Pressable>
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={
-                    tracking.starting ? "Starter økten" : "Start"
+                    tracking.starting ? uiText("Starter økten") : "Start"
                   }
                   accessibilityState={{
                     disabled: tracking.starting,
@@ -429,13 +424,13 @@ export default function RecordingMap({
                     <Icon name="play" size={30} color="#11182C" />
                   </View>
                   <Txt size={16} weight="700" style={{ color: "#11182C" }}>
-                    {tracking.starting ? "Starter …" : "Start"}
+                    {tracking.starting ? uiText("Starter …") : "Start"}
                   </Txt>
                 </Pressable>
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={
-                    gps ? "Velg rute" : "Treningsinnstillinger"
+                    gps ? uiText("Velg rute") : uiText("Treningsinnstillinger")
                   }
                   disabled={tracking.starting}
                   onPress={() =>
@@ -455,7 +450,7 @@ export default function RecordingMap({
                     weight="600"
                     style={{ color: "#11182C", textAlign: "center" }}
                   >
-                    {gps ? "Velg rute" : "Innstillinger"}
+                    {gps ? uiText("Velg rute") : uiText("Innstillinger")}
                   </Txt>
                 </Pressable>
               </View>
@@ -464,7 +459,7 @@ export default function RecordingMap({
             <View style={[s.actions, narrow && { flexDirection: "column" }]}>
               <View style={!narrow && { flex: 1 }}>
                 <Button
-                  title={tracking.starting ? "Starter …" : "Fortsett"}
+                  title={tracking.starting ? uiText("Starter …") : uiText("Fortsett")}
                   disabled={tracking.starting}
                   icon="play"
                   large
@@ -473,7 +468,7 @@ export default function RecordingMap({
               </View>
               <View style={!narrow && { flex: 1 }}>
                 <Button
-                  title="Fullfør"
+                  title={uiText("Fullfør")}
                   icon="check"
                   secondary
                   large
@@ -483,7 +478,7 @@ export default function RecordingMap({
             </View>
           ) : r.status === "finishing" ? (
             <Button
-              title="Se oppsummering"
+              title={uiText("Se oppsummering")}
               large
               onPress={() => router.push("/summary")}
             />
@@ -493,14 +488,14 @@ export default function RecordingMap({
           {!idle && (
             <Txt size={10} style={{ textAlign: "center", color: "#596579" }}>
               {timerOnly
-                ? "Tid måles også når skjermen er låst"
+                ? uiText("Tid måles også når skjermen er låst")
                 : gps
                   ? tracking.starting
-                    ? "Starter GPS-opptak … hold appen åpen et øyeblikk"
+                    ? uiText("Starter GPS-opptak … hold appen åpen et øyeblikk")
                     : tracking.backgroundActive
-                      ? "GPS fortsetter med låst skjerm og i andre apper"
-                      : "Hold appen åpen · opptaket pauser i bakgrunnen"
-                  : "Eksempelfart og illustrert rute · lagres aldri som GPS"}
+                      ? uiText("GPS fortsetter med låst skjerm og i andre apper")
+                      : uiText("Hold appen åpen · opptaket pauser i bakgrunnen")
+                  : uiText("Eksempelfart og illustrert rute · lagres aldri som GPS")}
             </Txt>
           )}
           {!idle && tracking.liveActivityError && (

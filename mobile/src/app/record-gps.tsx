@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { Redirect, router } from "expo-router";
 import { AccountGate } from "../components/AccountGate";
 import { Button, Screen, Txt } from "../components/ui";
@@ -14,25 +15,22 @@ export default function RecordGps() {
   if (!ready)
     return (
       <Screen>
-        <Txt>Laster økten …</Txt>
+        <Txt>{uiText("Laster økten …")}</Txt>
       </Screen>
     );
   if (error)
     return (
       <Screen>
-        <Txt size={24}>Kunne ikke åpne det tidligere GPS-utkastet</Txt>
-        <Txt>
-          Utkastet er beholdt. Prøv igjen når enheten er låst opp og har ledig
-          plass.
-        </Txt>
+        <Txt size={24}>{uiText("Kunne ikke åpne det tidligere GPS-utkastet")}</Txt>
+        <Txt>{uiText("Utkastet er beholdt. Prøv igjen når enheten er låst opp og har ledig plass.")}</Txt>
         <Button
-          title="Prøv gjenoppretting igjen"
+          title={uiText("Prøv gjenoppretting igjen")}
           onPress={() => {
             void useGpsStore.persist.rehydrate();
           }}
         />
         <Button
-          title="Til treningsskjermen"
+          title={uiText("Til treningsskjermen")}
           secondary
           onPress={() => router.replace("/(tabs)/track")}
         />
@@ -42,15 +40,15 @@ export default function RecordGps() {
   return (
     <AccountGate>
       <Screen>
-        <Txt size={24}>Uferdig GPS-økt</Txt>
+        <Txt size={24}>{uiText("Uferdig GPS-økt")}</Txt>
         <Txt>
           {draft.ownerId === userId
-            ? "Du kan fortsette det tidligere opptaket i treningsskjermen."
-            : "Logg inn med kontoen som startet denne økten for å fortsette."}
+            ? uiText("Du kan fortsette det tidligere opptaket i treningsskjermen.")
+            : uiText("Logg inn med kontoen som startet denne økten for å fortsette.")}
         </Txt>
         {draft.ownerId === userId && (
           <Button
-            title="Fortsett økten"
+            title={uiText("Fortsett økten")}
             disabled={status !== "idle"}
             onPress={() => {
               useAppStore.setState({
@@ -75,7 +73,7 @@ export default function RecordGps() {
           />
         )}
         <Button
-          title="Til treningsskjermen"
+          title={uiText("Til treningsskjermen")}
           secondary
           onPress={() => router.replace("/(tabs)/track")}
         />

@@ -1,3 +1,4 @@
+import { displayLocale } from "../../i18n/language";
 import type { Sport, WorkoutDetails } from "./sports";
 export { sports, type Sport } from "./sports";
 export type Workout = {
@@ -29,7 +30,7 @@ export function pace(distance: number, seconds: number) {
   return distance > 0 && seconds > 0 ? duration(seconds / distance) : "—";
 }
 export function km(value: number) {
-  return value.toLocaleString("nb-NO", {
+  return value.toLocaleString(displayLocale(), {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });

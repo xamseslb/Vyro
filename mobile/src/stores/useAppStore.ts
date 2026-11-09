@@ -1,3 +1,4 @@
+import { message as uiText, setDisplayLanguage, type AppLanguage } from "../i18n/language";
 import { isSuggestedRoute } from "../features/routes/model";
 import { workoutStorage } from "../lib/workoutStorage";
 import { create } from "zustand";
@@ -30,6 +31,7 @@ import {
 type State = {
   ready: boolean;
   storageError: string | null;
+  language: AppLanguage | null;
   onboarded: boolean;
   name: string;
   preferred: Sport[];
@@ -77,7 +79,8 @@ type State = {
         | "examplesVisible"
         | "joined"
         | "liked"
-        | "onboarded"
+        | "language"
+    | "onboarded"
       >
     >,
   ) => void;
@@ -101,7 +104,8 @@ type State = {
 };
 type SavedState = Pick<
   State,
-  | "onboarded"
+  | "language"
+    | "onboarded"
   | "name"
   | "preferred"
   | "goal"
@@ -152,7 +156,7 @@ export const appPersistence = bufferedStorage<SavedState>(workoutStorage, {
     if (!useAppStore.getState().storageError)
       useAppStore.setState({
         storageError:
-          "Lokal lagring feilet. Data er bare i minnet. Behold appen åpen.",
+          uiText("Lokal lagring feilet. Data er bare i minnet. Behold appen åpen."),
       });
   },
   onSuccess: () => {
@@ -165,6 +169,7 @@ export const useAppStore = create<State>()(
     (set, get) => ({
       ready: false,
       storageError: null,
+      language: null,
       onboarded: false,
       name: "",
       preferred: ["Løping"],
@@ -416,6 +421,7 @@ export const useAppStore = create<State>()(
         return {
           ...current,
           ...saved,
+          language: saved.language === "en" || saved.language === "nb" ? saved.language : null,
           defaultMapKind: saved.mapKindsByOwner?.[useAuthStore.getState().session?.user.id ?? ""] ?? "standard",
           examplesVisible: false,
           // An old developer simulation must never resume as a real GPS workout.
@@ -427,6 +433,7 @@ export const useAppStore = create<State>()(
         };
       },
       partialize: (s): SavedState => ({
+        language: s.language,
         onboarded: s.onboarded,
         name: s.name,
         preferred: s.preferred,
@@ -458,7 +465,7 @@ export const useAppStore = create<State>()(
         else
           useAppStore.setState({
             ready: false,
-            storageError: "Kunne ikke lese lagrede data.",
+            storageError: uiText("Kunne ikke lese lagrede data."),
           });
       },
     },
@@ -471,4 +478,10 @@ useAuthStore.subscribe((next, previous) => {
   if (id !== previous.session?.user.id && state.ready) {
     useAppStore.setState({ defaultMapKind: (id && state.mapKindsByOwner[id]) || "standard" });
   }
+});
+
+// Keep formatters and event handlers in step with preference changes and hydration.
+setDisplayLanguage(useAppStore.getState().language ?? "nb");
+useAppStore.subscribe((state, prev) => {
+  if (state.language !== prev.language) setDisplayLanguage(state.language ?? "nb");
 });

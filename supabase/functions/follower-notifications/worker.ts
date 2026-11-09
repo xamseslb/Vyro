@@ -4,6 +4,7 @@ export type Job = {
   token: string;
   recipient_id: string;
   kind: "follow" | "request" | "accepted" | "comment" | "like" | "post";
+  language?: "en" | "nb";
   notice_id?: string;
   ticket: string | null;
   attempts: number;
@@ -17,13 +18,23 @@ type Finish = (
 ) => Promise<void>;
 type Ticket = { status?: string; id?: string; details?: { error?: string } };
 const bodies = {
-  follow: "Du har en ny følger.",
-  request: "Du har fått en følgeforespørsel.",
-  accepted: "Følgeforespørselen din er godkjent.",
-  comment: "Du har fått en kommentar på innlegget ditt.",
-  like: "Noen likte innlegget ditt.",
-  post: "Noen du følger har delt et nytt innlegg.",
-};
+  nb: {
+    follow: "Du har en ny følger.",
+    request: "Du har fått en følgeforespørsel.",
+    accepted: "Følgeforespørselen din er godkjent.",
+    comment: "Du har fått en kommentar på innlegget ditt.",
+    like: "Noen likte innlegget ditt.",
+    post: "Noen du følger har delt et nytt innlegg.",
+  },
+  en: {
+    follow: "You have a new follower.",
+    request: "You have a new follow request.",
+    accepted: "Your follow request was accepted.",
+    comment: "Someone commented on your post.",
+    like: "Someone liked your post.",
+    post: "Someone you follow shared a new post.",
+  },
+} satisfies Record<"nb" | "en", Record<Job["kind"], string>>;
 
 export async function dispatchJobs(
   jobs: Job[],
@@ -54,7 +65,7 @@ export async function dispatchJobs(
               : batch.map((j) => ({
                   to: j.token,
                   title: "VYRO",
-                  body: bodies[j.kind],
+                  body: bodies[j.language === "en" ? "en" : "nb"][j.kind],
                   sound: "default",
                   channelId: "social",
                   ttl: 3600,

@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { useEffect, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import { client, Post, socialError } from "../features/social/api";
@@ -69,7 +70,7 @@ export function CloudPost({
             {visibleUsername(post.profiles.username)
               ? `${visibleUsername(post.profiles.username)} · `
               : ""}
-            {new Date(post.recorded_at).toLocaleDateString("nb-NO")}
+            {new Date(post.recorded_at).toLocaleDateString(displayLocale())}
           </Txt>
         </View>
         </ProfileLink>
@@ -107,7 +108,7 @@ export function CloudPost({
             }}
           >
             <Txt muted size={12}>
-              {label}
+              {uiText(label)}
             </Txt>
             <Txt
               weight="700"
@@ -133,10 +134,10 @@ export function CloudPost({
         />
       )}
       <Txt muted size={12}>
-        {post.sport} ·{" "}
+        {uiText(post.sport)} ·{" "}
         {post.audience === "followers"
-          ? "Delt med følgere"
-          : "Delt med innloggede VYRO-brukere"}
+          ? uiText("Delt med følgere")
+          : uiText("Delt med innloggede VYRO-brukere")}
       </Txt>
       <Reactions
         key={`${post.id}:${post.like_count}:${post.liked}:${post.reposted}`}
@@ -169,8 +170,8 @@ export function CloudPost({
         <Button
           title={
             confirm
-              ? "Bekreft: trekk tilbake innlegget"
-              : "Trekk tilbake deling"
+              ? uiText("Bekreft: trekk tilbake innlegget")
+              : uiText("Trekk tilbake deling")
           }
           secondary
           disabled={busy}
@@ -193,7 +194,7 @@ export function CloudPost({
       )}
       {confirm && post.author_id === userId && (
         <Button
-          title="Avbryt"
+          title={uiText("Avbryt")}
           secondary
           disabled={busy}
           onPress={() => setConfirm(false)}
@@ -212,7 +213,7 @@ function PostMap({ postId, football }: { postId: string; football: boolean }) {
   useEffect(() => {
     const controller = new AbortController();
     const timeout = setTimeout(() => {
-      setError("Kartet brukte for lang tid på å laste. Prøv igjen.");
+      setError(uiText("Kartet brukte for lang tid på å laste. Prøv igjen."));
       controller.abort();
     }, 15000);
     void (async () => {
@@ -249,7 +250,7 @@ function PostMap({ postId, football }: { postId: string; football: boolean }) {
         <View style={{ gap: 12 }}>
           <Txt>{error}</Txt>
           <Button
-            title="Last kartet på nytt"
+            title={uiText("Last kartet på nytt")}
             secondary
             onPress={() => {
               setRoute(null);
@@ -260,7 +261,7 @@ function PostMap({ postId, football }: { postId: string; football: boolean }) {
         </View>
       ) : route ? (
         route.length < 2 ? (
-          <Txt muted>Dette innlegget har ikke et delt rutekart.</Txt>
+          <Txt muted>{uiText("Dette innlegget har ikke et delt rutekart.")}</Txt>
         ) : football ? (
           <View style={{ gap: 16 }}>
             <FootballMap points={route} height={260} />
@@ -270,7 +271,7 @@ function PostMap({ postId, football }: { postId: string; football: boolean }) {
           <WorkoutMap points={route} height={220} />
         )
       ) : (
-        <Txt muted>Laster kart …</Txt>
+        <Txt muted>{uiText("Laster kart …")}</Txt>
       )}
     </View>
   );
@@ -393,9 +394,7 @@ function Reactions({
         onRepost={() => void toggle("reposts", reposted)}
       />
       {reposted && (
-        <Txt muted size={12}>
-          Repost lagret. Originalinnlegget beholdes.
-        </Txt>
+        <Txt muted size={12}>{uiText("Repost lagret. Originalinnlegget beholdes.")}</Txt>
       )}
       {!!error && <Txt>{error}</Txt>}
     </>

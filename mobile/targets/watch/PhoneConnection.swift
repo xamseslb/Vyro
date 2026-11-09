@@ -5,6 +5,7 @@ import WatchConnectivity
 final class PhoneConnection: NSObject, ObservableObject, WCSessionDelegate {
   static let shared = PhoneConnection()
   @Published private(set) var ownerId = UserDefaults.standard.string(forKey: "vyro.owner") ?? ""
+  @Published private(set) var language = UserDefaults.standard.string(forKey: "vyro.language") ?? ((Locale.preferredLanguages.first ?? "en").hasPrefix("en") ? "en" : "nb")
   @Published private(set) var pending = 0
   @Published var message = ""
   var ownerChanged: (() -> Void)?
@@ -37,6 +38,10 @@ final class PhoneConnection: NSObject, ObservableObject, WCSessionDelegate {
   private func apply(_ context: [String: Any]) {
     guard context["version"] as? Int == 1, let owner = context["ownerId"] as? String,
       owner.isEmpty || UUID(uuidString: owner) != nil else { return }
+    if let lang = context["language"] as? String, ["en", "nb"].contains(lang), language != lang {
+      language = lang
+      UserDefaults.standard.set(lang, forKey: "vyro.language")
+    }
     if ownerId != owner {
       ownerId = owner
       UserDefaults.standard.set(owner, forKey: "vyro.owner")

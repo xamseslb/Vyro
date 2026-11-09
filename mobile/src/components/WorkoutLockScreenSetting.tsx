@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { Switch, View } from "react-native";
 import { Txt, styles } from "./ui";
 import { useAppStore } from "../stores/useAppStore";
@@ -15,9 +16,9 @@ export function WorkoutLockScreenSetting() {
   return (
     <View style={{ gap: 10 }}>
       <View style={styles.row}>
-        <Txt style={{ flex: 1 }}>Vis tid og km på låseskjermen</Txt>
+        <Txt style={{ flex: 1 }}>{uiText("Vis tid og km på låseskjermen")}</Txt>
         <Switch
-          accessibilityLabel="Vis tid og km på låseskjermen"
+          accessibilityLabel={uiText("Vis tid og km på låseskjermen")}
           value={enabled && (background || timerOnly)}
           disabled={recording && !background && !timerOnly}
           onValueChange={(workoutLiveActivity) =>
@@ -32,12 +33,12 @@ export function WorkoutLockScreenSetting() {
       </View>
       <Txt muted size={14}>
         {timerOnly
-          ? "Tid og idrett blir synlige når telefonen er låst."
+          ? uiText("Tid og idrett blir synlige når telefonen er låst.")
           : recording && !background
-            ? "Avslutt økten og slå på opptak med låst skjerm for å vise økten."
+            ? uiText("Avslutt økten og slå på opptak med låst skjerm for å vise økten.")
             : !background && enabled
-              ? "Valget ditt huskes. Slå på opptak med låst skjerm for å bruke det igjen."
-              : "Tid, distanse og siste kartutsnitt blir synlige når telefonen er låst."}
+              ? uiText("Valget ditt huskes. Slå på opptak med låst skjerm for å bruke det igjen.")
+              : uiText("Tid, distanse og siste kartutsnitt blir synlige når telefonen er låst.")}
       </Txt>
       {error && <Txt size={14}>{error}</Txt>}
     </View>

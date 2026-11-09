@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { View, useWindowDimensions } from "react-native";
 import { Txt } from "./ui";
 import { duration, km, pace, type Sport } from "../features/activities/model";
@@ -20,13 +21,13 @@ export default function WorkoutStats({
   const speed = sportInfo(sport).metric === "speed";
   const { fontScale } = useWindowDimensions();
   const football = !timerOnly && sport === "Fotball";
-  const metrics = [{ value: duration(seconds), label: "Aktiv tid" }];
+  const metrics = [{ value: duration(seconds), label: uiText("Aktiv tid") }];
   if (!timerOnly) {
-    metrics.push({ value: km(distance), label: "Distanse · km" });
+    metrics.push({ value: km(distance), label: uiText("Distanse · km") });
     metrics.push({
       value: football
         ? validMaxSpeed(maxSpeed)
-          ? maxSpeed!.toLocaleString("nb-NO", { maximumFractionDigits: 1 })
+          ? maxSpeed!.toLocaleString(displayLocale(), { maximumFractionDigits: 1 })
           : "—"
         : distance >= 0.1
           ? speed
@@ -36,10 +37,10 @@ export default function WorkoutStats({
             : pace(distance, seconds)
           : "—",
       label: football
-        ? "Maksfart · km/t"
+        ? uiText("Maksfart · km/t")
         : speed
-          ? "Snitt · km/t"
-          : "Snitt · min/km",
+          ? uiText("Snitt · km/t")
+          : uiText("Snitt · min/km"),
     });
   }
   // A whole metric may wrap to the next row, but its digits must never wrap.
@@ -86,8 +87,8 @@ export default function WorkoutStats({
       {football && (
         <Txt muted size={12}>
           {validMaxSpeed(maxSpeed)
-            ? "Maksfart er målt med GPS over fem sekunder."
-            : "For få nøyaktige GPS-målinger til å vise maksfart."}
+            ? uiText("Maksfart er målt med GPS over fem sekunder.")
+            : uiText("For få nøyaktige GPS-målinger til å vise maksfart.")}
         </Txt>
       )}
     </View>

@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../../i18n/language";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Switch, TextInput, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -104,7 +105,7 @@ export function RouteContribute({ userId }: { userId: string }) {
   };
   return (
     <Page
-      title={workout ? "Forhåndsvis løypa" : "Bidra med en løype"}
+      title={workout ? uiText("Forhåndsvis løypa") : uiText("Bidra med en løype")}
       fallback="/routes"
       backDisabled={busy}
       onBack={
@@ -121,7 +122,7 @@ export function RouteContribute({ userId }: { userId: string }) {
           <>
             {!!error && <Txt accessibilityRole="alert">{error}</Txt>}
             <Button
-              title={busy ? "Deler …" : "Del løypa med alle"}
+              title={busy ? uiText("Deler …") : uiText("Del løypa med alle")}
               disabled={
                 busy || !preview || !consent || !name.trim() || !place.trim()
               }
@@ -134,22 +135,14 @@ export function RouteContribute({ userId }: { userId: string }) {
       <View style={{ padding: 20, gap: 18 }}>
         {!workout ? (
           <>
-            <Txt size={26} weight="700">
-              Din tur kan bli noens neste løype
-            </Txt>
-            <Txt muted>
-              Velg en av dine gjennomførte turer. Du ser hva du deler før løypa
-              blir tilgjengelig for andre.
-            </Txt>
-            <Txt weight="700">Velg en GPS-tur</Txt>
+            <Txt size={26} weight="700">{uiText("Din tur kan bli noens neste løype")}</Txt>
+            <Txt muted>{uiText("Velg en av dine gjennomførte turer. Du ser hva du deler før løypa blir tilgjengelig for andre.")}</Txt>
+            <Txt weight="700">{uiText("Velg en GPS-tur")}</Txt>
             {!eligible.length && (
               <>
-                <Txt>
-                  Du har ingen GPS-turer å dele ennå. Ta opp en løpetur eller
-                  gåtur først.
-                </Txt>
+                <Txt>{uiText("Du har ingen GPS-turer å dele ennå. Ta opp en løpetur eller gåtur først.")}</Txt>
                 <Button
-                  title="Start en tur"
+                  title={uiText("Start en tur")}
                   onPress={() => router.push("/(tabs)/track")}
                 />
               </>
@@ -158,9 +151,9 @@ export function RouteContribute({ userId }: { userId: string }) {
               <SettingsRow
                 key={w.id}
                 title={w.title}
-                description={`${km(w.distance)} km · ${new Date(w.date).toLocaleDateString("nb-NO")}`}
+                description={`${km(w.distance)} km · ${new Date(w.date).toLocaleDateString(displayLocale())}`}
                 icon="map"
-                label={`Velg tur: ${w.title}`}
+                label={uiText("Velg tur: {0}", w.title)}
                 onPress={() => {
                   select(w.id);
                   setName("");
@@ -170,24 +163,22 @@ export function RouteContribute({ userId }: { userId: string }) {
                 }}
               />
             ))}
-            <Txt size={22} weight="700">
-              Løyper du har delt
-            </Txt>
+            <Txt size={22} weight="700">{uiText("Løyper du har delt")}</Txt>
             {loading && (
-              <ActivityIndicator accessibilityLabel="Henter dine bidrag" />
+              <ActivityIndicator accessibilityLabel={uiText("Henter dine bidrag")} />
             )}
             {!!listError && (
               <>
                 <Txt accessibilityRole="alert">{listError}</Txt>
                 <Button
-                  title="Hent bidrag på nytt"
+                  title={uiText("Hent bidrag på nytt")}
                   secondary
                   onPress={() => setReload((n) => n + 1)}
                 />
               </>
             )}
             {!loading && !listError && !own.length && (
-              <Txt muted>Ingen delte løyper ennå.</Txt>
+              <Txt muted>{uiText("Ingen delte løyper ennå.")}</Txt>
             )}
             {own.map((r) => (
               <SettingsRow
@@ -205,16 +196,12 @@ export function RouteContribute({ userId }: { userId: string }) {
           <>
             <WorkoutMap points={preview.route} height={280} />
             <Txt size={24} weight="700">
-              {km(preview.distance / 1000)} km synlig løype
-            </Txt>
-            <Txt muted>
-              Området innen 500 meter fra start og slutt er skjult. Bare linjen
-              på kartet deles; tid, tempo og notater forblir private.
-            </Txt>
-            <Txt weight="700">Navn på løypa</Txt>
+              {km(preview.distance / 1000)}{" " + uiText("km synlig løype")}</Txt>
+            <Txt muted>{uiText("Området innen 500 meter fra start og slutt er skjult. Bare linjen på kartet deles; tid, tempo og notater forblir private.")}</Txt>
+            <Txt weight="700">{uiText("Navn på løypa")}</Txt>
             <TextInput
-              accessibilityLabel="Navn på delt løype"
-              placeholder="Gi løypa et navn"
+              accessibilityLabel={uiText("Navn på delt løype")}
+              placeholder={uiText("Gi løypa et navn")}
               placeholderTextColor={c.muted}
               value={name}
               onChangeText={setName}
@@ -222,10 +209,10 @@ export function RouteContribute({ userId }: { userId: string }) {
               maxLength={120}
               style={input}
             />
-            <Txt weight="700">Sted eller by</Txt>
+            <Txt weight="700">{uiText("Sted eller by")}</Txt>
             <TextInput
-              accessibilityLabel="Sted eller by"
-              placeholder="Hvor går løypa?"
+              accessibilityLabel={uiText("Sted eller by")}
+              placeholder={uiText("Hvor går løypa?")}
               placeholderTextColor={c.muted}
               value={place}
               onChangeText={setPlace}
@@ -237,25 +224,17 @@ export function RouteContribute({ userId }: { userId: string }) {
               style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
             >
               <Switch
-                accessibilityLabel="Jeg vil dele denne løypa med alle i VYRO"
+                accessibilityLabel={uiText("Jeg vil dele denne løypa med alle i VYRO")}
                 value={consent}
                 onValueChange={setConsent}
                 disabled={busy}
               />
-              <Txt style={{ flex: 1 }}>
-                Jeg vil dele denne løypa med alle i VYRO.
-              </Txt>
+              <Txt style={{ flex: 1 }}>{uiText("Jeg vil dele denne løypa med alle i VYRO.")}</Txt>
             </View>
-            <Txt muted size={13}>
-              Du kan trekke delingen tilbake fra «Løyper du har delt». En lik
-              løype som allerede finnes, blir avvist.
-            </Txt>
+            <Txt muted size={13}>{uiText("Du kan trekke delingen tilbake fra «Løyper du har delt». En lik løype som allerede finnes, blir avvist.")}</Txt>
           </>
         ) : (
-          <Txt>
-            Denne turen har for lite sammenhengende løype etter skjerming, eller
-            er over 50 km. Velg en annen tur.
-          </Txt>
+          <Txt>{uiText("Denne turen har for lite sammenhengende løype etter skjerming, eller er over 50 km. Velg en annen tur.")}</Txt>
         )}
       </View>
     </Page>

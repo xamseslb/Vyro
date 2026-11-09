@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../../i18n/language";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -134,50 +135,47 @@ export function TurfComposer({
     return (
       <Page
         key="saved"
-        title={saved.existing ? "Allerede lagret" : "Bekreftet"}
+        title={saved.existing ? uiText("Allerede lagret") : uiText("Bekreftet")}
         fallback="/turf"
         onBack={openClubZones}
       >
         <View style={{ padding: 24, gap: 22 }}>
           <Txt size={30} weight="700">
             {saved.existing
-              ? "Vi fant soneresultatet ditt"
+              ? uiText("Vi fant soneresultatet ditt")
               : !turfId
-                ? "Sonen er lagt ut!"
+                ? uiText("Sonen er lagt ut!")
                 : saved.result.won
-                  ? "Sonen er din!"
-                  : "Forsøket er lagret"}
+                  ? uiText("Sonen er din!")
+                  : uiText("Forsøket er lagret")}
           </Txt>
           <Txt>
             {saved.existing
-              ? "Denne økten er allerede brukt i et soneforsøk. Åpne sonen for å se dagens eier og løype."
+              ? uiText("Denne økten er allerede brukt i et soneforsøk. Åpne sonen for å se dagens eier og løype.")
               : saved.result.won
-                ? "Medlemmene i klubben kan nå se sonen og utfordre tiden. Du finner den under Soner."
-                : "Du slo ikke tiden denne gangen. Sonen beholder eieren."}
+                ? uiText("Medlemmene i klubben kan nå se sonen og utfordre tiden. Du finner den under Soner.")
+                : uiText("Du slo ikke tiden denne gangen. Sonen beholder eieren.")}
           </Txt>
           <Txt weight="700">
             {km(saved.result.distance_m / 1000)} km ·{" "}
-            {duration(saved.result.seconds)} på ditt forsøk
-          </Txt>
+            {duration(saved.result.seconds)}{" " + uiText("på ditt forsøk")}</Txt>
           <Button
-            title="Se sonen"
+            title={uiText("Se sonen")}
             onPress={() => openResult(saved.result.turf_id)}
           />
-          <Button title="Til sonene" secondary onPress={openClubZones} />
+          <Button title={uiText("Til sonene")} secondary onPress={openClubZones} />
         </View>
       </Page>
     );
   const blockedTarget = !!turfId && (loading || !!loadError || !turf);
   if (!turfId && !club)
     return (
-      <Page title="Velg klubb" fallback="/turf">
+      <Page title={uiText("Velg klubb")} fallback="/turf">
         <View style={{ padding: 22, gap: 18 }}>
-          <Txt size={24} weight="700">
-            Hvem skal konkurrere?
-          </Txt>
-          <Txt muted>Sonen deles bare med medlemmene i klubben du velger.</Txt>
+          <Txt size={24} weight="700">{uiText("Hvem skal konkurrere?")}</Txt>
+          <Txt muted>{uiText("Sonen deles bare med medlemmene i klubben du velger.")}</Txt>
           {clubLoading ? (
-            <ActivityIndicator accessibilityLabel="Henter klubben" />
+            <ActivityIndicator accessibilityLabel={uiText("Henter klubben")} />
           ) : (
             <ClubPicker selected={club} onSelect={setClub} />
           )}
@@ -189,7 +187,7 @@ export function TurfComposer({
     return (
       <Page
         key="choose"
-        title={turfId ? "Velg soneforsøk" : "Legg ut sone"}
+        title={turfId ? uiText("Velg soneforsøk") : uiText("Legg ut sone")}
         fallback="/turf"
         scroll={false}
       >
@@ -205,22 +203,18 @@ export function TurfComposer({
           ListHeaderComponent={
             <View style={{ padding: 22, gap: 12 }}>
               {!turfId && <ClubPicker selected={club} onSelect={setClub} />}
-              <Txt size={24} weight="700">
-                Velg en løpetur
-              </Txt>
+              <Txt size={24} weight="700">{uiText("Velg en løpetur")}</Txt>
               <Txt muted>
                 {turf
-                  ? `Et forsøk på ${turf.name}.`
-                  : "Gjør en lagret tur til en sone andre kan utfordre."}{" "}
-                Du ser kartet før du deler.
-              </Txt>
+                  ? uiText("Et forsøk på {0}.", turf.name)
+                  : uiText("Gjør en lagret tur til en sone andre kan utfordre.")}{" "}{uiText("Du ser kartet før du deler.")}</Txt>
               {loading && (
-                <ActivityIndicator accessibilityLabel="Henter sonen" />
+                <ActivityIndicator accessibilityLabel={uiText("Henter sonen")} />
               )}
               {!!loadError && (
                 <>
                   <Txt accessibilityRole="alert">{loadError}</Txt>
-                  <Button title="Prøv igjen" secondary onPress={retry} />
+                  <Button title={uiText("Prøv igjen")} secondary onPress={retry} />
                 </>
               )}
             </View>
@@ -229,8 +223,8 @@ export function TurfComposer({
             <SettingsRow
               title={w.title}
               icon="run"
-              description={`${new Date(w.date).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })} · ${km(w.distance)} km · ${duration(w.seconds)}`}
-              label={`Velg ${w.title}`}
+              description={`${new Date(w.date).toLocaleDateString(displayLocale(), { day: "numeric", month: "short" })} · ${km(w.distance)} km · ${duration(w.seconds)}`}
+              label={uiText("Velg {0}", w.title)}
               onPress={() => {
                 setSelected(w.id);
                 setName("");
@@ -241,11 +235,9 @@ export function TurfComposer({
           ListEmptyComponent={
             !blockedTarget ? (
               <View style={{ padding: 22, gap: 18 }}>
-                <Txt>
-                  Du har ingen lagrede GPS-løpeturer på denne kontoen ennå.
-                </Txt>
+                <Txt>{uiText("Du har ingen lagrede GPS-løpeturer på denne kontoen ennå.")}</Txt>
                 <Button
-                  title="Start en løpetur"
+                  title={uiText("Start en løpetur")}
                   onPress={() => router.push("/(tabs)/track")}
                 />
               </View>
@@ -258,12 +250,12 @@ export function TurfComposer({
     loadError ||
     preview?.error ||
     (!workout
-      ? "Denne løpeturen finnes ikke på denne enheten og kontoen. Velg en annen tur."
+      ? uiText("Denne løpeturen finnes ikke på denne enheten og kontoen. Velg en annen tur.")
       : "");
   return (
     <Page
       key="review"
-      title={turfId ? "Ditt soneforsøk" : "Se over sonen"}
+      title={turfId ? uiText("Ditt soneforsøk") : uiText("Se over sonen")}
       fallback="/turf"
       backDisabled={busy}
       onBack={() => {
@@ -276,7 +268,7 @@ export function TurfComposer({
       footer={
         receipt ? (
           <Button
-            title="Se sonen fra denne økten"
+            title={uiText("Se sonen fra denne økten")}
             onPress={() => openResult(receipt.turf_id)}
           />
         ) : (
@@ -287,21 +279,19 @@ export function TurfComposer({
               </Txt>
             )}
             {!message && (
-              <Txt muted size={12}>
-                Når du trykker «{turfId ? "Send soneforsøk" : "Legg ut sone"}»,
-                deler du løypa og resultatet med{" "}
-                {club?.name ?? "medlemmene i denne klubben"}.
+              <Txt muted size={12}>{uiText("Når du trykker «")}{turfId ? uiText("Send soneforsøk") : uiText("Legg ut sone")}{uiText("», deler du løypa og resultatet med")}{" "}
+                {club?.name ?? uiText("medlemmene i denne klubben")}.
               </Txt>
             )}
             <Button
               title={
                 busy
-                  ? "Legger ut …"
+                  ? uiText("Legger ut …")
                   : checking
-                    ? "Sjekker tidligere forsøk …"
+                    ? uiText("Sjekker tidligere forsøk …")
                     : turfId
-                      ? "Send soneforsøk"
-                      : "Legg ut sone"
+                      ? uiText("Send soneforsøk")
+                      : uiText("Legg ut sone")
               }
               disabled={
                 busy ||
@@ -336,7 +326,7 @@ export function TurfComposer({
                 } catch (e) {
                   if (alive.current)
                     setError(
-                      `${turfError(e)} Du kan prøve igjen med samme økt.`,
+                      uiText("{0} Du kan prøve igjen med samme økt.", turfError(e)),
                     );
                 } finally {
                   lock.current = false;
@@ -350,16 +340,11 @@ export function TurfComposer({
     >
       <View style={{ padding: 20, gap: 16 }}>
         {!turfId && !busy && <ClubPicker selected={club} onSelect={setClub} />}
-        {loading && <ActivityIndicator accessibilityLabel="Henter sonen" />}
+        {loading && <ActivityIndicator accessibilityLabel={uiText("Henter sonen")} />}
         {receipt ? (
           <>
-            <Txt size={24} weight="700">
-              Økten er allerede brukt
-            </Txt>
-            <Txt>
-              Vi fant et lagret soneforsøk for denne turen. Åpne sonen under for
-              å se den. Samme tur lager ikke flere soner.
-            </Txt>
+            <Txt size={24} weight="700">{uiText("Økten er allerede brukt")}</Txt>
+            <Txt>{uiText("Vi fant et lagret soneforsøk for denne turen. Åpne sonen under for å se den. Samme tur lager ikke flere soner.")}</Txt>
           </>
         ) : (
           <>
@@ -368,14 +353,14 @@ export function TurfComposer({
             )}
             {!turfId && (
               <>
-                <Txt weight="700">Navn på sonen</Txt>
+                <Txt weight="700">{uiText("Navn på sonen")}</Txt>
                 <TextInput
-                  accessibilityLabel="Navn på sonen"
+                  accessibilityLabel={uiText("Navn på sonen")}
                   value={name}
                   onChangeText={setName}
                   maxLength={80}
                   editable={!busy}
-                  placeholder="For eksempel: Langs elva"
+                  placeholder={uiText("For eksempel: Langs elva")}
                   placeholderTextColor={c.muted}
                   returnKeyType="done"
                   style={{
@@ -389,9 +374,7 @@ export function TurfComposer({
                   }}
                 />
                 {!name.trim() && (
-                  <Txt muted size={13}>
-                    Skriv et navn før du legger ut sonen.
-                  </Txt>
+                  <Txt muted size={13}>{uiText("Skriv et navn før du legger ut sonen.")}</Txt>
                 )}
               </>
             )}
@@ -401,8 +384,7 @@ export function TurfComposer({
               </Txt>
             )}
             {!!workout && (
-              <Txt muted size={14}>
-                Fra {workout.title}
+              <Txt muted size={14}>{uiText("Fra") + " "}{workout.title}
               </Txt>
             )}
             {preview?.value && (
@@ -411,18 +393,14 @@ export function TurfComposer({
                   {km(preview.value.distance / 1000)} km ·{" "}
                   {duration(preview.value.seconds)}
                 </Txt>
-                <Txt muted size={13}>
-                  Synlig løype · totaltid med pauser
-                </Txt>
+                <Txt muted size={13}>{uiText("Synlig løype · totaltid med pauser")}</Txt>
                 <Txt muted size={14}>
-                  {WORKOUT_SHARING_RADIUS_METERS} meter rundt turens start og
-                  slutt er skjermet. Bare kartutsnittet over deles.
-                </Txt>
+                  {WORKOUT_SHARING_RADIUS_METERS}{" " + uiText("meter rundt turens start og slutt er skjermet. Bare kartutsnittet over deles.")}</Txt>
                 {turf && (
                   <Txt>
                     {turf.owner_id === userId
-                      ? "Du eier allerede denne sonen."
-                      : `Din tid på sonen: ${duration(preview.value.originalSeconds)}. Tid å slå: ${duration(turf.seconds)}.`}
+                      ? uiText("Du eier allerede denne sonen.")
+                      : uiText("Din tid på sonen: {0}. Tid å slå: {1}.", duration(preview.value.originalSeconds), duration(turf.seconds))}
                   </Txt>
                 )}
               </>
@@ -438,14 +416,14 @@ export function TurfComposer({
               >
                 <Txt weight="700">
                   {loadError
-                    ? "Kunne ikke hente sonen"
-                    : "Denne turen kan ikke legges ut som sone"}
+                    ? uiText("Kunne ikke hente sonen")
+                    : uiText("Denne turen kan ikke legges ut som sone")}
                 </Txt>
                 <Txt accessibilityRole="alert" size={14}>
                   {message}
                 </Txt>
                 {!!loadError && (
-                  <Button title="Prøv igjen" secondary onPress={retry} />
+                  <Button title={uiText("Prøv igjen")} secondary onPress={retry} />
                 )}
               </View>
             )}
@@ -453,11 +431,9 @@ export function TurfComposer({
               <View
                 style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
               >
-                <Txt size={14} style={{ flex: 1 }}>
-                  Utvid med resten av løpeturen
-                </Txt>
+                <Txt size={14} style={{ flex: 1 }}>{uiText("Utvid med resten av løpeturen")}</Txt>
                 <Switch
-                  accessibilityLabel="Utvid sonen"
+                  accessibilityLabel={uiText("Utvid sonen")}
                   value={extend}
                   disabled={busy}
                   onValueChange={(value) => {
@@ -470,7 +446,7 @@ export function TurfComposer({
           </>
         )}
         <Button
-          title="Velg en annen løpetur"
+          title={uiText("Velg en annen løpetur")}
           secondary
           disabled={busy}
           onPress={() => {
@@ -482,19 +458,12 @@ export function TurfComposer({
         {!receipt && (
           <>
             <Button
-              title={details ? "Skjul sonekrav" : "Slik fungerer soner"}
+              title={details ? uiText("Skjul sonekrav") : uiText("Slik fungerer soner")}
               secondary
               onPress={() => setDetails((value) => !value)}
             />
             {details && (
-              <Txt muted size={13}>
-                Bruk en GPS-løpetur fra de siste 7 dagene. Minst 200 meter
-                sammenhengende løype må være igjen utenfor de skjermede
-                områdene. Best totaltid vinner. GPS-data kontrolleres ved
-                publisering, men dette er ikke en offisiell konkurranse. Bare
-                synlige GPS-punkter sendes til kontroll; tidsstemplene lagres
-                ikke på serveren.
-              </Txt>
+              <Txt muted size={13}>{uiText("Bruk en GPS-løpetur fra de siste 7 dagene. Minst 200 meter sammenhengende løype må være igjen utenfor de skjermede områdene. Best totaltid vinner. GPS-data kontrolleres ved publisering, men dette er ikke en offisiell konkurranse. Bare synlige GPS-punkter sendes til kontroll; tidsstemplene lagres ikke på serveren.")}</Txt>
             )}
           </>
         )}

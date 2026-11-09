@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { personName } from "../features/social/display";
 import { preparePushSignOut } from "../features/social/push";
 import { useRef, useState } from "react";
@@ -15,6 +16,7 @@ import { supabase } from "../lib/supabase";
 export default function Settings() {
   const { session, ready } = useAuthStore();
   const { profile } = useOwnProfile();
+  const language = useAppStore((s) => s.language);
   const theme = useAppStore((s) => s.theme);
   const localName = useAppStore((s) => s.name);
   const mapKind = useAppStore((s) => s.defaultMapKind ?? "standard");
@@ -25,13 +27,13 @@ export default function Settings() {
   const name = personName(
     profile?.display_name ??
     session?.user.user_metadata?.display_name ??
-    "Din profil");
+    uiText("Din profil"));
   return (
-    <Page title="Innstillinger" fallback="/profile">
+    <Page title={uiText("Innstillinger")} fallback="/profile">
       {session ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Rediger profil"
+          accessibilityLabel={uiText("Rediger profil")}
           onPress={() => router.push("/edit-profile")}
           style={{
             flexDirection: "row",
@@ -46,26 +48,24 @@ export default function Settings() {
             <Txt size={20} weight="700">
               {name}
             </Txt>
-            <Txt muted size={13}>
-              Rediger profil og kontoinformasjon
-            </Txt>
+            <Txt muted size={13}>{uiText("Rediger profil og kontoinformasjon")}</Txt>
           </View>
         </Pressable>
       ) : (
         <SettingsGroup>
           <SettingsRow
-            title={ready ? "Logg inn eller opprett konto" : "Laster konto …"}
-            description="Ta vare på turene dine og finn venner."
+            title={ready ? uiText("Logg inn eller opprett konto") : uiText("Laster konto …")}
+            description={uiText("Ta vare på turene dine og finn venner.")}
             icon="user"
             disabled={!ready}
             onPress={() => router.push("/account")}
           />
         </SettingsGroup>
       )}
-      <SettingsGroup title="Konto">
-        <SettingsRow title="Sosiale varsler" description="Følgere, innlegg, liker og kommentarer" icon="bell" onPress={()=>router.push("/settings/notifications")}/>
+      <SettingsGroup title={uiText("Konto")}>
+        <SettingsRow title={uiText("Sosiale varsler")} description={uiText("Følgere, innlegg, liker og kommentarer")} icon="bell" onPress={()=>router.push("/settings/notifications")}/>
         <SettingsRow
-          title={session ? "Konto og sikkerhet" : "Innlogging"}
+          title={session ? uiText("Konto og sikkerhet") : uiText("Innlogging")}
           description={session?.user.email}
           icon="lock"
           onPress={() =>
@@ -73,33 +73,31 @@ export default function Settings() {
           }
         />
         <SettingsRow
-          title="Personvern og deling"
+          title={uiText("Personvern og deling")}
           icon="people"
           onPress={() => router.push("/settings/privacy")}
         />
         <SettingsRow
-          title="Data og sikkerhetskopi"
+          title={uiText("Data og sikkerhetskopi")}
           icon="cloud"
           onPress={() => router.push("/settings/data")}
         />
       </SettingsGroup>
       {!session && ready && (
         <SettingsGroup
-          title="Gjest"
-          note="Navnet lagres bare på denne enheten. Det oppretter ingen konto."
+          title={uiText("Gjest")}
+          note={uiText("Navnet lagres bare på denne enheten. Det oppretter ingen konto.")}
         >
           <View style={{ padding: 22, gap: 10 }}>
-            <Txt muted size={13}>
-              Lokalt visningsnavn
-            </Txt>
+            <Txt muted size={13}>{uiText("Lokalt visningsnavn")}</Txt>
             <TextInput
-              accessibilityLabel="Lokalt visningsnavn"
+              accessibilityLabel={uiText("Lokalt visningsnavn")}
               value={localName}
               onChangeText={(name) =>
                 useAppStore.getState().preferences({ name })
               }
               maxLength={30}
-              placeholder="Ditt navn"
+              placeholder={uiText("Ditt navn")}
               placeholderTextColor={c.muted}
               style={{
                 minHeight: 44,
@@ -112,21 +110,22 @@ export default function Settings() {
           </View>
         </SettingsGroup>
       )}
-      <SettingsGroup title="Din VYRO">
+      <SettingsGroup title={uiText("Din VYRO")}>
+        <SettingsRow title={uiText("Språk")} value={language === "en" ? "English" : "Norsk bokmål"} icon="globe" onPress={() => router.push("/settings/language")} />
         <SettingsRow
-          title="Utseende"
+          title={uiText("Utseende")}
           value={
             theme === "system"
-              ? "Følg telefonen"
+              ? uiText("Følg telefonen")
               : theme === "dark"
-                ? "Mørkt"
-                : "Lyst"
+                ? uiText("Mørkt")
+                : uiText("Lyst")
           }
           icon="sun"
           onPress={() => router.push("/settings/appearance")}
         />
         <SettingsRow
-          title="Standardkart"
+          title={uiText("Standardkart")}
           value={
             { standard: "Standard", satellite: "Satellitt", hybrid: "Hybrid" }[
               mapKind
@@ -136,37 +135,37 @@ export default function Settings() {
           onPress={() => router.push("/settings/maps")}
         />
         <SettingsRow
-          title="Hjem og innhold"
-          description="Velg strøm og visning av eksempler"
+          title={uiText("Hjem og innhold")}
+          description={uiText("Velg strøm og visning av eksempler")}
           icon="home"
           onPress={() => router.push("/settings/feed")}
         />
-        <SettingsRow title="Måleenheter" value="km · min/km" />
+        <SettingsRow title={uiText("Måleenheter")} value="km · min/km" />
       </SettingsGroup>
-      <SettingsGroup title="Trening">
+      <SettingsGroup title={uiText("Trening")}>
         <SettingsRow
-          title="Varsler og opptak"
-          description="Kilometervarsler, skjerm og bakgrunnsopptak"
+          title={uiText("Varsler og opptak")}
+          description={uiText("Kilometervarsler, skjerm og bakgrunnsopptak")}
           icon="bell"
           onPress={() => router.push("/training-settings")}
         />
         <SettingsRow
-          title="Treningsmål"
-          description="Sett ditt eget mål for uken"
+          title={uiText("Treningsmål")}
+          description={uiText("Sett ditt eget mål for uken")}
           icon="chart"
           onPress={() => router.push("/training-goal")}
         />
         <SettingsRow
           title="Apple Watch"
-          description="Klokke og synkronisering"
+          description={uiText("Klokke og synkronisering")}
           icon="device"
           onPress={() => router.push("/apple-watch")}
         />
       </SettingsGroup>
-      <SettingsGroup title="Hjelp">
+      <SettingsGroup title={uiText("Hjelp")}>
         <SettingsRow
-          title="Hjelp og om VYRO"
-          description="GPS, konto og vanlige spørsmål"
+          title={uiText("Hjelp og om VYRO")}
+          description={uiText("GPS, konto og vanlige spørsmål")}
           icon="info"
           onPress={() => router.push("/settings/help")}
         />
@@ -212,14 +211,12 @@ export default function Settings() {
               weight="700"
               style={{ color: c.bg === "#0B1120" ? "#FF8D79" : "#B33A28" }}
             >
-              {busy ? "Logger ut …" : "Logg ut"}
+              {busy ? uiText("Logger ut …") : uiText("Logg ut")}
             </Txt>
           </Pressable>
         </View>
       )}
-      <Txt muted size={12} style={{ textAlign: "center", paddingTop: 16 }}>
-        VYRO · Ta turen videre.
-      </Txt>
+      <Txt muted size={12} style={{ textAlign: "center", paddingTop: 16 }}>{uiText("VYRO · Ta turen videre.")}</Txt>
     </Page>
   );
 }

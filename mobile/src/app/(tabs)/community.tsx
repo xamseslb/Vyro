@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -86,9 +87,9 @@ function ClubList({ userId }: { userId: string }) {
   }
   return (
     <Screen>
-      <SocialHeader title="Klubber" />
+      <SocialHeader title={uiText("Klubber")} />
       <Button
-        title={creating ? "Lukk nytt klubbskjema" : "Opprett klubb"}
+        title={creating ? uiText("Lukk nytt klubbskjema") : uiText("Opprett klubb")}
         icon="plus"
         secondary
         onPress={() => setCreating(!creating)}
@@ -103,19 +104,17 @@ function ClubList({ userId }: { userId: string }) {
             borderRadius: 20,
           }}
         >
-          <Txt size={20} weight="700">
-            Ny klubb
-          </Txt>
+          <Txt size={20} weight="700">{uiText("Ny klubb")}</Txt>
           <Field
-            accessibilityLabel="Klubbnavn"
-            placeholder="Gi klubben et navn"
+            accessibilityLabel={uiText("Klubbnavn")}
+            placeholder={uiText("Gi klubben et navn")}
             value={name}
             onChangeText={setName}
             maxLength={60}
           />
           <Field
-            accessibilityLabel="Beskriv klubben"
-            placeholder="Hva vil dere gjøre sammen? (valgfritt)"
+            accessibilityLabel={uiText("Beskriv klubben")}
+            placeholder={uiText("Hva vil dere gjøre sammen? (valgfritt)")}
             value={description}
             onChangeText={setDescription}
             multiline
@@ -123,28 +122,28 @@ function ClubList({ userId }: { userId: string }) {
           />
           <View style={styles.wrap}>
             <Chip
-              title="Privat"
+              title={uiText("Privat")}
               selected={visibility === "private"}
               onPress={() => setVisibility("private")}
             />
             <Chip
-              title="Åpen"
+              title={uiText("Åpen")}
               selected={visibility === "open"}
               onPress={() => setVisibility("open")}
             />
           </View>
           <Txt muted size={13}>
             {visibility === "private"
-              ? "Kun inviterte kan bli med."
-              : "Vises under Åpne klubber. Alle med konto kan bli med."}
+              ? uiText("Kun inviterte kan bli med.")
+              : uiText("Vises under Åpne klubber. Alle med konto kan bli med.")}
           </Txt>
           <Button
             title={
               busy
-                ? "Oppretter …"
+                ? uiText("Oppretter …")
                 : visibility === "open"
-                  ? "Opprett åpen klubb"
-                  : "Opprett privat klubb"
+                  ? uiText("Opprett åpen klubb")
+                  : uiText("Opprett privat klubb")
             }
             disabled={busy || name.trim().length < 2}
             onPress={() => {
@@ -170,7 +169,7 @@ function ClubList({ userId }: { userId: string }) {
         <View style={{ gap: 12 }}>
           <Txt>{error}</Txt>
           <Button
-            title="Prøv igjen"
+            title={uiText("Prøv igjen")}
             secondary
             disabled={loading}
             onPress={() => setRevision((n) => n + 1)}
@@ -179,8 +178,7 @@ function ClubList({ userId }: { userId: string }) {
       )}
       {!!invitations.length && (
         <View style={{ gap: 14 }}>
-          <Txt size={20} weight="700">
-            Invitasjoner · {invitations.length}
+          <Txt size={20} weight="700">{uiText("Invitasjoner ·") + " "}{invitations.length}
           </Txt>
           {invitations.map((invite) => (
             <View
@@ -198,13 +196,13 @@ function ClubList({ userId }: { userId: string }) {
                 <View style={{ flex: 1 }}>
                   <Txt weight="700">{invite.clubs.name}</Txt>
                   <Txt muted size={13}>
-                    {invite.clubs.description || "Du er invitert til klubben."}
+                    {invite.clubs.description || uiText("Du er invitert til klubben.")}
                   </Txt>
                 </View>
               </View>
               <View style={styles.wrap}>
                 <Button
-                  title="Bli med"
+                  title={uiText("Bli med")}
                   disabled={busy}
                   onPress={() =>
                     void action(async () => {
@@ -214,7 +212,7 @@ function ClubList({ userId }: { userId: string }) {
                   }
                 />
                 <Button
-                  title="Avslå"
+                  title={uiText("Avslå")}
                   secondary
                   disabled={busy}
                   onPress={() =>
@@ -230,12 +228,10 @@ function ClubList({ userId }: { userId: string }) {
         </View>
       )}
       <View style={styles.row}>
-        <Txt size={21} weight="700">
-          Dine klubber
-        </Txt>
+        <Txt size={21} weight="700">{uiText("Dine klubber")}</Txt>
         <Txt muted size={13}>
           {loading
-            ? "Laster …"
+            ? uiText("Laster …")
             : `${clubs.length} ${clubs.length === 1 ? "klubb" : "klubber"}`}
         </Txt>
       </View>
@@ -244,7 +240,7 @@ function ClubList({ userId }: { userId: string }) {
           <Pressable
             key={club.id}
             accessibilityRole="button"
-            accessibilityLabel={`Åpne ${club.name}`}
+            accessibilityLabel={uiText("Åpne {0}", club.name)}
             onPress={() =>
               router.push({ pathname: "/club/[id]", params: { id: club.id } })
             }
@@ -266,17 +262,15 @@ function ClubList({ userId }: { userId: string }) {
             <Txt muted size={13}>
               {club.member_count ?? 0}{" "}
               {club.member_count === 1 ? "medlem" : "medlemmer"} ·{" "}
-              {club.visibility === "open" ? "Åpen" : "Privat"}
+              {club.visibility === "open" ? uiText("Åpen") : uiText("Privat")}
             </Txt>
-            <Txt size={14} weight="600" style={{ color: c.accent }}>
-              Åpne klubb →
-            </Txt>
+            <Txt size={14} weight="600" style={{ color: c.accent }}>{uiText("Åpne klubb →")}</Txt>
           </Pressable>
         ))}
       </View>
       {moreMine && (
         <Button
-          title="Vis flere av dine klubber"
+          title={uiText("Vis flere av dine klubber")}
           secondary
           disabled={busy || loading}
           onPress={() =>
@@ -294,13 +288,9 @@ function ClubList({ userId }: { userId: string }) {
         />
       )}
       {!loading && !error && !clubs.length && (
-        <Txt muted size={14}>
-          Du er ikke med i noen klubber ennå.
-        </Txt>
+        <Txt muted size={14}>{uiText("Du er ikke med i noen klubber ennå.")}</Txt>
       )}
-      <Txt size={21} weight="700">
-        Åpne klubber
-      </Txt>
+      <Txt size={21} weight="700">{uiText("Åpne klubber")}</Txt>
       {discovery.map((club) => (
         <View
           key={club.id}
@@ -314,7 +304,7 @@ function ClubList({ userId }: { userId: string }) {
         >
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`Se ${club.name}`}
+            accessibilityLabel={uiText("Se {0}", club.name)}
             onPress={() =>
               router.push({ pathname: "/club/[id]", params: { id: club.id } })
             }
@@ -332,8 +322,7 @@ function ClubList({ userId }: { userId: string }) {
               </Txt>
               <Txt size={13} muted>
                 {club.member_count ?? 0}{" "}
-                {club.member_count === 1 ? "medlem" : "medlemmer"} · Åpen klubb
-              </Txt>
+                {club.member_count === 1 ? "medlem" : "medlemmer"}{" " + uiText("· Åpen klubb")}</Txt>
             </View>
           </Pressable>
           {!!club.description && (
@@ -342,7 +331,7 @@ function ClubList({ userId }: { userId: string }) {
             </Txt>
           )}
           <Button
-            title="Bli med"
+            title={uiText("Bli med")}
             disabled={busy || loading}
             onPress={() =>
               void action(async () => {
@@ -355,7 +344,7 @@ function ClubList({ userId }: { userId: string }) {
       ))}
       {moreOpen && (
         <Button
-          title="Vis flere åpne klubber"
+          title={uiText("Vis flere åpne klubber")}
           secondary
           disabled={busy || loading}
           onPress={() =>
@@ -373,9 +362,7 @@ function ClubList({ userId }: { userId: string }) {
         />
       )}
       {!loading && !error && !discovery.length && (
-        <Txt muted size={14}>
-          Ingen flere åpne klubber akkurat nå.
-        </Txt>
+        <Txt muted size={14}>{uiText("Ingen flere åpne klubber akkurat nå.")}</Txt>
       )}
     </Screen>
   );

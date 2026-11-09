@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { ProfileLink } from "../../components/ProfileLink";
 import { personName } from "../social/display";
 import { useCallback, useRef, useState } from "react";
@@ -56,13 +57,13 @@ export function TurfDetail({ userId, id }: { userId: string; id: string }) {
   );
   const owner = turf?.owner_id === userId;
   return (
-    <Page title="Sone" fallback="/turf" backDisabled={busy}>
+    <Page title={uiText("Sone")} fallback="/turf" backDisabled={busy}>
       <View style={{ padding: 20, gap: 18 }}>
-        {loading && <ActivityIndicator accessibilityLabel="Henter sonen" />}
+        {loading && <ActivityIndicator accessibilityLabel={uiText("Henter sonen")} />}
         {!!loadError && (
           <>
             <Txt accessibilityRole="alert">{loadError}</Txt>
-            <Button title="Prøv igjen" secondary onPress={retry} />
+            <Button title={uiText("Prøv igjen")} secondary onPress={retry} />
           </>
         )}
         {turf && (
@@ -72,22 +73,18 @@ export function TurfDetail({ userId, id }: { userId: string; id: string }) {
             </Txt>
             <ProfileLink id={turf.owner_id} name={turf.profiles?.display_name}><Txt muted>
               {owner
-                ? "Du eier denne sonen"
-                : `${personName(turf.profiles?.display_name)} eier sonen`}{" "}
+                ? uiText("Du eier denne sonen")
+                : uiText("{0} eier sonen", personName(turf.profiles?.display_name))}{" "}
               ·{" "}
-              {turf.club_id ? "Klubbens sone" : "Privat arkiv · tidligere sone"}
+              {turf.club_id ? uiText("Klubbens sone") : uiText("Privat arkiv · tidligere sone")}
             </Txt></ProfileLink>
             <WorkoutMap points={turf.route} height={230} />
             <Txt size={22} weight="700">
-              {km(turf.distance_m / 1000)} km · {duration(turf.seconds)} å slå
-            </Txt>
-            <Txt muted size={14}>
-              Løp hele løypa i samme retning. Raskere totaltid, inkludert
-              pauser, overtar sonen.
-            </Txt>
+              {km(turf.distance_m / 1000)} km · {duration(turf.seconds)}{" " + uiText("å slå")}</Txt>
+            <Txt muted size={14}>{uiText("Løp hele løypa i samme retning. Raskere totaltid, inkludert pauser, overtar sonen.")}</Txt>
             {!!error && <Txt accessibilityRole="alert">{error}</Txt>}
             <Button
-              title="Løp denne løypa"
+              title={uiText("Løp denne løypa")}
               disabled={busy || loading || !!loadError}
               onPress={() => {
                 if (
@@ -97,7 +94,7 @@ export function TurfDetail({ userId, id }: { userId: string; id: string }) {
                     route: turf.route,
                   })
                 ) {
-                  setError("Avslutt økten som pågår før du velger en ny sone.");
+                  setError(uiText("Avslutt økten som pågår før du velger en ny sone."));
                   return;
                 }
                 router.push("/(tabs)/track");
@@ -105,7 +102,7 @@ export function TurfDetail({ userId, id }: { userId: string; id: string }) {
             />
             {!owner && !!turf.club_id && (
               <Button
-                title="Bruk en lagret løpetur"
+                title={uiText("Bruk en lagret løpetur")}
                 secondary
                 disabled={loading || !!loadError}
                 onPress={() =>
@@ -117,7 +114,7 @@ export function TurfDetail({ userId, id }: { userId: string; id: string }) {
               />
             )}
             <Button
-              title="Til klubbens soner"
+              title={uiText("Til klubbens soner")}
               secondary
               disabled={busy}
               onPress={() =>
@@ -130,18 +127,15 @@ export function TurfDetail({ userId, id }: { userId: string; id: string }) {
             {owner && (
               <>
                 {withdraw && (
-                  <Txt>
-                    Dette fjerner sonen og sonehistorikken for alle. Den private
-                    løpeturen din beholdes.
-                  </Txt>
+                  <Txt>{uiText("Dette fjerner sonen og sonehistorikken for alle. Den private løpeturen din beholdes.")}</Txt>
                 )}
                 <Button
                   title={
                     busy
-                      ? "Fjerner …"
+                      ? uiText("Fjerner …")
                       : withdraw
-                        ? "Bekreft: fjern sonen"
-                        : "Trekk tilbake sonen"
+                        ? uiText("Bekreft: fjern sonen")
+                        : uiText("Trekk tilbake sonen")
                   }
                   secondary={!withdraw}
                   danger={withdraw}
@@ -168,7 +162,7 @@ export function TurfDetail({ userId, id }: { userId: string; id: string }) {
                 />
                 {withdraw && (
                   <Button
-                    title="Behold sonen"
+                    title={uiText("Behold sonen")}
                     secondary
                     disabled={busy}
                     onPress={() => setWithdraw(false)}

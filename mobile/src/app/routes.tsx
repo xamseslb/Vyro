@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useLocalSearchParams } from "expo-router";
 import { AccountGate } from "../components/AccountGate";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -20,7 +21,7 @@ export default function RoutesScreen() {
     lat && lon && Number.isFinite(latitude) && Number.isFinite(longitude)
       ? {
           id: "map-area",
-          name: (name ?? "Valgt kartområde").slice(0, 120),
+          name: (name ?? uiText("Valgt kartområde")).slice(0, 120),
           latitude,
           longitude,
         }

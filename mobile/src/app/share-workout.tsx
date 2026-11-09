@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, Switch, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
@@ -124,7 +125,7 @@ function ShareForm({
   };
   return (
     <Page
-      title="Nytt innlegg"
+      title={uiText("Nytt innlegg")}
       plain
       onBack={back}
       backDisabled={busy}
@@ -140,10 +141,10 @@ function ShareForm({
             <Button
               title={
                 busy
-                  ? "Deler …"
+                  ? uiText("Deler …")
                   : effectiveAudience === "followers"
-                    ? "Del med følgere"
-                    : "Publiser innlegg"
+                    ? uiText("Del med følgere")
+                    : uiText("Publiser innlegg")
               }
               icon="share"
               disabled={busy || !canShare || !profile}
@@ -160,7 +161,7 @@ function ShareForm({
                 alignItems: "center",
               }}
             >
-              <Txt weight="600">Avbryt</Txt>
+              <Txt weight="600">{uiText("Avbryt")}</Txt>
             </Pressable>
           </>
         )
@@ -169,9 +170,7 @@ function ShareForm({
       <View style={{ padding: 20, gap: 24 }}>
         {(!workout || choosing) && (
           <View style={{ gap: 10 }}>
-            <Txt size={20} weight="700">
-              Velg økt
-            </Txt>
+            <Txt size={20} weight="700">{uiText("Velg økt")}</Txt>
             {eligible.map((w) => (
               <Pressable
                 key={w.id}
@@ -203,7 +202,7 @@ function ShareForm({
                 <View style={{ flex: 1, gap: 4 }}>
                   <Txt weight="600">{w.title}</Txt>
                   <Txt size={12} muted>
-                    {new Date(w.date).toLocaleDateString("nb-NO")} ·{" "}
+                    {new Date(w.date).toLocaleDateString(displayLocale())} ·{" "}
                     {duration(w.seconds)}
                     {w.source === "gps" ? " · " + km(w.distance) + " km" : ""}
                   </Txt>
@@ -216,15 +215,10 @@ function ShareForm({
               </Pressable>
             ))}
             {!eligible.length && (
-              <Txt muted>
-                Ingen delbare økter ennå. Fullfør og lagre en økt først.
-              </Txt>
+              <Txt muted>{uiText("Ingen delbare økter ennå. Fullfør og lagre en økt først.")}</Txt>
             )}
             {workoutId && !workout && (
-              <Txt accessibilityRole="alert">
-                Denne økten er ikke tilgjengelig for deling. Velg en av dine
-                lagrede økter.
-              </Txt>
+              <Txt accessibilityRole="alert">{uiText("Denne økten er ikke tilgjengelig for deling. Velg en av dine lagrede økter.")}</Txt>
             )}
           </View>
         )}
@@ -238,9 +232,7 @@ function ShareForm({
                   alignItems: "center",
                 }}
               >
-                <Txt muted size={12} weight="700" style={{ letterSpacing: 1 }}>
-                  FORHÅNDSVISNING
-                </Txt>
+                <Txt muted size={12} weight="700" style={{ letterSpacing: 1 }}>{uiText("FORHÅNDSVISNING")}</Txt>
                 {eligible.length > 1 && (
                   <Pressable
                     accessibilityRole="button"
@@ -252,9 +244,7 @@ function ShareForm({
                       paddingLeft: 12,
                     }}
                   >
-                    <Txt size={14} weight="600" style={{ color: c.accent }}>
-                      Bytt økt
-                    </Txt>
+                    <Txt size={14} weight="600" style={{ color: c.accent }}>{uiText("Bytt økt")}</Txt>
                   </Pressable>
                 )}
               </View>
@@ -274,20 +264,18 @@ function ShareForm({
               )}
             </View>
             <View style={{ gap: 12 }}>
-              <Txt size={18} weight="700">
-                Hvem vil du dele med?
-              </Txt>
+              <Txt size={18} weight="700">{uiText("Hvem vil du dele med?")}</Txt>
               <AudienceOption
-                title={profile?.is_private ? "Godkjente følgere" : "Følgere"}
-                detail="De som følger deg i VYRO."
+                title={profile?.is_private ? uiText("Godkjente følgere") : uiText("Følgere")}
+                detail={uiText("De som følger deg i VYRO.")}
                 selected={effectiveAudience === "followers"}
                 disabled={busy || !profile}
                 onPress={() => setAudience("followers")}
               />
               {!profile?.is_private && (
                 <AudienceOption
-                  title="Alle i VYRO"
-                  detail="Alle innloggede kan se innlegget."
+                  title={uiText("Alle i VYRO")}
+                  detail={uiText("Alle innloggede kan se innlegget.")}
                   selected={effectiveAudience === "everyone"}
                   disabled={busy || !profile}
                   onPress={() => setAudience("everyone")}
@@ -296,13 +284,13 @@ function ShareForm({
               {!profile && (
                 <Txt muted size={13}>
                   {failed
-                    ? "Kunne ikke hente delingsvalgene."
-                    : "Henter delingsvalg …"}
+                    ? uiText("Kunne ikke hente delingsvalgene.")
+                    : uiText("Henter delingsvalg …")}
                 </Txt>
               )}
               {failed && !profile && (
                 <Button
-                  title="Prøv igjen"
+                  title={uiText("Prøv igjen")}
                   secondary
                   onPress={() => {
                     profileRequest.current?.abort();
@@ -319,9 +307,7 @@ function ShareForm({
                 style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
               >
                 <Icon name="lock" size={15} color={c.muted} />
-                <Txt size={12} muted style={{ flex: 1 }}>
-                  Private notater og anstrengelse deles aldri.
-                </Txt>
+                <Txt size={12} muted style={{ flex: 1 }}>{uiText("Private notater og anstrengelse deles aldri.")}</Txt>
               </View>
             </View>
             {workout.sport === "Fotball" && workout.source === "gps" && (
@@ -341,11 +327,9 @@ function ShareForm({
                     gap: 16,
                   }}
                 >
-                  <Txt weight="600" style={{ flex: 1 }}>
-                    Del hele fotballruten
-                  </Txt>
+                  <Txt weight="600" style={{ flex: 1 }}>{uiText("Del hele fotballruten")}</Txt>
                   <Switch
-                    accessibilityLabel="Del hele fotballruten"
+                    accessibilityLabel={uiText("Del hele fotballruten")}
                     value={wholeRoute}
                     disabled={busy}
                     onValueChange={(value) =>
@@ -353,34 +337,26 @@ function ShareForm({
                     }
                   />
                 </View>
-                <Txt muted size={13}>
-                  En bane kan ligge innenfor skjermingen på{" "}
-                  {WORKOUT_SHARING_RADIUS_METERS} meter. Dette valget deler også
-                  start, slutt og eventuell vei til og fra banen.
-                </Txt>
+                <Txt muted size={13}>{uiText("En bane kan ligge innenfor skjermingen på")}{" "}
+                  {WORKOUT_SHARING_RADIUS_METERS}{" " + uiText("meter. Dette valget deler også start, slutt og eventuell vei til og fra banen.")}</Txt>
               </View>
             )}
             {workout.source === "gps" && (
               <View style={{ gap: 10 }}>
                 <Txt muted size={13}>
                   {wholeRoute
-                    ? "Hele ruten i forhåndsvisningen blir delt. Start og slutt er synlige."
+                    ? uiText("Hele ruten i forhåndsvisningen blir delt. Start og slutt er synlige.")
                     : "Punkter innen " +
                       WORKOUT_SHARING_RADIUS_METERS +
                       " meter fra start og slutt skjules, også når du passerer dem senere. Tid og distanse gjelder hele økten."}
                 </Txt>
                 {!canShare && (
-                  <Txt accessibilityRole="alert" size={14}>
-                    Ingen delbar rute er igjen etter skjermingen. Økten på{" "}
-                    {km(workout.distance)} km beholdes i treningsloggen.
-                  </Txt>
+                  <Txt accessibilityRole="alert" size={14}>{uiText("Ingen delbar rute er igjen etter skjermingen. Økten på")}{" "}
+                    {km(workout.distance)}{" " + uiText("km beholdes i treningsloggen.")}</Txt>
                 )}
               </View>
             )}
-            <Txt muted size={12}>
-              Har du delt denne økten før, oppdateres det eksisterende
-              innlegget.
-            </Txt>
+            <Txt muted size={12}>{uiText("Har du delt denne økten før, oppdateres det eksisterende innlegget.")}</Txt>
           </>
         )}
       </View>

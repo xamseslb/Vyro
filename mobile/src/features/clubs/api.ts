@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { client, Profile } from "../social/api";
 export type Club = {
   id: string;
@@ -18,9 +19,9 @@ export type Invitation = {
 export type Member = { user_id: string; profiles: Profile };
 export function validateClub(name: string, description: string) {
   if (name.trim().length < 2 || name.trim().length > 60)
-    throw new Error("Klubbnavnet må ha mellom 2 og 60 tegn.");
+    throw new Error(uiText("Klubbnavnet må ha mellom 2 og 60 tegn."));
   if (description.trim().length > 500)
-    throw new Error("Beskrivelsen kan ha opptil 500 tegn.");
+    throw new Error(uiText("Beskrivelsen kan ha opptil 500 tegn."));
 }
 export async function createClub(
   name: string,

@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect } from "react";
 import { Text, View, Pressable } from "react-native";
 import type { ErrorBoundaryProps } from "expo-router";
@@ -19,12 +20,8 @@ export function RouteError({ retry }: ErrorBoundaryProps) {
         gap: 20,
       }}
     >
-      <Text style={{ fontSize: 24, fontWeight: "700", color: "#11182C" }}>
-        Denne siden kunne ikke vises
-      </Text>
-      <Text style={{ fontSize: 16, color: "#11182C" }}>
-        Et pågående opptak er satt på pause. Prøv å åpne siden igjen.
-      </Text>
+      <Text style={{ fontSize: 24, fontWeight: "700", color: "#11182C" }}>{uiText("Denne siden kunne ikke vises")}</Text>
+      <Text style={{ fontSize: 16, color: "#11182C" }}>{uiText("Et pågående opptak er satt på pause. Prøv å åpne siden igjen.")}</Text>
       <Pressable
         accessibilityRole="button"
         onPress={() => {
@@ -44,9 +41,7 @@ export function RouteError({ retry }: ErrorBoundaryProps) {
             color: "#11182C",
             textAlign: "center",
           }}
-        >
-          Prøv igjen
-        </Text>
+        >{uiText("Prøv igjen")}</Text>
       </Pressable>
     </View>
   );

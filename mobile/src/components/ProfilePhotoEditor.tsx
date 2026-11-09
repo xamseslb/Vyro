@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useRef, useState } from "react";
 import { View } from "react-native";
 import { Avatar } from "./SocialUi";
@@ -40,23 +41,20 @@ export default function ProfilePhotoEditor({
     <View style={{ alignItems: "center", padding: 22, gap: 12 }}>
       <Avatar name={name} path={profile?.avatar_path} size={86} />
       <Button
-        title={busy ? "Lagrer bilde …" : "Velg profilbilde"}
+        title={busy ? uiText("Lagrer bilde …") : uiText("Velg profilbilde")}
         secondary
         disabled={busy}
         onPress={() => void change()}
       />
       {!!profile?.avatar_path && (
         <Button
-          title="Fjern profilbilde"
+          title={uiText("Fjern profilbilde")}
           secondary
           disabled={busy}
           onPress={() => void change(true)}
         />
       )}
-      <Txt muted size={12}>
-        Profilbildet er synlig for andre VYRO-brukere, også når kontoen er
-        privat.
-      </Txt>
+      <Txt muted size={12}>{uiText("Profilbildet er synlig for andre VYRO-brukere, også når kontoen er privat.")}</Txt>
       {!!error && <Txt accessibilityRole="alert">{error}</Txt>}
     </View>
   );

@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -97,7 +98,7 @@ function Inbox({ owner }: { owner: string }) {
     try {
       const target = await loadNotificationTarget(owner, n.id);
       if (!target) {
-        setError("Innlegget eller varselet er ikke tilgjengelig lenger.");
+        setError(uiText("Innlegget eller varselet er ikke tilgjengelig lenger."));
         return;
       }
       setItems((old) =>
@@ -127,12 +128,12 @@ function Inbox({ owner }: { owner: string }) {
   }
   return (
     <Page
-      title="Varsler"
+      title={uiText("Varsler")}
       fallback="/(tabs)"
       right={
         <IconButton
           name="settings"
-          label="Varselinnstillinger"
+          label={uiText("Varselinnstillinger")}
           onPress={() => router.push("/settings/notifications")}
         />
       }
@@ -140,7 +141,7 @@ function Inbox({ owner }: { owner: string }) {
       <View style={{ padding: 22, gap: 12 }}>
         <Button
           secondary
-          title={busy ? "Henter …" : "Oppdater"}
+          title={busy ? uiText("Henter …") : uiText("Oppdater")}
           disabled={busy || !!acting}
           onPress={() => void refresh()}
         />
@@ -148,10 +149,10 @@ function Inbox({ owner }: { owner: string }) {
       </View>
       {!!requests.length && (
         <SettingsGroup
-          title="Følgeforespørsler"
+          title={uiText("Følgeforespørsler")}
           note={
             requests.length === 50
-              ? "Viser de 50 eldste forespørslene. Flere vises når du behandler disse."
+              ? uiText("Viser de 50 eldste forespørslene. Flere vises når du behandler disse.")
               : undefined
           }
         >
@@ -184,7 +185,7 @@ function Inbox({ owner }: { owner: string }) {
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Button
-                    title={acting === r.requester_id ? "Lagrer …" : "Godkjenn"}
+                    title={acting === r.requester_id ? uiText("Lagrer …") : uiText("Godkjenn")}
                     disabled={!!acting || busy}
                     onPress={() => void decide(r.requester_id, true)}
                   />
@@ -192,7 +193,7 @@ function Inbox({ owner }: { owner: string }) {
                 <View style={{ flex: 1 }}>
                   <Button
                     secondary
-                    title="Avslå"
+                    title={uiText("Avslå")}
                     disabled={!!acting || busy}
                     onPress={() => void decide(r.requester_id, false)}
                   />
@@ -202,7 +203,7 @@ function Inbox({ owner }: { owner: string }) {
           ))}
         </SettingsGroup>
       )}
-      <SettingsGroup title="Siste nytt">
+      <SettingsGroup title={uiText("Siste nytt")}>
         {items.map((n) => (
           <View
             key={n.id}
@@ -223,16 +224,16 @@ function Inbox({ owner }: { owner: string }) {
             <Pressable accessibilityRole="button" disabled={busy || !!acting} onPress={() => void openNotice(n)} style={{ flex: 1, gap: 4, minHeight: 44 }}>
               <Txt>
                 <Txt weight="700">{personName(n.profiles.display_name)}</Txt>{" "}
-                {noticeText[n.kind] ?? "har en oppdatering til deg"}.
+                {uiText(noticeText[n.kind] ?? uiText("har en oppdatering til deg"))}.
               </Txt>
               <Txt muted size={12}>
-                {new Date(n.created_at).toLocaleString("nb-NO", {
+                {new Date(n.created_at).toLocaleString(displayLocale(), {
                   day: "numeric",
                   month: "short",
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
-                {!n.read_at ? " · Ulest" : ""}
+                {!n.read_at ? uiText(" · Ulest") : ""}
               </Txt>
             </Pressable>
           </View>
@@ -240,14 +241,12 @@ function Inbox({ owner }: { owner: string }) {
       </SettingsGroup>
       <View style={{ padding: 22, gap: 12 }}>
         {!busy && !error && !items.length && (
-          <Txt muted>
-            Her kommer følgerne dine, kommentarer, likerklikk og nye innlegg.
-          </Txt>
+          <Txt muted>{uiText("Her kommer følgerne dine, kommentarer, likerklikk og nye innlegg.")}</Txt>
         )}
         {items.some((n) => !n.read_at) && (
           <Button
             secondary
-            title="Marker disse som lest"
+            title={uiText("Marker disse som lest")}
             disabled={busy || !!acting}
             onPress={async () => {
               setBusy(true);
@@ -276,7 +275,7 @@ function Inbox({ owner }: { owner: string }) {
         {more && (
           <Button
             secondary
-            title="Vis eldre varsler"
+            title={uiText("Vis eldre varsler")}
             disabled={busy || !!acting}
             onPress={() => void refresh(true)}
           />

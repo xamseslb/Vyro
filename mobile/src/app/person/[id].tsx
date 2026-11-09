@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -95,11 +96,11 @@ function Person({ owner, id }: { owner: string; id: string }) {
   }
   const hidden = profile?.is_private && state !== "following" && id !== owner;
   return (
-    <Page title="Profil" fallback="/people" plain>
+    <Page title={uiText("Profil")} fallback="/people" plain>
       <View style={{ padding: 20, gap: 24 }}>
         {loading && (
           <ActivityIndicator
-            accessibilityLabel="Henter profil"
+            accessibilityLabel={uiText("Henter profil")}
             color={c.accent}
           />
         )}
@@ -107,14 +108,14 @@ function Person({ owner, id }: { owner: string; id: string }) {
           <View style={{ gap: 12 }}>
             <Txt accessibilityRole="alert">{error}</Txt>
             <Button
-              title="Prøv igjen"
+              title={uiText("Prøv igjen")}
               secondary
               onPress={() => setRevision((n) => n + 1)}
             />
           </View>
         )}
         {!loading && !error && !profile && (
-          <Txt muted>Profilen er ikke tilgjengelig.</Txt>
+          <Txt muted>{uiText("Profilen er ikke tilgjengelig.")}</Txt>
         )}
         {profile && (
           <>
@@ -139,7 +140,7 @@ function Person({ owner, id }: { owner: string; id: string }) {
                   color={c.muted}
                 />
                 <Txt muted size={13}>
-                  {profile.is_private ? "Privat konto" : "Offentlig konto"}
+                  {profile.is_private ? uiText("Privat konto") : uiText("Offentlig konto")}
                 </Txt>
               </View>
             </View>
@@ -150,14 +151,14 @@ function Person({ owner, id }: { owner: string; id: string }) {
                 <Button
                   title={
                     busy
-                      ? "Lagrer …"
+                      ? uiText("Lagrer …")
                       : state === "following"
-                        ? "Slutt å følge"
+                        ? uiText("Slutt å følge")
                         : state === "requested"
-                          ? "Avbryt forespørsel"
+                          ? uiText("Avbryt forespørsel")
                           : profile.is_private
-                            ? "Be om å følge"
-                            : "Følg"
+                            ? uiText("Be om å følge")
+                            : uiText("Følg")
                   }
                   secondary={state !== "none"}
                   disabled={busy || loading || id === owner}
@@ -187,19 +188,14 @@ function Person({ owner, id }: { owner: string; id: string }) {
                   gap: 8,
                 }}
               >
-                <Txt weight="700">Denne profilen er privat</Txt>
-                <Txt muted>
-                  Delte innlegg blir synlige når følgeforespørselen din er
-                  godkjent.
-                </Txt>
+                <Txt weight="700">{uiText("Denne profilen er privat")}</Txt>
+                <Txt muted>{uiText("Delte innlegg blir synlige når følgeforespørselen din er godkjent.")}</Txt>
               </View>
             ) : (
               <>
-                <Txt size={21} weight="700">
-                  Delte økter
-                </Txt>
+                <Txt size={21} weight="700">{uiText("Delte økter")}</Txt>
                 {!loading && !error && !posts.length && (
-                  <Txt muted>Ingen delte økter å vise ennå.</Txt>
+                  <Txt muted>{uiText("Ingen delte økter å vise ennå.")}</Txt>
                 )}
                 {posts.map((post) => (
                   <CloudPost
@@ -219,7 +215,7 @@ function Person({ owner, id }: { owner: string; id: string }) {
                 {more && (
                   <Button
                     secondary
-                    title={busy ? "Henter …" : "Vis flere økter"}
+                    title={busy ? uiText("Henter …") : uiText("Vis flere økter")}
                     disabled={busy || loading}
                     onPress={() =>
                       void action(async (signal) => {

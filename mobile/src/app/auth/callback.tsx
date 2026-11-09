@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { useLinkingURL } from "expo-linking";
@@ -35,7 +36,7 @@ export default function AuthCallback() {
   const message = invalid
     ? errorCode
       ? authErrorMessage({ code: errorCode })
-      : "Lenken kunne ikke brukes. Prøv å logge inn, eller be om en ny lenke."
+      : uiText("Lenken kunne ikke brukes. Prøv å logge inn, eller be om en ny lenke.")
     : failure?.code === linkId
       ? failure.message
       : "";
@@ -62,13 +63,13 @@ export default function AuthCallback() {
   return (
     <Screen>
       <Txt size={28} weight="700">
-        {message ? "Sjekk innloggingen" : "Bekrefter kontoen …"}
+        {message ? uiText("Sjekk innloggingen") : uiText("Bekrefter kontoen …")}
       </Txt>
       {!!message && (
         <>
           <Txt>{message}</Txt>
           <Button
-            title="Til innlogging"
+            title={uiText("Til innlogging")}
             onPress={() => router.replace("/account")}
           />
         </>

@@ -13,8 +13,9 @@ import {
   pushPreference,
   pushSupported,
 } from "../features/social/push";
+import type { AppLanguage } from "../i18n/language";
 let lastOpened: string | undefined;
-export default function NotificationObserver() {
+export default function NotificationObserver({ language }: { language: AppLanguage }) {
   const owner = useAuthStore((s) => s.session?.user.id);
   useEffect(() => {
     if (!pushSupported) return;
@@ -22,10 +23,10 @@ export default function NotificationObserver() {
     let remove: (() => void) | undefined;
     let refreshing = false;
     async function refresh() {
-      if (!owner || refreshing) return;
+      if (!active || !owner || refreshing) return;
       refreshing = true;
       try {
-        if (await pushPreference(owner)) await enablePush(owner, false);
+        if ((await pushPreference(owner)) && active) await enablePush(owner, false);
       } catch {
         /* Settings offer explicit retry. */
       } finally {
@@ -114,6 +115,6 @@ export default function NotificationObserver() {
       remove?.();
       foreground.remove();
     };
-  }, [owner]);
+  }, [owner, language]);
   return null;
 }

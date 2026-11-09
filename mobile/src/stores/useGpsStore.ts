@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { workoutStorage } from "../lib/workoutStorage";
@@ -24,7 +25,7 @@ export const useGpsStore = create<State>()(
       defer: () => false,
       onError: () =>
         useGpsStore.setState({
-          error: "Kunne ikke lagre GPS-utkastet på enheten.",
+          error: uiText("Kunne ikke lagre GPS-utkastet på enheten."),
         }),
       onSuccess: () => {},
     }),

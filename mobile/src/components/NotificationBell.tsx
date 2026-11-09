@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useCallback, useState } from "react";
 import { AppState, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -51,7 +52,7 @@ export default function NotificationBell() {
       <IconButton
         name="bell"
         variant="elevated"
-        label={count ? `Varsler, ${count} uleste` : "Varsler"}
+        label={count ? uiText("Varsler, {0} uleste", count) : uiText("Varsler")}
         onPress={() => router.push("/notifications")}
       />
       {count > 0 && (

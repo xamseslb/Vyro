@@ -1,7 +1,9 @@
+import { message as uiText } from "../i18n/language";
 import { preparePushSignOut } from "../features/social/push";
 import { useRef, useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import { BrandWordmark } from "../components/Brand";
+import { VyroPublicLinks } from "../components/VyroPublicLinks";
 import { UsernameField } from "../components/UsernameField";
 import { normalizeUsername, usernameProblem, usernameTaken } from "../features/auth/username";
 import { router, useLocalSearchParams } from "expo-router";
@@ -86,10 +88,10 @@ export default function Account() {
     const client = supabase;
     await run(
       mode === "reset"
-        ? "Sender lenke …"
+        ? uiText("Sender lenke …")
         : register
-          ? "Oppretter konto …"
-          : "Logger inn …",
+          ? uiText("Oppretter konto …")
+          : uiText("Logger inn …"),
       async () => {
         if (mode === "reset") {
           const { error } = await client.auth.resetPasswordForEmail(
@@ -98,7 +100,7 @@ export default function Account() {
           );
           if (error) throw error;
           setMessage(
-            "Hvis adressen har en konto, får du en lenke for å velge nytt passord. Åpne lenken på denne enheten.",
+            uiText("Hvis adressen har en konto, får du en lenke for å velge nytt passord. Åpne lenken på denne enheten."),
           );
           return;
         }
@@ -140,7 +142,7 @@ export default function Account() {
           useAuthStore.setState({ confirmationEmail: email.trim() });
           setMode("login");
           setMessage(
-            "For en ny konto: sjekk e-posten og søppelposten, og åpne bekreftelseslenken på denne enheten. Har du konto fra før, logg inn med det opprinnelige passordet. Registrering på nytt endrer ikke passordet ditt.",
+            uiText("For en ny konto: sjekk e-posten og søppelposten, og åpne bekreftelseslenken på denne enheten. Har du konto fra før, logg inn med det opprinnelige passordet. Registrering på nytt endrer ikke passordet ditt."),
           );
         } else {
           throw new Error("Missing session after sign-in");
@@ -159,7 +161,7 @@ export default function Account() {
 
   function socialSignIn(provider: SocialProvider) {
     void run(
-      `Åpner ${provider === "apple" ? "Apple" : "Google"} …`,
+      uiText("Åpner {0} …", provider === "apple" ? "Apple" : "Google"),
       async () => {
         const result =
           provider === "apple"
@@ -176,12 +178,12 @@ export default function Account() {
     <Page
       title={
         session
-          ? "Konto"
+          ? uiText("Konto")
           : mode === "reset"
-            ? "Glemt passord"
+            ? uiText("Glemt passord")
             : register
-              ? "Opprett konto"
-              : "Logg inn"
+              ? uiText("Opprett konto")
+              : uiText("Logg inn")
       }
       fallback="/(tabs)"
       backDisabled={!!busy}
@@ -191,29 +193,29 @@ export default function Account() {
         {!session && register ? (
           <View style={{ gap: 12, paddingVertical: 16 }}>
             <BrandWordmark width={118} color={c.text} />
-            <Txt size={30} weight="700">Opprett din profil</Txt>
-            <Txt muted>Registrer deg med e-post eller fortsett med en konto under.</Txt>
+            <Txt size={30} weight="700">{uiText("Opprett din profil")}</Txt>
+            <Txt muted>{uiText("Registrer deg med e-post eller fortsett med en konto under.")}</Txt>
           </View>
         ) : !session && (
           <Txt muted size={15}>
             {mode === "reset"
-                ? "Vi sender deg en lenke for å velge et nytt passord."
-                : "Velkommen tilbake. Turene dine venter."}
+                ? uiText("Vi sender deg en lenke for å velge et nytt passord.")
+                : uiText("Velkommen tilbake. Turene dine venter.")}
           </Txt>
         )}
         {!supabase && (
-          <Txt>Innlogging er ikke satt opp på denne enheten ennå.</Txt>
+          <Txt>{uiText("Innlogging er ikke satt opp på denne enheten ennå.")}</Txt>
         )}
         {session ? (
           <>
-            <Txt>Du er innlogget i hele VYRO.</Txt>
+            <Txt>{uiText("Du er innlogget i hele VYRO.")}</Txt>
             <Txt>{session.user.email}</Txt>
             <AccountLastName key={session.user.id} user={session.user} />
             <Button
-              title={busy || "Logg ut"}
+              title={busy || uiText("Logg ut")}
               disabled={!!busy}
               onPress={() =>
-                void run("Logger ut …", async () => {
+                void run(uiText("Logger ut …"), async () => {
                   await preparePushSignOut(useAuthStore.getState().session!.user.id);
                   const result = await supabase!.auth.signOut({
                     scope: "local",
@@ -235,18 +237,15 @@ export default function Account() {
               />
             )}
             {pendingEmail && mode === "login" && (
-              <Txt muted>
-                Har du konto fra før? Bruk det opprinnelige passordet, eller
-                velg «Glemt passord?».
-              </Txt>
+              <Txt muted>{uiText("Har du konto fra før? Bruk det opprinnelige passordet, eller velg «Glemt passord?».")}</Txt>
             )}
             {register && (
               <>
                 <UsernameField value={username} onChange={setUsername} disabled={!!busy} />
-                <Txt weight="700">Om deg</Txt>
+                <Txt weight="700">{uiText("Om deg")}</Txt>
                 <TextInput
-                  accessibilityLabel="Visningsnavn"
-                  placeholder="Visningsnavn"
+                  accessibilityLabel={uiText("Visningsnavn")}
+                  placeholder={uiText("Visningsnavn")}
                   placeholderTextColor={c.muted}
                   value={name}
                   onChangeText={setName}
@@ -256,8 +255,8 @@ export default function Account() {
                   style={input}
                 />
                 <TextInput
-                  accessibilityLabel="Etternavn (valgfritt)"
-                  placeholder="Etternavn (valgfritt)"
+                  accessibilityLabel={uiText("Etternavn (valgfritt)")}
+                  placeholder={uiText("Etternavn (valgfritt)")}
                   placeholderTextColor={c.muted}
                   value={lastName}
                   onChangeText={setLastName}
@@ -270,8 +269,8 @@ export default function Account() {
               </>
             )}
             <TextInput
-              accessibilityLabel="E-post"
-              placeholder="E-post"
+              accessibilityLabel={uiText("E-post")}
+              placeholder={uiText("E-post")}
               placeholderTextColor={c.muted}
               value={email}
               onChangeText={(value) => {
@@ -287,8 +286,8 @@ export default function Account() {
             {mode !== "reset" && (
               <>
                 <TextInput
-                  accessibilityLabel="Passord"
-                  placeholder="Passord"
+                  accessibilityLabel={uiText("Passord")}
+                  placeholder={uiText("Passord")}
                   placeholderTextColor={c.muted}
                   value={password}
                   onChangeText={setPassword}
@@ -303,8 +302,8 @@ export default function Account() {
                 />
                 {register && (
                   <TextInput
-                    accessibilityLabel="Bekreft passord"
-                    placeholder="Gjenta passordet"
+                    accessibilityLabel={uiText("Bekreft passord")}
+                    placeholder={uiText("Gjenta passordet")}
                     placeholderTextColor={c.muted}
                     value={confirmation}
                     onChangeText={setConfirmation}
@@ -320,16 +319,12 @@ export default function Account() {
                 )}
                 <Pressable accessibilityRole="button" onPress={() => setVisible(!visible)} disabled={!!busy}
                   style={{ minHeight: 44, justifyContent: "center", alignSelf: "flex-end" }}>
-                  <Txt weight="600">{visible ? "Skjul passord" : "Vis passord"}</Txt>
+                  <Txt weight="600">{visible ? uiText("Skjul passord") : uiText("Vis passord")}</Txt>
                 </Pressable>
               </>
             )}
             {register && (
-              <Txt muted size={13}>
-                Minst 8 tegn i passordet. Visningsnavnet er synlig for andre
-                innloggede løpere. Etternavnet er valgfritt og privat. Økter
-                deles bare når du selv velger det.
-              </Txt>
+              <Txt muted size={13}>{uiText("Minst 8 tegn i passordet. Visningsnavnet er synlig for andre innloggede løpere. Etternavnet er valgfritt og privat. Økter deles bare når du selv velger det.")}</Txt>
             )}
             {!!message && (
               <View accessibilityLiveRegion="polite">
@@ -340,10 +335,10 @@ export default function Account() {
               title={
                 busy ||
                 (mode === "reset"
-                  ? "Send tilbakestillingslenke"
+                  ? uiText("Send tilbakestillingslenke")
                   : register
-                    ? "Opprett konto"
-                    : "Logg inn")
+                    ? uiText("Opprett konto")
+                    : uiText("Logg inn"))
               }
               disabled={!supabase || !!busy}
               onPress={() => void submit()}
@@ -351,10 +346,10 @@ export default function Account() {
             {pendingEmail && mode === "login" && (
               <Button
                 secondary
-                title="Send bekreftelsen på nytt"
+                title={uiText("Send bekreftelsen på nytt")}
                 disabled={!!busy || !supabase}
                 onPress={() =>
-                  void run("Sender bekreftelse …", async () => {
+                  void run(uiText("Sender bekreftelse …"), async () => {
                     const { error } = await supabase!.auth.resend({
                       type: "signup",
                       email: email.trim(),
@@ -362,7 +357,7 @@ export default function Account() {
                     });
                     if (error) throw error;
                     setMessage(
-                      "Hvis kontoen trenger bekreftelse, får du en ny lenke på e-post. Åpne den på denne enheten.",
+                      uiText("Hvis kontoen trenger bekreftelse, får du en ny lenke på e-post. Åpne den på denne enheten."),
                     );
                   })
                 }
@@ -371,7 +366,7 @@ export default function Account() {
             {mode === "login" && (
               <Button
                 secondary
-                title="Glemt passord?"
+                title={uiText("Glemt passord?")}
                 disabled={!!busy}
                 onPress={() => changeMode("reset")}
               />
@@ -380,8 +375,8 @@ export default function Account() {
               secondary
               title={
                 mode === "login"
-                  ? "Ny her? Opprett konto"
-                  : "Tilbake til innlogging"
+                  ? uiText("Ny her? Opprett konto")
+                  : uiText("Tilbake til innlogging")
               }
               disabled={!!busy}
               onPress={() =>
@@ -396,6 +391,7 @@ export default function Account() {
           </View>
         )}
       </View>
+      <VyroPublicLinks />
     </Page>
   );
 }

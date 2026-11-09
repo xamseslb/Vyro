@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { Linking, Switch, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -40,7 +41,7 @@ function Preferences({ owner }: { owner: string }) {
           if (alive) setEnabled(value);
         })
         .catch(() => {
-          if (alive) setError("Kunne ikke sjekke varslene. Prøv igjen.");
+          if (alive) setError(uiText("Kunne ikke sjekke varslene. Prøv igjen."));
         })
         .finally(() => {
           if (alive) setBusy(false);
@@ -67,17 +68,15 @@ function Preferences({ owner }: { owner: string }) {
     }
   }
   return (
-    <Page title="Sosiale varsler">
-      <PageNote>
-        Følg med på følgerne dine, kommentarer, likerklikk og nye innlegg.
-      </PageNote>
-      <SettingsGroup title="På denne telefonen">
+    <Page title={uiText("Sosiale varsler")}>
+      <PageNote>{uiText("Følg med på følgerne dine, kommentarer, likerklikk og nye innlegg.")}</PageNote>
+      <SettingsGroup title={uiText("På denne telefonen")}>
         <SettingsRow
-          title="Varsler på telefonen"
-          description="Få varsel også når VYRO er lukket. Varselet inneholder ingen treningsrute eller posisjon."
+          title={uiText("Varsler på telefonen")}
+          description={uiText("Få varsel også når VYRO er lukket. Varselet inneholder ingen treningsrute eller posisjon.")}
           end={
             <Switch
-              accessibilityLabel="Varsler på telefonen"
+              accessibilityLabel={uiText("Varsler på telefonen")}
               value={enabled}
               disabled={busy || !pushSupported}
               onValueChange={(v) => void change(v)}
@@ -85,21 +84,19 @@ function Preferences({ owner }: { owner: string }) {
           }
         />
         <SettingsRow
-          title="Åpne varsellisten"
+          title={uiText("Åpne varsellisten")}
           icon="bell"
           onPress={() => router.push("/notifications")}
         />
         {pushSupported && (
           <SettingsRow
-            title="Telefonens varselinnstillinger"
+            title={uiText("Telefonens varselinnstillinger")}
             onPress={() => void Linking.openSettings()}
           />
         )}
       </SettingsGroup>
       {!pushSupported && (
-        <PageNote>
-          Telefonvarsler kan slås på i den installerte VYRO-appen på iPhone.
-        </PageNote>
+        <PageNote>{uiText("Telefonvarsler kan slås på i den installerte VYRO-appen på iPhone.")}</PageNote>
       )}
       <NotificationCategories key={owner} owner={owner} />
       <View style={{ padding: 22, gap: 12 }}>
@@ -107,7 +104,7 @@ function Preferences({ owner }: { owner: string }) {
           <>
             <Txt accessibilityRole="alert">{error}</Txt>
             <Button
-              title="Prøv igjen"
+              title={uiText("Prøv igjen")}
               secondary
               disabled={busy}
               onPress={() => void change(!enabled)}

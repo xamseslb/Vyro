@@ -1,4 +1,6 @@
+import { message as uiText } from "../../i18n/language";
 import { useRef, useState } from "react";
+import { useAppStore } from "../../stores/useAppStore";
 import { Alert, TextInput, View } from "react-native";
 import { router } from "expo-router";
 import { AccountGate } from "../../components/AccountGate";
@@ -13,39 +15,31 @@ export default function DeleteAccount() {
   );
 }
 function Form({ owner }: { owner: string }) {
+  const word = useAppStore((s) => s.language) === "en" ? "DELETE" : "SLETT";
   const [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const lock = useRef(false);
   const c = useTheme();
   return (
-    <Page title="Slett konto" plain>
+    <Page title={uiText("Slett konto")} plain>
       <View style={{ padding: 22, gap: 20 }}>
-        <Txt weight="700" size={22}>
-          Dette kan ikke angres
-        </Txt>
-        <Txt>
-          Kontoen, private sikkerhetskopier, bilder, innlegg, kommentarer, ruter
-          og klubbene du eier blir slettet. Økter på denne enheten fjernes.
-          Kopier du har eksportert eller lagret på andre enheter må slettes der.
-        </Txt>
-        <Txt muted>
-          Du må ha logget inn de siste 15 minuttene. Ta vare på økter du vil
-          beholde under Data og sikkerhetskopi først.
-        </Txt>
+        <Txt weight="700" size={22}>{uiText("Dette kan ikke angres")}</Txt>
+        <Txt>{uiText("Kontoen, private sikkerhetskopier, bilder, innlegg, kommentarer, ruter og klubbene du eier blir slettet. Økter på denne enheten fjernes. Kopier du har eksportert eller lagret på andre enheter må slettes der.")}</Txt>
+        <Txt muted>{uiText("Du må ha logget inn de siste 15 minuttene. Ta vare på økter du vil beholde under Data og sikkerhetskopi først.")}</Txt>
         <Button
-          title="Til data og eksport"
+          title={uiText("Til data og eksport")}
           secondary
           disabled={busy}
           onPress={() => router.push("/settings/data")}
         />
-        <Txt>Skriv SLETT for å bekrefte.</Txt>
+        <Txt>{uiText("Skriv SLETT for å bekrefte.")}</Txt>
         <TextInput
-          accessibilityLabel="Bekreft kontosletting"
+          accessibilityLabel={uiText("Bekreft kontosletting")}
           value={confirmation}
           onChangeText={setConfirmation}
           autoCorrect={false}
-          maxLength={5}
+          maxLength={word.length}
           editable={!busy}
           autoCapitalize="characters"
           style={{
@@ -57,9 +51,9 @@ function Form({ owner }: { owner: string }) {
           }}
         />
         <Button
-          title={busy ? "Sletter konto …" : "Slett kontoen min permanent"}
+          title={busy ? uiText("Sletter konto …") : uiText("Slett kontoen min permanent")}
           danger
-          disabled={busy || confirmation !== "SLETT"}
+          disabled={busy || confirmation !== word}
           onPress={async () => {
             if (lock.current) return;
             lock.current = true;
@@ -69,13 +63,13 @@ function Form({ owner }: { owner: string }) {
               const result = await deleteOwnAccount(owner);
               if (!result.localCleanupComplete)
                 Alert.alert(
-                  "Kontoen er slettet",
-                  "Oppryddingen på denne enheten kunne ikke bekreftes. For å fjerne alle lokale kopier må du slette VYRO fra enheten. Ta først vare på eventuelle økter som tilhører andre kontoer.",
+                  uiText("Kontoen er slettet"),
+                  uiText("Oppryddingen på denne enheten kunne ikke bekreftes. For å fjerne alle lokale kopier må du slette VYRO fra enheten. Ta først vare på eventuelle økter som tilhører andre kontoer."),
                 );
               if (!useAuthStore.getState().session) router.replace("/account");
             } catch (e) {
               setError(
-                e instanceof Error ? e.message : "Kunne ikke slette kontoen.",
+                e instanceof Error ? e.message : uiText("Kunne ikke slette kontoen."),
               );
             } finally {
               lock.current = false;

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import {
   useCallback,
   useEffect,
@@ -213,7 +214,7 @@ function RoutesMap() {
       >
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Nord opp"
+          accessibilityLabel={uiText("Nord opp")}
           onPress={() => setNorth((v) => v + 1)}
           style={s.control}
         >
@@ -221,7 +222,7 @@ function RoutesMap() {
         </Pressable>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Kartlag"
+          accessibilityLabel={uiText("Kartlag")}
           onPress={() => setSheet("layers")}
           style={s.control}
         >
@@ -229,7 +230,7 @@ function RoutesMap() {
         </Pressable>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={threeD ? "Vis i 2D" : "Vis i 3D"}
+          accessibilityLabel={threeD ? uiText("Vis i 2D") : uiText("Vis i 3D")}
           onPress={() => setThreeD(!threeD)}
           style={s.control}
         >
@@ -238,7 +239,7 @@ function RoutesMap() {
         {!!turf && (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Vis hele ruten"
+            accessibilityLabel={uiText("Vis hele ruten")}
             onPress={() => {
               locationIntent.current++;
               setFollow(false);
@@ -253,7 +254,7 @@ function RoutesMap() {
         )}
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Vis min posisjon"
+          accessibilityLabel={uiText("Vis min posisjon")}
           accessibilityState={{
             selected: follow,
             busy: locating,
@@ -281,11 +282,11 @@ function RoutesMap() {
                 setMessage("");
               } else
                 setMessage(
-                  "Gi tilgang til posisjon for å finne deg på kartet.",
+                  uiText("Gi tilgang til posisjon for å finne deg på kartet."),
                 );
             } catch {
               if (intent === locationIntent.current)
-                setMessage("Kunne ikke åpne posisjon. Prøv igjen.");
+                setMessage(uiText("Kunne ikke åpne posisjon. Prøv igjen."));
             } finally {
               permissionRequest.current = false;
               setLocating(false);
@@ -307,8 +308,8 @@ function RoutesMap() {
               {message ||
                 loc.error ||
                 (loc.permission === "granted"
-                  ? "Finner posisjonen din …"
-                  : "Trykk på posisjonsknappen for å vise hvor du er.")}
+                  ? uiText("Finner posisjonen din …")
+                  : uiText("Trykk på posisjonsknappen for å vise hvor du er."))}
             </MapText>
           </View>
         )}
@@ -327,7 +328,7 @@ function RoutesMap() {
               <View style={s.tag}>
                 <View style={s.dot} />
                 <MapText size={11} weight="700">
-                  {turf ? "DIN LAGREDE GPS-RUTE" : "UTFORSK"}
+                  {turf ? uiText("DIN LAGREDE GPS-RUTE") : uiText("UTFORSK")}
                 </MapText>
               </View>
               {!!turf && (
@@ -335,8 +336,8 @@ function RoutesMap() {
                   accessibilityRole="button"
                   accessibilityLabel={
                     saved.ids.includes(turf.id)
-                      ? "Fjern lagret rute"
-                      : "Lagre ruten"
+                      ? uiText("Fjern lagret rute")
+                      : uiText("Lagre ruten")
                   }
                   onPress={() => saved.toggle(turf.id)}
                   accessibilityState={{ selected: saved.ids.includes(turf.id) }}
@@ -358,7 +359,7 @@ function RoutesMap() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={
-                  expanded ? "Skjul detaljer" : "Vis detaljer"
+                  expanded ? uiText("Skjul detaljer") : uiText("Vis detaljer")
                 }
                 onPress={() => setExpanded(!expanded)}
                 style={{
@@ -373,7 +374,7 @@ function RoutesMap() {
             </View>
             <MapText size={21} weight="700">
               {turf?.name ??
-                (index === null ? "Kartet rundt deg" : "Ingen ruter passer")}
+                (index === null ? uiText("Kartet rundt deg") : uiText("Ingen ruter passer"))}
             </MapText>
             {turf ? (
               <>
@@ -382,7 +383,7 @@ function RoutesMap() {
                   <MapText muted>·</MapText>
                   <MapText weight="600">
                     {duration(turf.seconds)}
-                    {" totalt"}
+                    {uiText(" totalt")}
                   </MapText>
                 </View>
                 <View
@@ -393,13 +394,11 @@ function RoutesMap() {
                       {owner?.initials}
                     </MapText>
                   </View>
-                  <MapText size={13} muted>
-                    Din private GPS-rute
-                  </MapText>
+                  <MapText size={13} muted>{uiText("Din private GPS-rute")}</MapText>
                   {turfs.length > 1 && (
                     <Pressable
                       accessibilityRole="button"
-                      accessibilityLabel="Neste lagrede rute"
+                      accessibilityLabel={uiText("Neste lagrede rute")}
                       onPress={() => {
                         locationIntent.current++;
                         setIndex((v) => (v ?? 0) + 1);
@@ -413,9 +412,7 @@ function RoutesMap() {
                         justifyContent: "center",
                       }}
                     >
-                      <MapText size={13} weight="600">
-                        Neste →
-                      </MapText>
+                      <MapText size={13} weight="600">{uiText("Neste →")}</MapText>
                     </Pressable>
                   )}
                 </View>
@@ -423,14 +420,14 @@ function RoutesMap() {
             ) : (
               <MapText muted size={14}>
                 {index === null
-                  ? "Finn et sted, utforsk ruteforslag eller start en økt herfra."
-                  : "Velg en annen lengde, eller finn en løype under Ruteforslag."}
+                  ? uiText("Finn et sted, utforsk ruteforslag eller start en økt herfra.")
+                  : uiText("Velg en annen lengde, eller finn en løype under Ruteforslag.")}
               </MapText>
             )}
             {index === null && turfs.length > 0 && (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Vis mine lagrede ruter"
+                accessibilityLabel={uiText("Vis mine lagrede ruter")}
                 onPress={() => {
                   locationIntent.current++;
                   setIndex(0);
@@ -446,26 +443,22 @@ function RoutesMap() {
                 }}
               >
                 <Icon name="map" size={20} color={brand.route} />
-                <MapText size={14} weight="600">
-                  Mine lagrede ruter · {turfs.length}
+                <MapText size={14} weight="600">{uiText("Mine lagrede ruter ·") + " "}{turfs.length}
                 </MapText>
                 <Icon name="chevronRight" size={18} color={brand.route} />
               </Pressable>
             )}
             {expanded && (
-              <MapText muted size={13}>
-                Lagrede ruter er private. Klubbens konkurranser finner du under
-                Soner.
-              </MapText>
+              <MapText muted size={13}>{uiText("Lagrede ruter er private. Klubbens konkurranser finner du under Soner.")}</MapText>
             )}
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Start en økt"
+              accessibilityLabel={uiText("Start en økt")}
               onPress={() => router.push("/(tabs)/track")}
               style={s.start}
             >
               <Icon name="record" size={20} color="#11182C" />
-              <MapText weight="700">Start en økt</MapText>
+              <MapText weight="700">{uiText("Start en økt")}</MapText>
             </Pressable>
           </View>
         </MapRouteSheet>
@@ -501,17 +494,15 @@ function RoutesMap() {
             >
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Åpne klubbsoner"
+                accessibilityLabel={uiText("Åpne klubbsoner")}
                 onPress={() => router.push("/turf")}
                 style={s.chip}
               >
-                <MapText size={13} weight="700">
-                  Soner ↗
-                </MapText>
+                <MapText size={13} weight="700">{uiText("Soner ↗")}</MapText>
               </Pressable>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Finn ruteforslag"
+                accessibilityLabel={uiText("Finn ruteforslag")}
                 style={s.chip}
                 onPress={() => {
                   const area = target ?? position;
@@ -521,15 +512,13 @@ function RoutesMap() {
                       ? {
                           lat: String(area.latitude),
                           lon: String(area.longitude),
-                          name: target?.name ?? "Nær meg",
+                          name: target?.name ?? uiText("Nær meg"),
                         }
                       : {},
                   });
                 }}
               >
-                <MapText size={13} weight="700">
-                  Ruteforslag ↗
-                </MapText>
+                <MapText size={13} weight="700">{uiText("Ruteforslag ↗")}</MapText>
               </Pressable>
               <MapLengthFilter
                 value={length}
@@ -560,7 +549,7 @@ function RoutesMap() {
         >
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Lukk kartpanel"
+            accessibilityLabel={uiText("Lukk kartpanel")}
             style={{ flex: 1 }}
             onPress={() => setSheet(null)}
           />
@@ -582,12 +571,10 @@ function RoutesMap() {
                 justifyContent: "space-between",
               }}
             >
-              <MapText weight="700" size={22}>
-                Karttyper og lag
-              </MapText>
+              <MapText weight="700" size={22}>{uiText("Karttyper og lag")}</MapText>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Lukk"
+                accessibilityLabel={uiText("Lukk")}
                 onPress={() => setSheet(null)}
                 style={{ padding: 12 }}
               >
@@ -639,17 +626,17 @@ function RoutesMap() {
               </View>
               <MapText size={13} muted>
                 {mapKind === "satellite"
-                  ? "Fly- og satellittbilder uten kartnavn."
+                  ? uiText("Fly- og satellittbilder uten kartnavn.")
                   : mapKind === "hybrid"
-                    ? "Satellittbilder med veier og kartnavn."
-                    : "Veikart med stier og kartnavn."}
+                    ? uiText("Satellittbilder med veier og kartnavn.")
+                    : uiText("Veikart med stier og kartnavn.")}
               </MapText>
               {(
                 [
                   [
                     apple
-                      ? "Interessepunkter"
-                      : "Stedsnavn og interessepunkter",
+                      ? uiText("Interessepunkter")
+                      : uiText("Stedsnavn og interessepunkter"),
                     poi,
                     setPoi,
                   ],
@@ -687,10 +674,7 @@ function RoutesMap() {
                     />
                   </View>
                 ))}
-              <MapText muted size={13}>
-                Varmekart er ikke tilgjengelig ennå. Det krever ekte
-                aktivitetsdata.
-              </MapText>
+              <MapText muted size={13}>{uiText("Varmekart er ikke tilgjengelig ennå. Det krever ekte aktivitetsdata.")}</MapText>
             </ScrollView>
           </View>
         </View>

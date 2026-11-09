@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useCallback, useState } from "react";
 import { View } from "react-native";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -87,16 +88,16 @@ function Content({
     }, [owner, id, place]),
   );
   return (
-    <Page title="Innlegg" fallback="/notifications">
+    <Page title={uiText("Innlegg")} fallback="/notifications">
       <View style={{ padding: 20, gap: 16 }}>
         {busy ? (
-          <Txt muted>Henter innlegget …</Txt>
+          <Txt muted>{uiText("Henter innlegget …")}</Txt>
         ) : error ? (
           <>
             <Txt accessibilityRole="alert">{error}</Txt>
             <Button
               secondary
-              title="Prøv igjen"
+              title={uiText("Prøv igjen")}
               onPress={retry}
             />
           </>
@@ -116,7 +117,7 @@ function Content({
             />
           )
         ) : (
-          <Txt muted>Innlegget er slettet eller ikke lenger delt med deg.</Txt>
+          <Txt muted>{uiText("Innlegget er slettet eller ikke lenger delt med deg.")}</Txt>
         )}
       </View>
     </Page>

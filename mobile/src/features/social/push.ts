@@ -1,3 +1,4 @@
+import { displayLanguage, message as uiText } from "../../i18n/language";
 import { Platform } from "react-native";
 import Constants, { ExecutionEnvironment } from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -40,7 +41,7 @@ async function timeout<T>(operation: Promise<T>, ms = 20000): Promise<T> {
         timer = setTimeout(
           () =>
             reject(
-              new Error("Kunne ikke koble til varseltjenesten. Prøv igjen."),
+              new Error(uiText("Kunne ikke koble til varseltjenesten. Prøv igjen.")),
             ),
           ms,
         );
@@ -59,7 +60,7 @@ export function enablePush(owner: string, ask = true) {
 async function registerPush(owner: string, ask: boolean) {
   if (!pushSupported)
     throw new Error(
-      "Åpne den installerte VYRO-appen på iPhone for å slå på telefonvarsler.",
+      uiText("Åpne den installerte VYRO-appen på iPhone for å slå på telefonvarsler."),
     );
   requireOwner(owner);
   if (!ask && !(await pushPreference(owner))) return;
@@ -71,12 +72,12 @@ async function registerPush(owner: string, ask: boolean) {
     });
   requireOwner(owner);
   if (!permissions.granted)
-    throw new Error("Tillat varsler for VYRO i telefonens innstillinger.");
+    throw new Error(uiText("Tillat varsler for VYRO i telefonens innstillinger."));
   const projectId =
     Constants.expoConfig?.extra?.eas?.projectId ??
     Constants.easConfig?.projectId;
   if (!projectId)
-    throw new Error("Denne appversjonen er ikke satt opp for telefonvarsler.");
+    throw new Error(uiText("Denne appversjonen er ikke satt opp for telefonvarsler."));
   const token = await timeout(N.getExpoPushTokenAsync({ projectId }));
   const installationId = await getInstallation();
   requireOwner(owner);
@@ -84,6 +85,7 @@ async function registerPush(owner: string, ask: boolean) {
     .rpc("vyro_register_push", {
       p_installation: installationId,
       p_token: token.data,
+      p_language: displayLanguage(),
     })
     .abortSignal(AbortSignal.timeout(8000));
   if (result.error) throw result.error;

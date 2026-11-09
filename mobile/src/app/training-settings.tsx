@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect, useRef, useState } from "react";
 import { Switch, View } from "react-native";
 import { Button, Chip, Txt, styles } from "../components/ui";
@@ -40,13 +41,13 @@ export default function TrainingSettings() {
       if (mounted.current)
         setPreview(
           mode === "voice"
-            ? "Prøvevarsel sendt. Hørte du stemmen?"
-            : "Prøvevarsel sendt. Kjente du vibrasjonen?",
+            ? uiText("Prøvevarsel sendt. Hørte du stemmen?")
+            : uiText("Prøvevarsel sendt. Kjente du vibrasjonen?"),
         );
     } catch {
       if (mounted.current)
         useTrackingStatus.setState({
-          alertError: "Kunne ikke spille av prøvevarselet.",
+          alertError: uiText("Kunne ikke spille av prøvevarselet."),
         });
     } finally {
       previewPending.current = false;
@@ -54,16 +55,11 @@ export default function TrainingSettings() {
     }
   }
   return (
-    <Page title="Varsler og opptak">
+    <Page title={uiText("Varsler og opptak")}>
       <View style={{ padding: 22, gap: 28 }}>
         <View style={{ gap: 12 }}>
-          <Txt size={20} weight="700">
-            Kilometervarsler
-          </Txt>
-          <Txt muted size={14}>
-            Velg om du vil høre eller kjenne et varsel for hver kilometer under
-            en GPS-økt.
-          </Txt>
+          <Txt size={20} weight="700">{uiText("Kilometervarsler")}</Txt>
+          <Txt muted size={14}>{uiText("Velg om du vil høre eller kjenne et varsel for hver kilometer under en GPS-økt.")}</Txt>
           <View style={styles.wrap}>
             {(
               [
@@ -80,69 +76,50 @@ export default function TrainingSettings() {
               />
             ))}
           </View>
-          <Txt size={12} muted>
-            Tale krever at stillemodus er av og volumet er på. Vibrasjon kan
-            utebli i spareblussmodus eller når haptikk er slått av. Prøv på
-            telefonen.
-          </Txt>
+          <Txt size={12} muted>{uiText("Tale krever at stillemodus er av og volumet er på. Vibrasjon kan utebli i spareblussmodus eller når haptikk er slått av. Prøv på telefonen.")}</Txt>
           <Button
-            title="Prøv tale"
+            title={uiText("Prøv tale")}
             secondary
             disabled={testing || recording}
             onPress={() => void testAlert("voice")}
           />
           <Button
-            title="Prøv vibrasjon"
+            title={uiText("Prøv vibrasjon")}
             secondary
             disabled={testing || recording}
             onPress={() => void testAlert("vibration")}
           />
           {recording && (
-            <Txt muted size={12}>
-              Prøv varsler når økten er avsluttet.
-            </Txt>
+            <Txt muted size={12}>{uiText("Prøv varsler når økten er avsluttet.")}</Txt>
           )}
           {!!(alertError || preview) && (
             <Txt size={14} accessibilityRole={alertError ? "alert" : undefined}>
               {alertError || preview}
             </Txt>
           )}
-          <Txt muted size={12}>
-            Prøv også en økt med låst skjerm. iOS kan begrense tale og vibrasjon
-            i bakgrunnen.
-          </Txt>
+          <Txt muted size={12}>{uiText("Prøv også en økt med låst skjerm. iOS kan begrense tale og vibrasjon i bakgrunnen.")}</Txt>
         </View>
         <View style={{ gap: 12 }}>
-          <Txt size={20} weight="700">
-            Skjerm under økten
-          </Txt>
+          <Txt size={20} weight="700">{uiText("Skjerm under økten")}</Txt>
           <View style={styles.row}>
-            <Txt style={{ flex: 1 }}>Hold treningskartet på</Txt>
+            <Txt style={{ flex: 1 }}>{uiText("Hold treningskartet på")}</Txt>
             <Switch
-              accessibilityLabel="Hold treningskartet på"
+              accessibilityLabel={uiText("Hold treningskartet på")}
               value={awake}
               onValueChange={(keepWorkoutAwake) =>
                 preferences({ keepWorkoutAwake })
               }
             />
           </View>
-          <Txt muted size={14}>
-            Hindrer automatisk skjermlås i Tren og Kart mens økten pågår eller
-            er pauset. Du kan fortsatt låse telefonen selv.
-          </Txt>
+          <Txt muted size={14}>{uiText("Hindrer automatisk skjermlås i Tren og Kart mens økten pågår eller er pauset. Du kan fortsatt låse telefonen selv.")}</Txt>
         </View>
         <BackgroundRecordingSetting />
         <View style={{ gap: 12 }}>
-          <Txt size={20} weight="700">
-            Økten på låseskjermen
-          </Txt>
+          <Txt size={20} weight="700">{uiText("Økten på låseskjermen")}</Txt>
           {liveActivitySupported ? (
             <WorkoutLockScreenSetting />
           ) : (
-            <Txt muted size={14}>
-              Krever et nytt VYRO-bygg for iPhone med Liveaktiviteter. Visningen
-              er ikke tilgjengelig i Expo Go eller nettleseren.
-            </Txt>
+            <Txt muted size={14}>{uiText("Krever et nytt VYRO-bygg for iPhone med Liveaktiviteter. Visningen er ikke tilgjengelig i Expo Go eller nettleseren.")}</Txt>
           )}
         </View>
       </View>

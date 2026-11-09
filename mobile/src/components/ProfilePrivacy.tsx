@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useRef, useState } from "react";
 import { Switch } from "react-native";
 import { router } from "expo-router";
@@ -15,19 +16,19 @@ export default function ProfilePrivacy() {
   return (
     <>
       <SettingsGroup
-        title="Kontoens synlighet"
-        note="Navn, brukernavn og profilbilde kan fortsatt finnes i søk. Eksisterende følgere beholdes. Ruter du selv har bidratt med til ruteforslag og soner, er fortsatt offentlige bidrag."
+        title={uiText("Kontoens synlighet")}
+        note={uiText("Navn, brukernavn og profilbilde kan fortsatt finnes i søk. Eksisterende følgere beholdes. Ruter du selv har bidratt med til ruteforslag og soner, er fortsatt offentlige bidrag.")}
       >
         <SettingsRow
-          title="Privat konto"
+          title={uiText("Privat konto")}
           description={
             profile?.is_private
-              ? "Bare godkjente følgere kan se innleggene dine."
-              : "Andre VYRO-brukere kan følge deg uten godkjenning. Du velger fortsatt hvem hvert innlegg deles med."
+              ? uiText("Bare godkjente følgere kan se innleggene dine.")
+              : uiText("Andre VYRO-brukere kan følge deg uten godkjenning. Du velger fortsatt hvem hvert innlegg deles med.")
           }
           end={
             <Switch
-              accessibilityLabel="Privat konto"
+              accessibilityLabel={uiText("Privat konto")}
               value={profile?.is_private ?? false}
               disabled={busy || !profile}
               onValueChange={async (value) => {
@@ -49,14 +50,14 @@ export default function ProfilePrivacy() {
           }
         />
         <SettingsRow
-          title="Administrer følgere"
+          title={uiText("Administrer følgere")}
           onPress={() => router.push("/connections")}
         />
       </SettingsGroup>
       {!!(error || failed) && (
         <PageNote>
           {error ||
-            "Kunne ikke hente kontoinnstillingen. Åpne siden igjen for å prøve på nytt."}
+            uiText("Kunne ikke hente kontoinnstillingen. Åpne siden igjen for å prøve på nytt.")}
         </PageNote>
       )}
     </>

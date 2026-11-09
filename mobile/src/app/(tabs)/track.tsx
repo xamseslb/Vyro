@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useState } from "react";
 import { router } from "expo-router";
 import { Button, Screen, Txt } from "../../components/ui";
@@ -20,18 +21,16 @@ export default function Track() {
   if (r.ownerId && r.ownerId !== userId)
     return (
       <Screen>
-        <Txt>
-          En privat økt eller valgt rute tilhører en annen konto på enheten.
-        </Txt>
+        <Txt>{uiText("En privat økt eller valgt rute tilhører en annen konto på enheten.")}</Txt>
         {r.status === "idle" && (
           <Button
-            title="Fjern rutevalget"
+            title={uiText("Fjern rutevalget")}
             secondary
             onPress={() => event("discard")}
           />
         )}
         <Button
-          title="Bytt konto for å fortsette"
+          title={uiText("Bytt konto for å fortsette")}
           onPress={() => router.push("/account")}
         />
       </Screen>

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import { router } from "expo-router";
@@ -42,11 +43,11 @@ export default function NewPassword() {
     }
   }
   return (
-    <Page title="Velg nytt passord" fallback="/settings/account" plain>
+    <Page title={uiText("Velg nytt passord")} fallback="/settings/account" plain>
       <View style={{ padding: 22, gap: 18 }}>
         {session ? (
           <>
-            <Txt muted>Bruk minst 8 tegn.</Txt>
+            <Txt muted>{uiText("Bruk minst 8 tegn.")}</Txt>
             {(["Nytt passord", "Bekreft nytt passord"] as const).map(
               (label, index) => (
                 <TextInput
@@ -78,19 +79,17 @@ export default function NewPassword() {
               </View>
             )}
             <Button
-              title={busy ? "Lagrer passord …" : "Lagre nytt passord"}
+              title={busy ? uiText("Lagrer passord …") : uiText("Lagre nytt passord")}
               disabled={busy}
               onPress={() => void save()}
             />
           </>
         ) : (
-          <Txt>
-            Åpne en ny tilbakestillingslenke fra e-posten din på denne enheten.
-          </Txt>
+          <Txt>{uiText("Åpne en ny tilbakestillingslenke fra e-posten din på denne enheten.")}</Txt>
         )}
         <Button
           secondary
-          title="Til konto"
+          title={uiText("Til konto")}
           disabled={busy}
           onPress={() => router.replace("/account")}
         />

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { permissionWaitMessage } from "./locationDeadline";
 
 // Expo's web permission request waits for a GPS fix with no timeout. Observe
@@ -30,7 +31,7 @@ export function requestForegroundPermission(): Promise<{
       if (!navigator.geolocation) {
         finish(
           undefined,
-          new Error("Posisjon støttes ikke i denne nettleseren."),
+          new Error(uiText("Posisjon støttes ikke i denne nettleseren.")),
         );
         return;
       }

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { MapPoint } from "../maps/config";
 export type Sample = MapPoint & {
   timestamp: number;
@@ -96,6 +97,6 @@ export function evaluateTurf(
     takesOver: incumbentSeconds === null || seconds < incumbentSeconds,
     seconds,
     reason:
-      "Kandidat klar for serverkontroll. Lik tid beholder nåværende eier.",
+      uiText("Kandidat klar for serverkontroll. Lik tid beholder nåværende eier."),
   };
 }

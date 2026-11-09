@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { useEffect, useRef, useState } from "react";
 import { Image, View } from "react-native";
 import { PlacePost as Place } from "../features/places/model";
@@ -51,7 +52,7 @@ export function PlacePost({
           }
         };
         reader.onerror = () => {
-          if (live) setError("Kunne ikke åpne bildet.");
+          if (live) setError(uiText("Kunne ikke åpne bildet."));
         };
         reader.readAsDataURL(data);
       })
@@ -81,8 +82,7 @@ export function PlacePost({
         <View style={{ flex: 1 }}>
           <Txt weight="700">{personName(post.profiles.display_name)}</Txt>
           <Txt muted size={12}>
-            {new Date(post.created_at).toLocaleDateString("nb-NO")} · Stedsbilde
-          </Txt>
+            {new Date(post.created_at).toLocaleDateString(displayLocale())}{" " + uiText("· Stedsbilde")}</Txt>
         </View>
         </ProfileLink>
         <SafetyActions
@@ -110,10 +110,10 @@ export function PlacePost({
             justifyContent: "center",
           }}
         >
-          <Txt muted>{error || "Laster bilde …"}</Txt>
+          <Txt muted>{error || uiText("Laster bilde …")}</Txt>
           {!!error && (
             <Button
-              title="Last bildet på nytt"
+              title={uiText("Last bildet på nytt")}
               secondary
               onPress={() => setRevision((n) => n + 1)}
             />
@@ -124,13 +124,13 @@ export function PlacePost({
       <Txt>{post.caption}</Txt>
       <Txt muted size={12}>
         {post.audience === "followers"
-          ? "Delt med følgere"
-          : "Delt med innloggede VYRO-brukere"}
+          ? uiText("Delt med følgere")
+          : uiText("Delt med innloggede VYRO-brukere")}
       </Txt>
       {post.author_id === userId && (
         <Button
           title={
-            confirm ? "Bekreft: trekk tilbake bildet" : "Trekk tilbake bildet"
+            confirm ? uiText("Bekreft: trekk tilbake bildet") : uiText("Trekk tilbake bildet")
           }
           secondary
           disabled={busy}
@@ -154,7 +154,7 @@ export function PlacePost({
       )}
       {confirm && (
         <Button
-          title="Avbryt"
+          title={uiText("Avbryt")}
           secondary
           disabled={busy}
           onPress={() => setConfirm(false)}

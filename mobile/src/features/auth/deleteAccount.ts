@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { client } from "../social/api";
 import { requireOwner } from "../social/profiles";
 import { appPersistence, useAppStore } from "../../stores/useAppStore";
@@ -11,7 +12,7 @@ import { forgetVaultKey } from "../backup/vault";
 export async function deleteOwnAccount(owner: string) {
   requireOwner(owner);
   if (useAppStore.getState().recording.status !== "idle")
-    throw new Error("Avslutt eller forkast økten før du sletter kontoen.");
+    throw new Error(uiText("Avslutt eller forkast økten før du sletter kontoen."));
   cancelBackup();
   const result = await client().functions.invoke("delete-account", {
     body: { confirmation: "SLETT" },
@@ -25,14 +26,14 @@ export async function deleteOwnAccount(owner: string) {
     }
     if (code === "recent_login" || code === "signin")
       throw new Error(
-        "Logg ut og inn igjen, og bekreft slettingen innen 15 minutter.",
+        uiText("Logg ut og inn igjen, og bekreft slettingen innen 15 minutter."),
       );
     throw new Error(
-      "Slettingen ble ikke bekreftet. Prøv igjen for å fortsette oppryddingen. Kontoen kan være låst for nye endringer mens slettingen pågår.",
+      uiText("Slettingen ble ikke bekreftet. Prøv igjen for å fortsette oppryddingen. Kontoen kan være låst for nye endringer mens slettingen pågår."),
     );
   }
   if (result.data?.code !== "deleted")
-    throw new Error("Slettingen kunne ikke bekreftes. Prøv igjen.");
+    throw new Error(uiText("Slettingen kunne ikke bekreftes. Prøv igjen."));
   // Clear only this owner's records, even if another account signed in meanwhile.
   useAppStore.setState((s) => ({
     workouts: s.workouts.filter((w) => w.ownerId !== owner),

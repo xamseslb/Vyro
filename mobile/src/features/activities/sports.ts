@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../../i18n/language";
 // Persist Norwegian names for compatibility with existing workouts and profiles.
 // Timer sports never request GPS or invent distance from elapsed time.
 export const sportCatalog = {
@@ -226,14 +227,14 @@ export function validWorkoutDetails(value: WorkoutDetails) {
   );
 }
 export function sportSections(query: string, favorites: Sport[] = []) {
-  const normalized = query.trim().toLocaleLowerCase("nb-NO");
+  const normalized = query.trim().toLocaleLowerCase(displayLocale());
   const selected = selectableSports.filter((sport) =>
-    sport.toLocaleLowerCase("nb-NO").includes(normalized),
+    uiText(sport).toLocaleLowerCase(displayLocale()).includes(normalized),
   );
   const groups = [...new Set(selectableSports.map((s) => sportInfo(s).group))];
   return [
     {
-      title: "Dine idretter",
+      title: uiText("Dine idretter"),
       data: selected.filter((s) => favorites.includes(s)),
     },
     ...groups.map((title) => ({

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { type Sport, type Workout } from "../activities/model";
 import { footballMaxSpeed } from "../football/speed";
 import {
@@ -18,7 +19,7 @@ export function watchWorkout(
 ): Workout {
   const invalid = () => {
     throw new Error(
-      "En klokkeøkt kunne ikke leses. Kopien på klokken er beholdt.",
+      uiText("En klokkeøkt kunne ikke leses. Kopien på klokken er beholdt."),
     );
   };
   if (!value || typeof value !== "object") return invalid();

@@ -1,5 +1,17 @@
 # Leveranseplan
 
+## Velkomstside — 9. november 2026
+
+Ved første oppstart velges norsk eller engelsk. Velkomstsiden bruker to lokale bilder med korte introduksjoner til klubber og treningsloggen. Brukeren kan opprette konto, logge inn eller utforske kartet fra begge sider.
+
+## Offentlige sider — 9. november 2026
+
+Engelsk [brukerstøtte](https://vyro-hjelp.xamse641.chatgpt.site/) og [personvernerklæring](https://vyro-hjelp.xamse641.chatgpt.site/privacy.html) er publisert. Xamse Shaqlane er oppført som behandlingsansvarlig og vyrosupport@gmail.com som offentlig kontakt. Kilde ligger i `support-site/pages`. Konto- og hjelpeskjermen lenker til sidene. Gjenstår før innsending: registrer personvernerklæringen i App Store Connect under App Privacy og brukerstøtten som Support URL for iOS-versjonen, og test lenkene i installert bygg.
+
+## Apple-innlogging — 9. november 2026
+
+iPhone-byggene har et eget Apple-flagg slik at nettleserens OAuth-oppsett kan styres separat. Apple er aktivert i Supabase for iPhone-appen `app.vyro.xamse10`. Brukeren bekreftet innlogging på iPhone. Automatisk tilbakekalling hos Apple ved kontosletting gjenstår.
+
 ## Brukernavn, kartlag og idrettsvalg — 5. november 2026
 
 E-postregistrering inkluderer eget unikt brukernavn. Profiler med automatisk navn, inkludert nye Google-profiler, får navnevalget etter innlogging. Et eksakt @brukernavn kan brukes i personsøket. Kartlag velges per konto på enheten, og en ny gjesteøkt starter med Standard. Rulleskøyter, klatring, pilates og truger er tatt ut av velgeren. Tidligere økter kan fortsatt leses. Neste kontroll er første registrering og kontobytte på fysisk iPhone.
@@ -463,3 +475,6 @@ Native sesjoner flyttes fra AsyncStorage til SecureStore. Testet sikkerhetsmigre
 GPS-ruter/utkast og lokale sosiale kopier lagres med AES-GCM, med kontrollert migrering fra klartekst. Native bruker SecureStore-nøkkel; web bruker ikke-eksporterbar IndexedDB-nøkkel. Nye delinger viser en rute skjermet 500 m rundt start og slutt og har følgerpublikum som standard. Publisering på nytt oppdaterer kart og publikum atomisk. SQL-migrering 202610200003 er testet lokalt og aktivert i produksjon etter eksplisitt godkjenning 20. oktober. Eksisterende publiserte kart endres ikke automatisk. UUID-varselet er rettet; tre avhengighetsadvisories uten tilgjengelig patch gjenstår. Fysisk native test og enhetens gjenopprettingsatferd gjenstår.
 
 23. oktober 2026: Den eldre committen `9b1a569` fikk låsefilretting og bestod installasjon, typecheck, lint, 19 tester og web-eksport før fork-oppdateringen. Se historisk lokal oppstart i `testing.md`.
+
+### 9. november 2026 · Språkvalg
+Engelsk og norsk bokmål kan velges før registrering og senere i Innstillinger → Språk. Valget følger enheten og sendes til paret Apple Watch. De offentlige personvern- og hjelpesidene er engelske. Pushvarsler følger språket som er registrert på mottakerens enhet. Eldre appversjoner får bokmål.

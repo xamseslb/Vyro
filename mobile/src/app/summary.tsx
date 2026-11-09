@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useMemo, useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import { router } from "expo-router";
@@ -57,18 +58,16 @@ export default function Summary() {
   if (r.status !== "finishing" || (r.ownerId && r.ownerId !== userId))
     return (
       <Screen>
-        <Txt size={24} weight="700">
-          Ingen avsluttet økt
-        </Txt>
+        <Txt size={24} weight="700">{uiText("Ingen avsluttet økt")}</Txt>
         <Button
-          title="Til treningen"
+          title={uiText("Til treningen")}
           onPress={() => router.replace("/(tabs)/track")}
         />
       </Screen>
     );
   return (
     <Page
-      title="Lagre økt"
+      title={uiText("Lagre økt")}
       plain
       onBack={() => {
         event("return");
@@ -77,11 +76,9 @@ export default function Summary() {
       footer={
         discard ? (
           <>
-            <Txt weight="700" accessibilityRole="alert">
-              Forkaste økten uten å lagre?
-            </Txt>
+            <Txt weight="700" accessibilityRole="alert">{uiText("Forkaste økten uten å lagre?")}</Txt>
             <Button
-              title="Bekreft: forkast økten"
+              title={uiText("Bekreft: forkast økten")}
               danger
               onPress={() => {
                 event("discard");
@@ -89,7 +86,7 @@ export default function Summary() {
               }}
             />
             <Button
-              title="Behold økten"
+              title={uiText("Behold økten")}
               secondary
               onPress={() => setDiscard(false)}
             />
@@ -99,8 +96,8 @@ export default function Summary() {
             {!valid && (
               <Txt muted size={13}>
                 {r.seconds < 1
-                  ? "Økten er for kort til å lagres."
-                  : "Ingen GPS-strekning ble registrert. Fortsett økten og vent på posisjon."}
+                  ? uiText("Økten er for kort til å lagres.")
+                  : uiText("Ingen GPS-strekning ble registrert. Fortsett økten og vent på posisjon.")}
               </Txt>
             )}
             {!!saveError && (
@@ -109,7 +106,7 @@ export default function Summary() {
               </Txt>
             )}
             <Button
-              title="Lagre økten"
+              title={uiText("Lagre økten")}
               icon="check"
               large
               disabled={!valid}
@@ -121,9 +118,7 @@ export default function Summary() {
                     params: { id, saved: "1" },
                   });
                 else
-                  setSaveError(
-                    "Økten kunne ikke lagres. Kontroller at du er innlogget med samme konto.",
-                  );
+                  setSaveError(uiText("Økten kunne ikke lagres. Kontroller at du er innlogget med samme konto."));
               }}
             />
             <Pressable
@@ -135,9 +130,7 @@ export default function Summary() {
                 alignItems: "center",
               }}
             >
-              <Txt weight="600" style={{ color: c.text }}>
-                Forkast økten
-              </Txt>
+              <Txt weight="600" style={{ color: c.text }}>{uiText("Forkast økten")}</Txt>
             </Pressable>
           </>
         )
@@ -170,13 +163,13 @@ export default function Summary() {
           </View>
         )}
         <View style={{ gap: 8 }}>
-          <Txt weight="600">Navn på økten</Txt>
+          <Txt weight="600">{uiText("Navn på økten")}</Txt>
           <TextInput
-            accessibilityLabel="Navn på økten"
+            accessibilityLabel={uiText("Navn på økten")}
             maxLength={80}
             value={title}
             onChangeText={setTitle}
-            placeholder={`${r.sport} i dag`}
+            placeholder={uiText("{0} i dag", uiText(r.sport))}
             placeholderTextColor={c.muted}
             style={input}
           />
@@ -189,10 +182,8 @@ export default function Summary() {
             style={[input, styles.row]}
           >
             <View style={{ gap: 4 }}>
-              <Txt muted size={12}>
-                Type økt
-              </Txt>
-              <Txt weight="600">{workoutType}</Txt>
+              <Txt muted size={12}>{uiText("Type økt")}</Txt>
+              <Txt weight="600">{uiText(workoutType)}</Txt>
             </View>
             <Icon
               name={openType ? "chevronUp" : "chevronDown"}
@@ -204,7 +195,7 @@ export default function Summary() {
               {workoutTypes.map((type) => (
                 <Chip
                   key={type}
-                  title={type}
+                  title={uiText(type)}
                   selected={type === workoutType}
                   onPress={() => {
                     setType(type);
@@ -221,13 +212,11 @@ export default function Summary() {
             style={[input, styles.row]}
           >
             <View style={{ flex: 1, gap: 4 }}>
-              <Txt muted size={12}>
-                Hvordan føltes aktiviteten?
-              </Txt>
+              <Txt muted size={12}>{uiText("Hvordan føltes aktiviteten?")}</Txt>
               <Txt weight="600">
                 {effort
-                  ? `Anstrengelse: ${effort} av 10`
-                  : "Velg anstrengelse (valgfritt)"}
+                  ? uiText("Anstrengelse: {0} av 10", effort)
+                  : uiText("Velg anstrengelse (valgfritt)")}
               </Txt>
             </View>
             <Icon
@@ -237,9 +226,7 @@ export default function Summary() {
           </Pressable>
           {openEffort && (
             <View style={{ gap: 10 }}>
-              <Txt muted size={13}>
-                1 er svært lett · 10 er maksimal innsats
-              </Txt>
+              <Txt muted size={13}>{uiText("1 er svært lett · 10 er maksimal innsats")}</Txt>
               <View style={styles.wrap}>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                   <Chip
@@ -256,15 +243,15 @@ export default function Summary() {
         <View style={{ gap: 8 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Icon name="lock" size={16} color={c.muted} />
-            <Txt weight="600">Private notater</Txt>
+            <Txt weight="600">{uiText("Private notater")}</Txt>
           </View>
           <TextInput
-            accessibilityLabel="Notater om økten"
+            accessibilityLabel={uiText("Notater om økten")}
             maxLength={1000}
             multiline
             value={notes}
             onChangeText={setNotes}
-            placeholder="Skriv noe du vil huske fra økten …"
+            placeholder={uiText("Skriv noe du vil huske fra økten …")}
             placeholderTextColor={c.muted}
             style={[input, { minHeight: 100, textAlignVertical: "top" }]}
           />

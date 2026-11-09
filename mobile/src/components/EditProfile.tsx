@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import { Button, Txt, useTheme } from "./ui";
@@ -14,15 +15,15 @@ export function EditProfile({ userId }: { userId: string }) {
   const value = draft ?? profile?.display_name ?? "";
   return (
     <View style={{ gap: 12 }}>
-      <Txt weight="600">Visningsnavn på kontoen</Txt>
+      <Txt weight="600">{uiText("Visningsnavn på kontoen")}</Txt>
       {!profile ? (
         <>
           <Txt muted>
-            {failed ? "Kunne ikke hente profilen." : "Henter profil …"}
+            {failed ? uiText("Kunne ikke hente profilen.") : uiText("Henter profil …")}
           </Txt>
           {failed && (
             <Button
-              title="Hent profil på nytt"
+              title={uiText("Hent profil på nytt")}
               secondary
               onPress={() => {
                 void loadOwnProfile(userId, new AbortController().signal, true);
@@ -33,7 +34,7 @@ export function EditProfile({ userId }: { userId: string }) {
       ) : (
         <>
           <TextInput
-            accessibilityLabel="Visningsnavn på kontoen"
+            accessibilityLabel={uiText("Visningsnavn på kontoen")}
             value={value}
             maxLength={50}
             editable={!busy}
@@ -49,11 +50,9 @@ export function EditProfile({ userId }: { userId: string }) {
               borderColor: c.border,
             }}
           />
-          <Txt size={13} muted>
-            Navnet vises på profilen din, innleggene og kommentarene dine.
-          </Txt>
+          <Txt size={13} muted>{uiText("Navnet vises på profilen din, innleggene og kommentarene dine.")}</Txt>
           <Button
-            title={busy ? "Lagrer navn …" : "Lagre kontonavn"}
+            title={busy ? uiText("Lagrer navn …") : uiText("Lagre kontonavn")}
             disabled={
               busy || !value.trim() || value.trim() === profile.display_name
             }
@@ -65,12 +64,12 @@ export function EditProfile({ userId }: { userId: string }) {
               try {
                 await saveDisplayName(userId, value);
                 setDraft(null);
-                setMessage("Kontonavnet er lagret.");
+                setMessage(uiText("Kontonavnet er lagret."));
               } catch (error) {
                 setMessage(
                   error instanceof Error
                     ? error.message
-                    : "Kunne ikke lagre navnet. Prøv igjen.",
+                    : uiText("Kunne ikke lagre navnet. Prøv igjen."),
                 );
               } finally {
                 pending.current = false;

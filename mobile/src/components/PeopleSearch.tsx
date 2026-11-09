@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import { useFocusEffect } from "expo-router";
@@ -141,8 +142,8 @@ export function PeopleSearch({
   return (
     <View style={{ gap: 18 }}>
       <Field
-        accessibilityLabel="Søk etter navn eller brukernavn"
-        placeholder="Navn eller brukernavn"
+        accessibilityLabel={uiText("Søk etter navn eller brukernavn")}
+        placeholder={uiText("Navn eller brukernavn")}
         value={term}
         onChangeText={setTerm}
         maxLength={50}
@@ -151,7 +152,7 @@ export function PeopleSearch({
         onSubmitEditing={search}
       />
       <Button
-        title={loading ? "Søker …" : "Søk etter personer"}
+        title={loading ? uiText("Søker …") : uiText("Søk etter personer")}
         disabled={loading}
         secondary
         icon="search"
@@ -161,8 +162,8 @@ export function PeopleSearch({
       {!loading && !error && !visible.length && (
         <Txt muted>
           {onChoose && people.length
-            ? "Alle treff er allerede medlemmer eller invitert."
-            : "Ingen personer funnet. Prøv et annet navn."}
+            ? uiText("Alle treff er allerede medlemmer eller invitert.")
+            : uiText("Ingen personer funnet. Prøv et annet navn.")}
         </Txt>
       )}
       {visible.map((person) => (
@@ -177,23 +178,21 @@ export function PeopleSearch({
               </Txt>
             )}
             {!!person.is_private && (
-              <Txt muted size={12}>
-                Privat konto
-              </Txt>
+              <Txt muted size={12}>{uiText("Privat konto")}</Txt>
             )}
           </View>
           </ProfileLink>
           <Button
             title={
               busy === person.id
-                ? "Lagrer …"
+                ? uiText("Lagrer …")
                 : onChoose
-                  ? "Inviter"
+                  ? uiText("Inviter")
                   : following.includes(person.id)
-                    ? "Følger"
+                    ? uiText("Følger")
                     : requested.includes(person.id)
-                      ? "Avbryt forespørsel"
-                      : "Følg"
+                      ? uiText("Avbryt forespørsel")
+                      : uiText("Følg")
             }
             secondary
             disabled={!!busy}
@@ -212,9 +211,7 @@ export function PeopleSearch({
         </View>
       ))}
       {people.length === 50 && (
-        <Txt muted size={12}>
-          Viser inntil 50 personer. Skriv mer av navnet for å avgrense søket.
-        </Txt>
+        <Txt muted size={12}>{uiText("Viser inntil 50 personer. Skriv mer av navnet for å avgrense søket.")}</Txt>
       )}
     </View>
   );

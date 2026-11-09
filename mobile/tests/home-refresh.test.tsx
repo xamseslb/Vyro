@@ -122,7 +122,7 @@ test("switching accounts aborts a late response and never exposes the old feed",
   await act(() => old.resolve(page("account-a-private-post")));
   expect(screen.queryByText("account-a-private-post")).toBeNull();
   expect(screen.getByText("account-b-post")).toBeTruthy();
-  expect(screen.queryByRole("button", { name: "Kom i gang" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Opprett konto" })).toBeNull();
 });
 test("changing feed tabs cancels the old request and the private log makes no feed request", async () => {
   const old = deferred();

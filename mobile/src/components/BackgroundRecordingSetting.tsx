@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useState } from "react";
 import { Linking, Platform, Switch, View } from "react-native";
 import { Button, Txt, styles } from "./ui";
@@ -17,12 +18,10 @@ export function BackgroundRecordingSetting({
   return (
     <View style={{ gap: 10 }}>
       <View style={styles.row}>
-        <Txt weight="700" style={{ flex: 1 }}>
-          Fortsett med låst skjerm
-        </Txt>
+        <Txt weight="700" style={{ flex: 1 }}>{uiText("Fortsett med låst skjerm")}</Txt>
         {backgroundSupported && (
           <Switch
-            accessibilityLabel="Fortsett med låst skjerm"
+            accessibilityLabel={uiText("Fortsett med låst skjerm")}
             value={enabled}
             disabled={recording}
             onValueChange={(backgroundRecording) =>
@@ -36,13 +35,13 @@ export function BackgroundRecordingSetting({
       <Txt muted size={14}>
         {backgroundSupported
           ? recording
-            ? "Avslutt økten før du endrer dette valget."
+            ? uiText("Avslutt økten før du endrer dette valget.")
             : enabled
-              ? "Registrer turen med skjermen låst eller mens du bruker andre apper. Start økten før du låser telefonen."
-              : "Økten pauses hvis du låser skjermen eller bytter app."
+              ? uiText("Registrer turen med skjermen låst eller mens du bruker andre apper. Start økten før du låser telefonen.")
+              : uiText("Økten pauses hvis du låser skjermen eller bytter app.")
           : Platform.OS === "web"
-            ? "I nettleseren må VYRO være åpen under hele økten."
-            : "Expo Go pauser opptaket når skjermen låses eller du bytter app. Dette krever en egen installasjon av VYRO, for eksempel via TestFlight."}
+            ? uiText("I nettleseren må VYRO være åpen under hele økten.")
+            : uiText("Expo Go pauser opptaket når skjermen låses eller du bytter app. Dette krever en egen installasjon av VYRO, for eksempel via TestFlight.")}
       </Txt>
       {compact && backgroundSupported && enabled && (
         <WorkoutLockScreenSetting />
@@ -50,7 +49,7 @@ export function BackgroundRecordingSetting({
       {backgroundSupported && enabled && !recording && !compact && (
         <>
           <Button
-            title="Åpne posisjonsinnstillinger"
+            title={uiText("Åpne posisjonsinnstillinger")}
             secondary
             onPress={() => {
               setSettingsError(false);
@@ -59,12 +58,10 @@ export function BackgroundRecordingSetting({
           />
           <Txt muted size={12}>
             {Platform.OS === "ios"
-              ? "Velg VYRO → Posisjon → Når appen er i bruk (eller Alltid), og slå på Presis posisjon."
-              : "Velg VYRO → Posisjon → Alltid og slå på Presis posisjon."}{" "}
-            Telefonen må være på; ikke avslutt VYRO fra appveksleren.
-          </Txt>
+              ? uiText("Velg VYRO → Posisjon → Når appen er i bruk (eller Alltid), og slå på Presis posisjon.")
+              : uiText("Velg VYRO → Posisjon → Alltid og slå på Presis posisjon.")}{" "}{uiText("Telefonen må være på; ikke avslutt VYRO fra appveksleren.")}</Txt>
           {settingsError && (
-            <Txt size={12}>Åpne Innstillinger på telefonen og finn VYRO.</Txt>
+            <Txt size={12}>{uiText("Åpne Innstillinger på telefonen og finn VYRO.")}</Txt>
           )}
         </>
       )}

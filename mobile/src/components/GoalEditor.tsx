@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import { Button, Chip, Icon, Txt, styles, useTheme } from "./ui";
@@ -17,28 +18,28 @@ import { brand } from "../theme/tokens";
 const metrics = [
   {
     kind: "distance",
-    label: "Distanse",
+    get label() { return uiText("Distanse"); },
     icon: "map",
     step: 1,
     presets: [5, 10, 20, 30],
   },
   {
     kind: "minutes",
-    label: "Tid",
+    get label() { return uiText("Tid"); },
     icon: "clock",
     step: 15,
     presets: [60, 90, 150, 240],
   },
   {
     kind: "sessions",
-    label: "Økter",
+    get label() { return uiText("Økter"); },
     icon: "check",
     step: 1,
     presets: [2, 3, 4, 5],
   },
 ] as const;
 const format = (value: number) =>
-  value.toLocaleString("nb-NO", { maximumFractionDigits: 1 });
+  value.toLocaleString(displayLocale(), { maximumFractionDigits: 1 });
 
 export function GoalEditor({
   goal,
@@ -95,15 +96,15 @@ export function GoalEditor({
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
   const date = (d: Date) =>
-    d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
+    d.toLocaleDateString(displayLocale(), { day: "numeric", month: "short" });
   return (
     <Page
-      title="Treningsmål"
+      title={uiText("Treningsmål")}
       fallback="/profile"
       onBack={close}
       footer={
         <Button
-          title="Lagre ukemål"
+          title={uiText("Lagre ukemål")}
           icon="check"
           disabled={!valid}
           onPress={() => save({ kind, sport, target: number })}
@@ -120,16 +121,12 @@ export function GoalEditor({
           }}
         >
           <View style={[styles.row, { flexWrap: "wrap", gap: 8 }]}>
-            <Txt size={13} weight="600" style={{ color: brand.lime }}>
-              DENNE UKEN
-            </Txt>
+            <Txt size={13} weight="600" style={{ color: brand.lime }}>{uiText("DENNE UKEN")}</Txt>
             <Txt size={12} style={{ color: "#D1D7E4" }}>
               {date(monday)}–{date(sunday)}
             </Txt>
           </View>
-          <Txt size={26} weight="700" style={{ color: "white" }}>
-            Litt nærmere målet.
-          </Txt>
+          <Txt size={26} weight="700" style={{ color: "white" }}>{uiText("Litt nærmere målet.")}</Txt>
           <View
             style={{
               flexDirection: "row",
@@ -145,28 +142,25 @@ export function GoalEditor({
             >
               {format(progress.value)}
             </Txt>
-            <Txt size={16} style={{ color: "#D1D7E4" }}>
-              av {valid ? format(number) : "—"} {unit}
+            <Txt size={16} style={{ color: "#D1D7E4" }}>{uiText("av") + " "}{valid ? format(number) : "—"} {unit}
             </Txt>
           </View>
           <ProgressLine
-            label="Fremgang mot ukemålet"
+            label={uiText("Fremgang mot ukemålet")}
             value={valid ? progress.fraction : 0}
             color={brand.lime}
             background="#344056"
           />
           <Txt size={13} style={{ color: "#D1D7E4" }}>
             {!valid
-              ? "Velg målet ditt nedenfor."
+              ? uiText("Velg målet ditt nedenfor.")
               : progress.remaining === 0
-                ? "Ukemålet er nådd. Godt jobbet!"
-                : `${format(progress.remaining)} ${unit} igjen · ${sport === "Alle" ? "Alle idretter" : sport}`}
+                ? uiText("Ukemålet er nådd. Godt jobbet!")
+                : uiText("{0} {1} igjen · {2}", format(progress.remaining), unit, sport === "Alle" ? "Alle idretter" : sport)}
           </Txt>
         </View>
         <View style={card}>
-          <Txt size={18} weight="700">
-            Hva vil du måle?
-          </Txt>
+          <Txt size={18} weight="700">{uiText("Hva vil du måle?")}</Txt>
           <View style={{ flexDirection: "row", gap: 8 }}>
             {metrics.map((m) => (
               <Pressable
@@ -208,7 +202,7 @@ export function GoalEditor({
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Reduser ukemålet"
+              accessibilityLabel={uiText("Reduser ukemålet")}
               onPress={() =>
                 setTarget(
                   String(
@@ -232,7 +226,7 @@ export function GoalEditor({
             </Pressable>
             <View style={{ flex: 1, alignItems: "center", gap: 2 }}>
               <TextInput
-                accessibilityLabel="Antall i ukemålet"
+                accessibilityLabel={uiText("Antall i ukemålet")}
                 value={target}
                 onChangeText={setTarget}
                 keyboardType={
@@ -251,12 +245,11 @@ export function GoalEditor({
                 }}
               />
               <Txt muted size={13}>
-                {unit} per uke
-              </Txt>
+                {unit}{" " + uiText("per uke")}</Txt>
             </View>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Øk ukemålet"
+              accessibilityLabel={uiText("Øk ukemålet")}
               onPress={() =>
                 setTarget(
                   String(
@@ -290,23 +283,19 @@ export function GoalEditor({
             ))}
           </View>
           {!valid && (
-            <Txt size={13} accessibilityRole="alert">
-              Velg et positivt tall, maks 10 000. Økter må være et heltall.
-            </Txt>
+            <Txt size={13} accessibilityRole="alert">{uiText("Velg et positivt tall, maks 10 000. Økter må være et heltall.")}</Txt>
           )}
         </View>
         <View style={card}>
-          <Txt size={18} weight="700">
-            Hvilke aktiviteter teller?
-          </Txt>
+          <Txt size={18} weight="700">{uiText("Hvilke aktiviteter teller?")}</Txt>
           <View style={styles.wrap}>
             <Chip
-              title="Alle idretter"
+              title={uiText("Alle idretter")}
               selected={sport === "Alle"}
               onPress={() => setSport("Alle")}
             />
             <Chip
-              title="Én idrett"
+              title={uiText("Én idrett")}
               selected={sport !== "Alle"}
               onPress={() => setChooseSport(true)}
             />
@@ -314,7 +303,7 @@ export function GoalEditor({
           {sport !== "Alle" && (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Endre idrett for ukemålet"
+              accessibilityLabel={uiText("Endre idrett for ukemålet")}
               onPress={() => setChooseSport(true)}
               style={{
                 flexDirection: "row",
@@ -325,25 +314,20 @@ export function GoalEditor({
             >
               <SportIcon sport={sport} size={36} />
               <Txt weight="600" style={{ flex: 1 }}>
-                {sport}
+                {uiText(sport ?? "")}
               </Txt>
               <Icon name="chevronDown" color={c.muted} size={20} />
             </Pressable>
           )}
           {!distanceAllowed && (
-            <Txt muted size={13}>
-              Velg tid eller antall økter for denne idretten.
-            </Txt>
+            <Txt muted size={13}>{uiText("Velg tid eller antall økter for denne idretten.")}</Txt>
           )}
         </View>
         <Txt
           muted
           size={12}
           style={{ textAlign: "center", paddingHorizontal: 12 }}
-        >
-          Mandag–søndag. Bare dine egne registrerte økter teller. Målet gjelder
-          hver uke til du endrer det.
-        </Txt>
+        >{uiText("Mandag–søndag. Bare dine egne registrerte økter teller. Målet gjelder hver uke til du endrer det.")}</Txt>
       </View>
       {chooseSport && (
         <SportPicker

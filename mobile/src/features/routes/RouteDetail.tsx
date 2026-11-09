@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, Linking, TextInput, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -102,8 +103,8 @@ export function RouteDetail({
         setSaved(!saved);
         setNotice(
           saved
-            ? "Løypa er fjernet fra Lagret."
-            : "Løypa er lagret på kontoen din.",
+            ? uiText("Løypa er fjernet fra Lagret.")
+            : uiText("Løypa er lagret på kontoen din."),
         );
       }
     } catch (e) {
@@ -144,7 +145,7 @@ export function RouteDetail({
   }
   return (
     <Page
-      title="Løype"
+      title={uiText("Løype")}
       fallback="/routes"
       backDisabled={busy}
       footer={
@@ -153,20 +154,20 @@ export function RouteDetail({
             {!!error && (
               <Txt accessibilityRole="alert" size={14}>
                 {error}
-                {cached ? " Viser kopien fra denne enheten." : ""}
+                {cached ? uiText(" Viser kopien fra denne enheten.") : ""}
               </Txt>
             )}
             {!!notice && <Txt size={14}>{notice}</Txt>}
             <Button
               title={
-                busy ? "Lagrer …" : saved ? "Fjern fra Lagret" : "Lagre løypa"
+                busy ? uiText("Lagrer …") : saved ? uiText("Fjern fra Lagret") : uiText("Lagre løypa")
               }
               secondary
               disabled={busy || loading || (!saved && !title.trim())}
               onPress={toggle}
             />
             <Button
-              title="Bruk løypa"
+              title={uiText("Bruk løypa")}
               disabled={busy}
               onPress={() => {
                 if (
@@ -178,7 +179,7 @@ export function RouteDetail({
                     )
                 ) {
                   setError(
-                    "Avslutt økten som pågår før du velger en ny løype.",
+                    uiText("Avslutt økten som pågår før du velger en ny løype."),
                   );
                   return;
                 }
@@ -190,12 +191,12 @@ export function RouteDetail({
       }
     >
       <View style={{ padding: 20, gap: 16 }}>
-        {loading && <ActivityIndicator accessibilityLabel="Henter løypa" />}
+        {loading && <ActivityIndicator accessibilityLabel={uiText("Henter løypa")} />}
         {!route && !!error && (
           <>
             <Txt accessibilityRole="alert">{error}</Txt>
             <Button
-              title="Prøv igjen"
+              title={uiText("Prøv igjen")}
               secondary
               onPress={() => setReload((n) => n + 1)}
             />
@@ -210,7 +211,7 @@ export function RouteDetail({
               {route.sport} ·{" "}
               {route.source === "community"
                 ? route.place
-                : "Tidligere lagret løype"}
+                : uiText("Tidligere lagret løype")}
             </Txt>
             <WorkoutMap points={route.route} height={270} />
             <Txt size={23} weight="700">
@@ -218,23 +219,20 @@ export function RouteDetail({
             </Txt>
             <Txt muted>
               {route.ascent_m === null
-                ? "Stigning er ikke tilgjengelig"
-                : `${route.ascent_m} meter stigning`}
+                ? uiText("Stigning er ikke tilgjengelig")
+                : uiText("{0} meter stigning", route.ascent_m)}
             </Txt>
             <Txt>
               {route.source === "community"
-                ? "Delt fra en gjennomført tur. Start og slutt er skjermet. Kontroller adkomst og forhold før du følger løypa."
-                : "Denne løypa ble lagret før ruteforslag gikk over til bidrag fra brukerne. Den vises bare i ditt bibliotek."}
+                ? uiText("Delt fra en gjennomført tur. Start og slutt er skjermet. Kontroller adkomst og forhold før du følger løypa.")
+                : uiText("Denne løypa ble lagret før ruteforslag gikk over til bidrag fra brukerne. Den vises bare i ditt bibliotek.")}
             </Txt>
-            <Txt muted size={14}>
-              «Bruk løypa» åpner GPS-opptaket med løypa på kartet. Du starter
-              opptaket selv. Ingen svingvarsler.
-            </Txt>
+            <Txt muted size={14}>{uiText("«Bruk løypa» åpner GPS-opptaket med løypa på kartet. Du starter opptaket selv. Ingen svingvarsler.")}</Txt>
             {!saved && (
               <>
-                <Txt weight="700">Navn i Lagret</Txt>
+                <Txt weight="700">{uiText("Navn i Lagret")}</Txt>
                 <TextInput
-                  accessibilityLabel="Navn på lagret løype"
+                  accessibilityLabel={uiText("Navn på lagret løype")}
                   value={title}
                   onChangeText={setTitle}
                   maxLength={120}
@@ -252,22 +250,18 @@ export function RouteDetail({
                 />
               </>
             )}
-            <Txt muted size={14}>
-              Lagrede løyper er private på kontoen din. Sist åpnede, lagrede
-              løyper kan vises uten nett; selve bakgrunnskartet kan kreve
-              forbindelse.
-            </Txt>
+            <Txt muted size={14}>{uiText("Lagrede løyper er private på kontoen din. Sist åpnede, lagrede løyper kan vises uten nett; selve bakgrunnskartet kan kreve forbindelse.")}</Txt>
             <Txt muted size={11}>
               {route.attribution}
             </Txt>
             {route.source === "openrouteservice" && (
               <Button
-                title="Kartdata: OpenStreetMap"
+                title={uiText("Kartdata: OpenStreetMap")}
                 secondary
                 onPress={() => {
                   void Linking.openURL(
                     "https://www.openstreetmap.org/copyright",
-                  ).catch(() => setError("Kunne ikke åpne lenken."));
+                  ).catch(() => setError(uiText("Kunne ikke åpne lenken.")));
                 }}
               />
             )}
@@ -275,25 +269,21 @@ export function RouteDetail({
               route.source === "community" && (
                 <>
                   <Button
-                    title="Trekk tilbake deling"
+                    title={uiText("Trekk tilbake deling")}
                     secondary
                     disabled={busy || loading}
                     onPress={() => setConfirmWithdraw(true)}
                   />
                   {confirmWithdraw && (
                     <>
-                      <Txt>
-                        Løypa fjernes fra søk og lagrede nettlister. Din private
-                        GPS-tur beholdes. Nedlastede kopier hos andre kan ikke
-                        hentes tilbake.
-                      </Txt>
+                      <Txt>{uiText("Løypa fjernes fra søk og lagrede nettlister. Din private GPS-tur beholdes. Nedlastede kopier hos andre kan ikke hentes tilbake.")}</Txt>
                       <Button
-                        title="Ja, trekk tilbake løypa"
+                        title={uiText("Ja, trekk tilbake løypa")}
                         disabled={busy}
                         onPress={withdraw}
                       />
                       <Button
-                        title="Behold delingen"
+                        title={uiText("Behold delingen")}
                         secondary
                         disabled={busy}
                         onPress={() => setConfirmWithdraw(false)}

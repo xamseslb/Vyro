@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { personName } from "../features/social/display";
 import { useRef, useState } from "react";
 import {
@@ -83,7 +84,7 @@ export default function SafetyActions({
     <>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Flere valg for ${name}`}
+        accessibilityLabel={uiText("Flere valg for {0}", name)}
         onPress={() => {
           setMode("menu");
           setError("");
@@ -123,13 +124,13 @@ export default function SafetyActions({
             >
               <Txt weight="700" size={22}>
                 {mode === "report"
-                  ? "Rapporter"
+                  ? uiText("Rapporter")
                   : mode === "block"
-                    ? "Blokker bruker"
+                    ? uiText("Blokker bruker")
                     : name}
               </Txt>
               <Button
-                title="Lukk"
+                title={uiText("Lukk")}
                 secondary
                 disabled={busy}
                 onPress={() => setOpen(false)}
@@ -138,12 +139,12 @@ export default function SafetyActions({
             {mode === "menu" && (
               <>
                 <Button
-                  title="Rapporter"
+                  title={uiText("Rapporter")}
                   secondary
                   onPress={() => setMode("report")}
                 />
                 <Button
-                  title="Blokker bruker"
+                  title={uiText("Blokker bruker")}
                   secondary
                   onPress={() => setMode("block")}
                 />
@@ -151,10 +152,7 @@ export default function SafetyActions({
             )}
             {mode === "report" && (
               <>
-                <Txt muted>
-                  Velg årsak. Rapporten er privat og sendes til VYRO for
-                  gjennomgang.
-                </Txt>
+                <Txt muted>{uiText("Velg årsak. Rapporten er privat og sendes til VYRO for gjennomgang.")}</Txt>
                 {(
                   Object.entries(reasons) as [keyof typeof reasons, string][]
                 ).map(([value, label]) => (
@@ -167,8 +165,8 @@ export default function SafetyActions({
                   />
                 ))}
                 <TextInput
-                  accessibilityLabel="Beskriv problemet"
-                  placeholder="Beskriv problemet (valgfritt)"
+                  accessibilityLabel={uiText("Beskriv problemet")}
+                  placeholder={uiText("Beskriv problemet (valgfritt)")}
                   placeholderTextColor={c.muted}
                   value={details}
                   onChangeText={setDetails}
@@ -186,7 +184,7 @@ export default function SafetyActions({
                   }}
                 />
                 <Button
-                  title={busy ? "Sender …" : "Send rapport"}
+                  title={busy ? uiText("Sender …") : uiText("Send rapport")}
                   disabled={busy}
                   onPress={() => {
                     void submit(false);
@@ -196,13 +194,9 @@ export default function SafetyActions({
             )}
             {mode === "block" && (
               <>
-                <Txt>
-                  Dere skjules for hverandre i personsøk og innlegg.
-                  Følgeforhold og forespørsler fjernes. Du kan oppheve
-                  blokkeringen under Personvern.
-                </Txt>
+                <Txt>{uiText("Dere skjules for hverandre i personsøk og innlegg. Følgeforhold og forespørsler fjernes. Du kan oppheve blokkeringen under Personvern.")}</Txt>
                 <Button
-                  title={busy ? "Blokkerer …" : `Blokker ${name}`}
+                  title={busy ? uiText("Blokkerer …") : uiText("Blokker {0}", name)}
                   danger
                   disabled={busy}
                   onPress={() => {
@@ -213,9 +207,9 @@ export default function SafetyActions({
             )}
             {mode === "sent" && (
               <>
-                <Txt>Rapporten er mottatt. Du kan også blokkere brukeren.</Txt>
+                <Txt>{uiText("Rapporten er mottatt. Du kan også blokkere brukeren.")}</Txt>
                 <Button
-                  title="Blokker bruker"
+                  title={uiText("Blokker bruker")}
                   secondary
                   onPress={() => setMode("block")}
                 />

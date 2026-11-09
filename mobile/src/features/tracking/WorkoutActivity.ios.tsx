@@ -40,7 +40,7 @@ export function WorkoutActivity(
         spacing={2}
         modifiers={[frame({ maxWidth: Infinity, alignment: "leading" })]}
       >
-        <Text modifiers={label}>Tid</Text>
+        <Text modifiers={label}>{(props.english ? "Time" : "Tid")}</Text>
         {props.paused || stale ? (
           <Text modifiers={number}>{props.seconds}</Text>
         ) : (
@@ -58,7 +58,7 @@ export function WorkoutActivity(
             spacing={2}
             modifiers={[frame({ maxWidth: Infinity, alignment: "leading" })]}
           >
-            <Text modifiers={label}>Distanse · km</Text>
+            <Text modifiers={label}>{(props.english ? "Distance · km" : "Distanse · km")}</Text>
             <Text modifiers={number}>{props.distance}</Text>
           </VStack>
           <VStack
@@ -103,7 +103,7 @@ export function WorkoutActivity(
               lineLimit(1),
             ]}
           >
-            {props.paused ? "Pauset" : stale ? "Åpne økten" : "Økt pågår"}
+            {props.paused ? (props.english ? "Paused" : "Pauset") : stale ? (props.english ? "Open workout" : "Åpne økten") : (props.english ? "Workout in progress" : "Økt pågår")}
           </Text>
         </HStack>
         {metrics}
@@ -128,8 +128,8 @@ export function WorkoutActivity(
           ]}
         >
           {props.mapTime
-            ? "Kart kl. " + props.mapTime + " · Trykk for økten"
-            : "Trykk for økten og pause"}
+            ? (props.english ? "Map at " : "Kart kl. ") + props.mapTime + (props.english ? " · Open workout" : " · Trykk for økten")
+            : (props.english ? "Tap to view or pause" : "Trykk for økten og pause")}
         </Text>
       </VStack>
     ),
@@ -175,8 +175,8 @@ export function WorkoutActivity(
         {metrics}
         <Text modifiers={[font({ size: 11 }), foregroundStyle("#BFCBDF")]}>
           {props.paused
-            ? "Pauset · Trykk for økten"
-            : "Trykk for økten og pause"}
+            ? (props.english ? "Paused · tap for workout" : "Pauset · Trykk for økten")
+            : (props.english ? "Tap to view or pause" : "Trykk for økten og pause")}
         </Text>
       </VStack>
     ),

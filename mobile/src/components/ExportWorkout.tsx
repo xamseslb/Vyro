@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useRef, useState } from "react";
 import { Button, Card, Txt } from "./ui";
 import type { Workout } from "../features/activities/model";
@@ -16,7 +17,7 @@ export function ExportWorkout({ workout }: { workout: Workout }) {
   return (
     <>
       <Button
-        title="Eksporter rute (GPX)"
+        title={uiText("Eksporter rute (GPX)")}
         secondary
         onPress={() => {
           setConfirm(true);
@@ -25,17 +26,11 @@ export function ExportWorkout({ workout }: { workout: Workout }) {
       />
       {confirm && (
         <Card>
-          <Txt weight="700">Ta med ruten til en annen app</Txt>
-          <Txt muted>
-            GPX-filen inneholder hele GPS-ruten, også start og slutt. Velg selv
-            hvor den lagres eller deles. Private notater følger ikke med.
-          </Txt>
-          <Txt muted size={13}>
-            Dette er en rutefil uten tidsstempler per punkt. Støtte for import
-            varierer mellom apper.
-          </Txt>
+          <Txt weight="700">{uiText("Ta med ruten til en annen app")}</Txt>
+          <Txt muted>{uiText("GPX-filen inneholder hele GPS-ruten, også start og slutt. Velg selv hvor den lagres eller deles. Private notater følger ikke med.")}</Txt>
+          <Txt muted size={13}>{uiText("Dette er en rutefil uten tidsstempler per punkt. Støtte for import varierer mellom apper.")}</Txt>
           <Button
-            title={busy ? "Klargjør fil …" : "Lagre eller del GPX"}
+            title={busy ? uiText("Klargjør fil …") : uiText("Lagre eller del GPX")}
             disabled={busy}
             onPress={async () => {
               if (pending.current) return;
@@ -54,7 +49,7 @@ export function ExportWorkout({ workout }: { workout: Workout }) {
                 setConfirm(false);
               } catch {
                 setError(
-                  "Kunne ikke eksportere ruten. Sjekk ledig lagringsplass og prøv igjen.",
+                  uiText("Kunne ikke eksportere ruten. Sjekk ledig lagringsplass og prøv igjen."),
                 );
               } finally {
                 pending.current = false;
@@ -64,7 +59,7 @@ export function ExportWorkout({ workout }: { workout: Workout }) {
           />
           {!!error && <Txt>{error}</Txt>}
           <Button
-            title="Avbryt eksport"
+            title={uiText("Avbryt eksport")}
             secondary
             disabled={busy}
             onPress={() => setConfirm(false)}

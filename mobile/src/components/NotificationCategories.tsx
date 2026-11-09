@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { Switch, View } from "react-native";
 import { useFocusEffect } from "expo-router";
@@ -65,13 +66,10 @@ export function NotificationCategories({ owner }: { owner: string }) {
   }
   return (
     <>
-      <PageNote>
-        Velg hvilke nye varsler du vil ha. Valgene gjelder kontoen din på alle
-        enheter. Telefonvarsler krever også at varsler er slått på på telefonen.
-      </PageNote>
+      <PageNote>{uiText("Velg hvilke nye varsler du vil ha. Valgene gjelder kontoen din på alle enheter. Telefonvarsler krever også at varsler er slått på på telefonen.")}</PageNote>
       {preferences
         ? notificationCategories.map(({ key, title, description }) => (
-            <SettingsGroup key={key} title={title} note={description}>
+            <SettingsGroup key={key} title={uiText(title)} note={uiText(description)}>
               {(
                 [
                   ["in_app", "I appen"],
@@ -80,7 +78,7 @@ export function NotificationCategories({ owner }: { owner: string }) {
               ).map(([channel, label]) => (
                 <SettingsRow
                   key={channel}
-                  title={label}
+                  title={uiText(label)}
                   end={
                     <Switch
                       accessibilityLabel={`${title}: ${label.toLowerCase()}`}
@@ -95,13 +93,13 @@ export function NotificationCategories({ owner }: { owner: string }) {
               ))}
             </SettingsGroup>
           ))
-        : !error && <PageNote>Henter varselvalg …</PageNote>}
+        : !error && <PageNote>{uiText("Henter varselvalg …")}</PageNote>}
       {!!error && (
         <View style={{ padding: 22, gap: 12 }}>
           <Txt accessibilityRole="alert">{error}</Txt>
           <Button
             secondary
-            title="Hent varselvalg på nytt"
+            title={uiText("Hent varselvalg på nytt")}
             disabled={busy}
             onPress={() => void load()}
           />

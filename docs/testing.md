@@ -1,5 +1,17 @@
 # Testing
 
+## Velkomstside — 9. november 2026
+
+Typekontrollen og de 17 testene for autentiseringsvisninger, Hjem og språk bestod. En interaksjonstest velger hver introduksjon og kontrollerer at registrering og innlogging åpner riktig kontomodus. Lokal iOS-eksport uten bytekode inneholder begge JPEG-filene. Ikke fysisk verifisert: sveip, bildeutsnitt og lesbarhet med stor tekst på iPhone.
+
+## Offentlige lenker — 9. november 2026
+
+TypeScript, ESLint for de tre berørte appfilene og 21 relevante kontotester bestod. Den publiserte supportforsiden, `/privacy.html` og stilarket svarte HTTP 200 ved oppslag uten innlogging. Begge sider inneholdt riktig e-postlenke, og personvernerklæringen viste Xamse Shaqlane som ansvarlig. Butikkfelter og åpning fra installert app gjenstår.
+
+## Apple-innlogging — 9. november 2026
+
+33 relevante tester bestod for Apple, leverandørvalg, brukernavn og kontosletting. TypeScript bestod. Etter at Apple-oppsettet ble lagret, bekreftet Supabases `/auth/v1/settings` at `external.apple` var `true`. Brukeren bekreftet Apple-innlogging på egen iPhone. Ny registrering med skjult adresse og sletting på iPhone er fortsatt ubekreftet.
+
 ## Registrering med brukernavn — 5. november 2026
 
 TypeScript og Expo lint bestod. EAS fullførte [signert internt bygg 19](https://expo.dev/accounts/xamse10/projects/vyro/builds/f84cfdd6-1ef2-4162-a846-6461c7b91190).
@@ -739,3 +751,11 @@ Denne kontrollen gjaldt den eldre committen `9b1a569`, før de tre nyere commite
 - Web-eksport: bestått.
 - `npm run web -- --localhost --port 8081`: startet. Onboarding-skjermen ble bekreftet i nettleseren på `http://localhost:8081/onboarding`. Testserveren brukte `CI=1`; vanlig oppstart i VS Code skal ikke sette denne variabelen, slik at automatisk oppdatering er aktiv.
 - Denne kontrollen gjelder installasjon og oppstart. Ingen ny fysisk GPS-, native kart- eller tilgjengelighetstest er utført.
+
+### 9. november 2026 · Engelsk og norsk
+Språktestene kontrollerer eldre installasjoner, varig språkvalg, tallformat, søk i oversatte idretter og plassholdere i tekstkatalogen. 596 tester bestod; TypeScript og Expo-eksporten av iOS-koden bestod. Gjenstår på fysiske enheter: første åpning, språkbytte, systemets tilgangsdialoger, Live Activity og synkronisering av språk til Apple Watch.
+
+### 9. november 2026 · Pushvarsler på valgt språk
+- 29 varslingstester og 72 lokale database­kontroller bestod. Testene dekker de seks varseltypene, ulike språk i samme utsending, språkbytte når et varsel allerede er i kø, eldre registreringer og avslåtte varsler.
+- Språkmigreringen og varseltjenesten er rullet ut i VYROs Supabase-prosjekt. Fysisk mottak på låseskjermen må testes: velg English, lås telefonen og lik et innlegg fra en annen konto. Gjenta med norsk og et nytt innlegg.
+- [Internt iPhone-bygg 21](https://expo.dev/accounts/xamse10/projects/vyro/builds/2df2f699-7210-4bd6-abd3-c17493cab0ae) fullført. TypeScript og hele Jest-suiten bestod (604 tester).

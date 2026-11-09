@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { create } from "zustand";
 import { isGeneratedUsername } from "../features/social/display";
 import { usernameTaken } from "../features/auth/username";
@@ -73,9 +74,9 @@ export async function loadOwnProfile(
 export async function saveDisplayName(userId: string, name: string) {
   const value = name.trim();
   if (value.length < 1 || value.length > 50)
-    throw new Error("Bruk mellom 1 og 50 tegn.");
+    throw new Error(uiText("Bruk mellom 1 og 50 tegn."));
   if (!supabase || !ownsSession(userId))
-    throw new Error("Logg inn på nytt for å endre navnet.");
+    throw new Error(uiText("Logg inn på nytt for å endre navnet."));
   // Invalidate reads started before the edit. Database RLS enforces the owner too.
   const request = ++revision;
   const { data, error } = await supabase
@@ -86,10 +87,10 @@ export async function saveDisplayName(userId: string, name: string) {
     .single();
   if (error || !data)
     throw new Error(
-      "Kunne ikke lagre navnet. Sjekk forbindelsen og prøv igjen.",
+      uiText("Kunne ikke lagre navnet. Sjekk forbindelsen og prøv igjen."),
     );
   if (!ownsSession(userId))
-    throw new Error("Kontoen ble byttet. Åpne profilen på nytt.");
+    throw new Error(uiText("Kontoen ble byttet. Åpne profilen på nytt."));
   // A read started during the write also predates its commit.
   if (revision >= request) revision++;
   useProfileStore.setState({
@@ -100,7 +101,7 @@ export async function saveDisplayName(userId: string, name: string) {
 }
 
 export async function claimUsername(userId: string, previous: string, username: string) {
-  if (!supabase || !ownsSession(userId)) throw new Error("Logg inn på nytt.");
+  if (!supabase || !ownsSession(userId)) throw new Error(uiText("Logg inn på nytt."));
   // A second device cannot overwrite the first choice.
   const { data, error } = await supabase.from("profiles").update({ username })
     .eq("id", userId).eq("username", previous).select(profileColumns).single();
@@ -109,7 +110,7 @@ export async function claimUsername(userId: string, previous: string, username: 
   if (error || !data) {
     const latest = await loadOwnProfile(userId, new AbortController().signal, true);
     if (latest && !isGeneratedUsername(latest.username)) return;
-    throw new Error("Kunne ikke lagre brukernavnet. Prøv igjen.");
+    throw new Error(uiText("Kunne ikke lagre brukernavnet. Prøv igjen."));
   }
   revision++;
   useProfileStore.setState({ profile: data, loadedAt: Date.now(), errorFor: null });

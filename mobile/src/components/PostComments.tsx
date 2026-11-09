@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import {
   useCallback,
   useEffect,
@@ -104,7 +105,7 @@ export default function PostComments({
     let active = true;
     void read(ctl.signal)
       .catch(() => {
-        if (active) setLoadError("Kunne ikke hente kommentarene. Prøv igjen.");
+        if (active) setLoadError(uiText("Kunne ikke hente kommentarene. Prøv igjen."));
       })
       .finally(() => {
         clearTimeout(timeout);
@@ -183,7 +184,7 @@ export default function PostComments({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <Pressable
-          accessibilityLabel="Lukk kommentarer"
+          accessibilityLabel={uiText("Lukk kommentarer")}
           accessibilityRole="button"
           disabled={writing}
           onPress={close}
@@ -225,11 +226,9 @@ export default function PostComments({
               borderColor: c.border,
             }}
           >
-            <Txt size={20} weight="700" style={{ flex: 1 }}>
-              Kommentarer
-            </Txt>
+            <Txt size={20} weight="700" style={{ flex: 1 }}>{uiText("Kommentarer")}</Txt>
             <Pressable
-              accessibilityLabel="Ferdig med kommentarer"
+              accessibilityLabel={uiText("Ferdig med kommentarer")}
               accessibilityRole="button"
               disabled={writing}
               onPress={close}
@@ -262,7 +261,7 @@ export default function PostComments({
               <View style={{ gap: 8 }}>
                 <Txt accessibilityRole="alert">{loadError}</Txt>
                 <Button
-                  title="Prøv igjen"
+                  title={uiText("Prøv igjen")}
                   secondary
                   disabled={loading}
                   onPress={refresh}
@@ -271,7 +270,7 @@ export default function PostComments({
             ) : undefined}
             {!comments.length && loading ? (
               <ActivityIndicator
-                accessibilityLabel="Henter kommentarer"
+                accessibilityLabel={uiText("Henter kommentarer")}
                 color={c.accent}
               />
             ) : !comments.length && !loadError ? (
@@ -284,8 +283,8 @@ export default function PostComments({
                 }}
               >
                 <Icon name="message" color={c.muted} size={30} />
-                <Txt weight="700">Ingen kommentarer ennå</Txt>
-                <Txt muted>Vær den første til å skrive noe.</Txt>
+                <Txt weight="700">{uiText("Ingen kommentarer ennå")}</Txt>
+                <Txt muted>{uiText("Vær den første til å skrive noe.")}</Txt>
               </View>
             ) : undefined}
             {comments.map((item) => (
@@ -332,8 +331,8 @@ export default function PostComments({
                         disabled={writing}
                         accessibilityLabel={
                           confirmDelete === item.id
-                            ? "Bekreft sletting"
-                            : "Slett din kommentar"
+                            ? uiText("Bekreft sletting")
+                            : uiText("Slett din kommentar")
                         }
                         onPress={() =>
                           confirmDelete === item.id
@@ -348,8 +347,8 @@ export default function PostComments({
                       >
                         <Txt muted size={12}>
                           {confirmDelete === item.id
-                            ? "Bekreft sletting"
-                            : "Slett"}
+                            ? uiText("Bekreft sletting")
+                            : uiText("Slett")}
                         </Txt>
                       </Pressable>
                       {confirmDelete === item.id && (
@@ -363,9 +362,7 @@ export default function PostComments({
                             justifyContent: "center",
                           }}
                         >
-                          <Txt muted size={12}>
-                            Avbryt
-                          </Txt>
+                          <Txt muted size={12}>{uiText("Avbryt")}</Txt>
                         </Pressable>
                       )}
                     </View>
@@ -374,9 +371,7 @@ export default function PostComments({
               </View>
             ))}
             {comments.length === 100 ? (
-              <Txt muted size={12}>
-                Viser de siste 100 kommentarene.
-              </Txt>
+              <Txt muted size={12}>{uiText("Viser de siste 100 kommentarene.")}</Txt>
             ) : undefined}
           </ScrollView>
           <View
@@ -398,8 +393,8 @@ export default function PostComments({
               style={{ flexDirection: "row", alignItems: "flex-end", gap: 10 }}
             >
               <TextInput
-                accessibilityLabel="Skriv kommentar"
-                placeholder="Skriv en kommentar …"
+                accessibilityLabel={uiText("Skriv kommentar")}
+                placeholder={uiText("Skriv en kommentar …")}
                 placeholderTextColor={c.muted}
                 value={draft}
                 onChangeText={onDraftChange}
@@ -431,7 +426,7 @@ export default function PostComments({
               />
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Publiser kommentar"
+                accessibilityLabel={uiText("Publiser kommentar")}
                 accessibilityState={{
                   disabled: writing || !draft.trim(),
                   busy: writing,

@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useRef, useState } from "react";
 import { Image, View } from "react-native";
 import { router } from "expo-router";
@@ -31,23 +32,18 @@ function Composer({ userId }: { userId: string }) {
   return (
     <Screen>
       <Button
-        title="Tilbake"
+        title={uiText("Tilbake")}
         secondary
         disabled={busy}
         onPress={() =>
           router.canGoBack() ? router.back() : router.replace("/")
         }
       />
-      <Txt size={28} weight="800">
-        Et sted å dele
-      </Txt>
-      <Txt muted size={14}>
-        Et fint stopp, en utsikt eller en ny favorittsti. Del et bilde fra
-        turen.
-      </Txt>
+      <Txt size={28} weight="800">{uiText("Et sted å dele")}</Txt>
+      <Txt muted size={14}>{uiText("Et fint stopp, en utsikt eller en ny favorittsti. Del et bilde fra turen.")}</Txt>
       {photo ? (
         <Image
-          accessibilityLabel="Forhåndsvisning av valgt bilde"
+          accessibilityLabel={uiText("Forhåndsvisning av valgt bilde")}
           source={{ uri: photo.preview }}
           style={{
             width: "100%",
@@ -67,13 +63,11 @@ function Composer({ userId }: { userId: string }) {
             padding: 24,
           }}
         >
-          <Txt muted style={{ textAlign: "center" }}>
-            Velg et bilde fra biblioteket ditt
-          </Txt>
+          <Txt muted style={{ textAlign: "center" }}>{uiText("Velg et bilde fra biblioteket ditt")}</Txt>
         </View>
       )}
       <Button
-        title={photo ? "Velg et annet bilde" : "Velg bilde"}
+        title={photo ? uiText("Velg et annet bilde") : uiText("Velg bilde")}
         icon="photo"
         secondary
         disabled={busy}
@@ -88,7 +82,7 @@ function Composer({ userId }: { userId: string }) {
             })
             .catch((e) =>
               setError(
-                e instanceof Error ? e.message : "Kunne ikke åpne bildet.",
+                e instanceof Error ? e.message : uiText("Kunne ikke åpne bildet."),
               ),
             )
             .finally(() => {
@@ -98,8 +92,8 @@ function Composer({ userId }: { userId: string }) {
         }}
       />
       <Field
-        accessibilityLabel="Bildetekst"
-        placeholder="Hva vil du fortelle om stedet?"
+        accessibilityLabel={uiText("Bildetekst")}
+        placeholder={uiText("Hva vil du fortelle om stedet?")}
         value={caption}
         onChangeText={setCaption}
         multiline
@@ -108,14 +102,14 @@ function Composer({ userId }: { userId: string }) {
         style={{ minHeight: 100, textAlignVertical: "top" }}
       />
       <Field
-        accessibilityLabel="Stedsnavn"
-        placeholder="Stedsnavn (valgfritt)"
+        accessibilityLabel={uiText("Stedsnavn")}
+        placeholder={uiText("Stedsnavn (valgfritt)")}
         value={place}
         onChangeText={setPlace}
         maxLength={100}
         editable={!busy}
       />
-      <Txt weight="700">Hvem kan se bildet?</Txt>
+      <Txt weight="700">{uiText("Hvem kan se bildet?")}</Txt>
       <View style={styles.wrap}>
         {(
           [
@@ -133,13 +127,10 @@ function Composer({ userId }: { userId: string }) {
           />
         ))}
       </View>
-      <Txt muted size={12}>
-        Posisjonsdata i bildefilen fjernes. Bare stedsnavnet du skriver deles.
-        Bildet blir ikke en treningsøkt.
-      </Txt>
+      <Txt muted size={12}>{uiText("Posisjonsdata i bildefilen fjernes. Bare stedsnavnet du skriver deles. Bildet blir ikke en treningsøkt.")}</Txt>
       {!!error && <Txt>{error}</Txt>}
       <Button
-        title={busy ? "Klargjør …" : "Publiser bilde"}
+        title={busy ? uiText("Klargjør …") : uiText("Publiser bilde")}
         disabled={busy || !photo || !caption.trim()}
         onPress={() => {
           if (!photo || lock.current) return;

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
@@ -80,7 +81,7 @@ export function RouteLibrary({ userId }: { userId: string }) {
     }
   }
   return (
-    <Page title="Lagrede løyper" fallback="/routes" scroll={false}>
+    <Page title={uiText("Lagrede løyper")} fallback="/routes" scroll={false}>
       <FlatList
         data={
           routes.length || (!loading && !error)
@@ -96,19 +97,19 @@ export function RouteLibrary({ userId }: { userId: string }) {
         }}
         ListHeaderComponent={
           <View style={{ padding: 20, gap: 14 }}>
-            <Txt muted>Løyper du har lagret på kontoen din.</Txt>
+            <Txt muted>{uiText("Løyper du har lagret på kontoen din.")}</Txt>
             <Button
-              title="Finn nye løyper"
+              title={uiText("Finn nye løyper")}
               onPress={() => router.push("/routes")}
             />
             {!!error && (
               <>
                 <Txt accessibilityRole="alert">
                   {error}
-                  {routes.length ? " Listen kan være utdatert." : ""}
+                  {routes.length ? uiText(" Listen kan være utdatert.") : ""}
                 </Txt>
                 <Button
-                  title="Oppdater Lagret"
+                  title={uiText("Oppdater Lagret")}
                   secondary
                   disabled={loading}
                   onPress={() => setReload((n) => n + 1)}
@@ -116,7 +117,7 @@ export function RouteLibrary({ userId }: { userId: string }) {
               </>
             )}
             {loading && (
-              <ActivityIndicator accessibilityLabel="Henter lagrede løyper" />
+              <ActivityIndicator accessibilityLabel={uiText("Henter lagrede løyper")} />
             )}
           </View>
         }
@@ -125,7 +126,7 @@ export function RouteLibrary({ userId }: { userId: string }) {
             title={r.name}
             description={`${r.sport} · ${km(r.distance_m / 1000)} km`}
             icon="map"
-            label={`Åpne ${r.name}`}
+            label={uiText("Åpne {0}", r.name)}
             onPress={() =>
               router.push({ pathname: "/routes", params: { id: r.id } })
             }
@@ -134,10 +135,7 @@ export function RouteLibrary({ userId }: { userId: string }) {
         ListEmptyComponent={
           !loading && !error ? (
             <View style={{ padding: 20 }}>
-              <Txt>
-                Ingen ruteforslag lagret ennå. Velg en løype og trykk «Lagre
-                løypa».
-              </Txt>
+              <Txt>{uiText("Ingen ruteforslag lagret ennå. Velg en løype og trykk «Lagre løypa».")}</Txt>
             </View>
           ) : undefined
         }
@@ -145,7 +143,7 @@ export function RouteLibrary({ userId }: { userId: string }) {
           <View style={{ gap: 12, padding: 20 }}>
             {next && (
               <Button
-                title="Vis flere lagrede løyper"
+                title={uiText("Vis flere lagrede løyper")}
                 secondary
                 disabled={loading}
                 onPress={more}
@@ -153,10 +151,8 @@ export function RouteLibrary({ userId }: { userId: string }) {
             )}
             {!!own.length && (
               <>
-                <Txt weight="700">Dine bokmerkede GPS-turer</Txt>
-                <Txt muted size={13}>
-                  Private turer som ligger på denne enheten.
-                </Txt>
+                <Txt weight="700">{uiText("Dine bokmerkede GPS-turer")}</Txt>
+                <Txt muted size={13}>{uiText("Private turer som ligger på denne enheten.")}</Txt>
                 {own.map((w) => (
                   <SettingsRow
                     key={w.id}

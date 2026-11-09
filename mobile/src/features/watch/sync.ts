@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { AppState } from "react-native";
 import { create } from "zustand";
 import { appPersistence, useAppStore } from "../../stores/useAppStore";
@@ -53,6 +54,8 @@ export function syncWatch(): Promise<void> {
         // Native WatchConnectivity delivers the latest context when it reconnects.
         if (!owner()) await native.setOwner("");
         if (!connection.paired || !connection.installed) continue;
+        const language = useAppStore.getState().language;
+        if (language) await native.setLanguage?.(language);
         const imported = await importWatchWorkouts({
           owner,
           setOwner: (id) => native.setOwner(id),
@@ -72,7 +75,7 @@ export function syncWatch(): Promise<void> {
             await appPersistence.retry();
             if (useAppStore.getState().storageError)
               throw new Error(
-                "Kunne ikke lagre klokkeøkten på iPhone. Kopien på klokken er beholdt.",
+                uiText("Kunne ikke lagre klokkeøkten på iPhone. Kopien på klokken er beholdt."),
               );
           },
           acknowledge: (id, user) => native.acknowledge(id, user),
@@ -100,7 +103,7 @@ export function syncWatch(): Promise<void> {
 }
 export async function setWatchEnabled(user: string, enabled: boolean) {
   if (useAuthStore.getState().session?.user.id !== user)
-    throw new Error("Kontoen er endret. Åpne siden på nytt.");
+    throw new Error(uiText("Kontoen er endret. Åpne siden på nytt."));
   if (
     enabled &&
     (!watchSupported ||
@@ -108,7 +111,7 @@ export async function setWatchEnabled(user: string, enabled: boolean) {
       !useWatchStatus.getState().installed)
   )
     throw new Error(
-      "Koble til Apple Watch og installer VYRO på klokken først.",
+      uiText("Koble til Apple Watch og installer VYRO på klokken først."),
     );
   useAppStore.setState((s) => ({
     watchOwners: enabled
@@ -123,7 +126,7 @@ export function observeWatch() {
     void syncWatch();
   };
   const app = useAppStore.subscribe((s, previous) => {
-    if (s.ready !== previous.ready || s.watchOwners !== previous.watchOwners)
+    if (s.ready !== previous.ready || s.language !== previous.language || s.watchOwners !== previous.watchOwners)
       refresh();
   });
   const auth = useAuthStore.subscribe(refresh);

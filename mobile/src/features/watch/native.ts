@@ -4,6 +4,7 @@ export type WatchConnection = {
   reachable: boolean;
 };
 export interface WatchNative {
+  setLanguage?(language: "en" | "nb"): Promise<void>;
   setOwner(owner: string): Promise<void>;
   status(): Promise<WatchConnection>;
   pending(owner: string): Promise<unknown[]>;

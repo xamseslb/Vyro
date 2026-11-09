@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -163,20 +164,18 @@ export function Feed({ userId }: { userId: string }) {
             alignSelf: "center",
           }}
         >
-          <Txt size={26} weight="800">
-            Hjem
-          </Txt>
+          <Txt size={26} weight="800">{uiText("Hjem")}</Txt>
           <View style={{ flexDirection: "row", gap: 10 }}>
             <NotificationBell/>
             <IconButton
               name="plus"
-              label={compose ? "Lukk deling" : "Lag innlegg"}
+              label={compose ? uiText("Lukk deling") : uiText("Lag innlegg")}
               variant="elevated"
               onPress={() => setCompose(!compose)}
             />
             <IconButton
               name="search"
-              label="Søk etter personer"
+              label={uiText("Søk etter personer")}
               variant="elevated"
               onPress={() => router.push("/people")}
             />
@@ -239,15 +238,15 @@ export function Feed({ userId }: { userId: string }) {
                     backgroundColor: c.surface,
                   }}
                 >
-                  <Txt weight="700">Hva vil du dele?</Txt>
+                  <Txt weight="700">{uiText("Hva vil du dele?")}</Txt>
                   <Button
-                    title="Del treningsøkt"
+                    title={uiText("Del treningsøkt")}
                     icon="run"
                     secondary
                     onPress={() => router.push("/share-workout")}
                   />
                   <Button
-                    title="Del bilde av et sted"
+                    title={uiText("Del bilde av et sted")}
                     icon="photo"
                     secondary
                     onPress={() => router.push("/share-place")}
@@ -263,12 +262,10 @@ export function Feed({ userId }: { userId: string }) {
                 }}
               >
                 <View style={styles.row}>
-                  <Txt weight="700" size={17}>
-                    Din uke så langt
-                  </Txt>
+                  <Txt weight="700" size={17}>{uiText("Din uke så langt")}</Txt>
                   <Pressable
                     accessibilityRole="button"
-                    accessibilityLabel="Se din fremgang"
+                    accessibilityLabel={uiText("Se din fremgang")}
                     onPress={() => router.push("/profile")}
                     style={{ minHeight: 40, justifyContent: "center" }}
                   >
@@ -286,13 +283,13 @@ export function Feed({ userId }: { userId: string }) {
                         {value}
                       </Txt>
                       <Txt muted size={12}>
-                        {label}
+                        {uiText(label)}
                       </Txt>
                     </View>
                   ))}
                 </View>
                 <Button
-                  title={own.length ? "Ta en ny tur" : "Start første økt"}
+                  title={own.length ? uiText("Ta en ny tur") : uiText("Start første økt")}
                   icon="record"
                   onPress={() => router.push("/track")}
                 />
@@ -312,12 +309,8 @@ export function Feed({ userId }: { userId: string }) {
                 >
                   <Icon name="user" color={c.accent} />
                   <View style={{ flex: 1, gap: 3 }}>
-                    <Txt weight="600" size={14}>
-                      Gjør profilen din klar
-                    </Txt>
-                    <Txt muted size={12}>
-                      Velg navnet vennene dine ser.
-                    </Txt>
+                    <Txt weight="600" size={14}>{uiText("Gjør profilen din klar")}</Txt>
+                    <Txt muted size={12}>{uiText("Velg navnet vennene dine ser.")}</Txt>
                   </View>
                   <Icon name="chevronRight" size={18} color={c.muted} />
                 </Pressable>
@@ -342,7 +335,7 @@ export function Feed({ userId }: { userId: string }) {
                 ).map(([value, label]) => (
                   <Chip
                     key={value}
-                    title={label}
+                    title={uiText(label)}
                     selected={tab === value}
                     onPress={() => {
                       if (tab !== value) chooseTab(value);
@@ -353,19 +346,19 @@ export function Feed({ userId }: { userId: string }) {
               <View style={styles.row}>
                 <Txt muted size={12}>
                   {tab === "own"
-                    ? "Din private treningslogg"
-                    : "Nyeste innlegg først"}
+                    ? uiText("Din private treningslogg")
+                    : uiText("Nyeste innlegg først")}
                 </Txt>
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel="Oppdater strømmen"
+                  accessibilityLabel={uiText("Oppdater strømmen")}
                   accessibilityState={{ disabled: loading }}
                   disabled={loading}
                   onPress={refresh}
                   style={{ minHeight: 44, justifyContent: "center" }}
                 >
                   <Txt size={12} muted>
-                    {loading ? "Laster …" : "Oppdater"}
+                    {loading ? uiText("Laster …") : uiText("Oppdater")}
                   </Txt>
                 </Pressable>
               </View>
@@ -381,7 +374,7 @@ export function Feed({ userId }: { userId: string }) {
               <View style={{ gap: 12 }}>
                 <Txt>{error}</Txt>
                 <Button
-                  title="Prøv igjen"
+                  title={uiText("Prøv igjen")}
                   secondary
                   disabled={loading}
                   onPress={() => void fetchPage(retryCursor)}
@@ -390,7 +383,7 @@ export function Feed({ userId }: { userId: string }) {
             )}
             {loading && !rows.length && (
               <ActivityIndicator
-                accessibilityLabel="Henter innlegg"
+                accessibilityLabel={uiText("Henter innlegg")}
                 color={c.accent}
               />
             )}
@@ -416,10 +409,10 @@ export function Feed({ userId }: { userId: string }) {
                 </View>
                 <Txt size={21} weight="700" style={{ textAlign: "center" }}>
                   {tab === "own"
-                    ? "Ta vare på din første tur."
+                    ? uiText("Ta vare på din første tur.")
                     : tab === "reposted"
-                      ? "Et innlegg verdt å dele?"
-                      : "Turer å dele."}
+                      ? uiText("Et innlegg verdt å dele?")
+                      : uiText("Turer å dele.")}
                 </Txt>
                 <Txt
                   muted
@@ -427,14 +420,14 @@ export function Feed({ userId }: { userId: string }) {
                   style={{ textAlign: "center", maxWidth: 330 }}
                 >
                   {tab === "own"
-                    ? "Øktene dine vises her når du lagrer dem. De er private til du velger å dele."
+                    ? uiText("Øktene dine vises her når du lagrer dem. De er private til du velger å dele.")
                     : tab === "reposted"
-                      ? "Innlegg du deler videre fra strømmen, dukker opp her."
-                      : "Følg venner for å se turene og stedene de deler. Du bestemmer når du vil dele noe selv."}
+                      ? uiText("Innlegg du deler videre fra strømmen, dukker opp her.")
+                      : uiText("Følg venner for å se turene og stedene de deler. Du bestemmer når du vil dele noe selv.")}
                 </Txt>
                 <View style={{ width: "100%", gap: 10 }}>
                   <Button
-                    title={tab === "own" ? "Start en økt" : "Finn venner"}
+                    title={tab === "own" ? uiText("Start en økt") : uiText("Finn venner")}
                     secondary
                     onPress={() =>
                       router.push(tab === "own" ? "/track" : "/people")
@@ -442,7 +435,7 @@ export function Feed({ userId }: { userId: string }) {
                   />
                   {tab === "following" && own.length > 0 && (
                     <Button
-                      title="Del en økt"
+                      title={uiText("Del en økt")}
                       onPress={() => router.push("/share-workout")}
                     />
                   )}
@@ -451,7 +444,7 @@ export function Feed({ userId }: { userId: string }) {
             )}
             {next && tab !== "own" && (
               <Button
-                title={loading ? "Laster …" : "Vis flere innlegg"}
+                title={loading ? uiText("Laster …") : uiText("Vis flere innlegg")}
                 secondary
                 disabled={loading}
                 onPress={() => {

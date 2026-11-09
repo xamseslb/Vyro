@@ -13,7 +13,7 @@ Deno.serve(async (request) => {
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
   try {
-    const { data, error } = await db.rpc("vyro_claim_push");
+    const { data, error } = await db.rpc("vyro_claim_push_localized");
     if (error) throw error;
     await dispatchJobs(
       data ?? [],

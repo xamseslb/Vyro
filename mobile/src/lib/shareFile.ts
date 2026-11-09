@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 export type ExportFile = { filename: string; contents: string };
 export function cleanExports() {
   /* Browser downloads are managed by the user. */
@@ -5,7 +6,7 @@ export function cleanExports() {
 
 /** Browser export stays on-device; no upload service or public file URL. */
 export async function shareFile(file: ExportFile, authorized: () => boolean) {
-  if (!authorized()) throw new Error("Logg inn med kontoen som eier økten.");
+  if (!authorized()) throw new Error(uiText("Logg inn med kontoen som eier økten."));
   const url = URL.createObjectURL(
     new Blob([file.contents], { type: "application/gpx+xml" }),
   );

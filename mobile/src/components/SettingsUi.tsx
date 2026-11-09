@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import type { PropsWithChildren, ReactNode } from "react";
 import {
   KeyboardAvoidingView,
@@ -54,7 +55,7 @@ export function Page({
         >
           <IconButton
             name="back"
-            label="Tilbake"
+            label={uiText("Tilbake")}
             variant="elevated"
             disabled={backDisabled}
             onPress={

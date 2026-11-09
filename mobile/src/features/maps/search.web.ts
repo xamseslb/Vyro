@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { mapboxToken, hasMapbox } from "./config";
 import type { Place } from "./search.types";
 export type { Place } from "./search.types";
@@ -5,7 +6,7 @@ export async function searchPlaces(
   query: string,
   signal: AbortSignal,
 ): Promise<Place[]> {
-  if (!hasMapbox) throw new Error("Mapbox er ikke aktivert.");
+  if (!hasMapbox) throw new Error(uiText("Mapbox er ikke aktivert."));
   const params = new URLSearchParams({
     q: query.trim(),
     access_token: mapboxToken,

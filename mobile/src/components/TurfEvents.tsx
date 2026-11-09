@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { personName } from "../features/social/display";
 import { useCallback, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
@@ -103,7 +104,7 @@ export function TurfEvents({ userId }: { userId: string }) {
             <Txt weight="700">{personName(e.actor.display_name)}</Txt>
           )}
           <Txt>
-            {e.previous ? "Har tatt over sonen fra" : "Har opprettet en sone."}
+            {e.previous ? uiText("Har tatt over sonen fra") : uiText("Har opprettet en sone.")}
           </Txt>
           {e.previous &&
             (e.previous_owner_id ? (
@@ -117,11 +118,9 @@ export function TurfEvents({ userId }: { userId: string }) {
               <Txt weight="700">{personName(e.previous.display_name)}</Txt>
             ))}
           <Txt muted>
-            {e.extended ? "Utvidet til" : "Løype på"} {km(e.distance_m / 1000)}{" "}
-            km. Vil du utfordre den?
-          </Txt>
+            {e.extended ? uiText("Utvidet til") : uiText("Løype på")} {km(e.distance_m / 1000)}{" "}{uiText("km. Vil du utfordre den?")}</Txt>
           <Button
-            title="Se gjeldende sone"
+            title={uiText("Se gjeldende sone")}
             secondary
             onPress={() =>
               router.push({ pathname: "/turf", params: { turfId: e.turf_id } })
@@ -130,9 +129,7 @@ export function TurfEvents({ userId }: { userId: string }) {
         </Card>
       ))}
       {error && (
-        <Txt muted size={12}>
-          Kunne ikke hente sonehendelser. Åpne Soner for å prøve igjen.
-        </Txt>
+        <Txt muted size={12}>{uiText("Kunne ikke hente sonehendelser. Åpne Soner for å prøve igjen.")}</Txt>
       )}
     </>
   );

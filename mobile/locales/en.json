@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSLocationWhenInUseUsageDescription": "VYRO uses your location to show your position on the map and measure distance during a workout.",
+    "NSLocationAlwaysAndWhenInUseUsageDescription": "If you enable recording with the screen locked, VYRO uses your location during a workout you start, including when you lock the screen or use another app. GPS recording stops when you pause or finish.",
+    "NSPhotoLibraryUsageDescription": "Choose a photo to share in VYRO."
+  }
+}

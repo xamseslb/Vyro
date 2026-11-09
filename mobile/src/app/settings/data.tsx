@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -16,12 +17,12 @@ export default function DataSettings() {
   const error = useAppStore((s) => s.storageError);
   const [busy, setBusy] = useState(false);
   return (
-    <Page title="Data og sikkerhetskopi">
+    <Page title={uiText("Data og sikkerhetskopi")}>
       {!!error && (
         <View style={{ padding: 22, gap: 12 }}>
           <Txt>{error}</Txt>
           <Button
-            title={busy ? "Prøver igjen …" : "Prøv lokal lagring igjen"}
+            title={busy ? uiText("Prøver igjen …") : uiText("Prøv lokal lagring igjen")}
             disabled={busy}
             onPress={() => {
               setBusy(true);
@@ -30,18 +31,18 @@ export default function DataSettings() {
           />
         </View>
       )}
-      <SettingsGroup title="På denne enheten">
+      <SettingsGroup title={uiText("På denne enheten")}>
         <SettingsRow
-          title="Din treningslogg"
-          description="Se og administrer lagrede økter."
+          title={uiText("Din treningslogg")}
+          description={uiText("Se og administrer lagrede økter.")}
           icon="chart"
           onPress={() =>
             router.push({ pathname: "/profile", params: { tab: "activities" } })
           }
         />
         <SettingsRow
-          title="Eksporter en rute"
-          description="Åpne en GPS-økt i treningsloggen og velg GPX-eksport."
+          title={uiText("Eksporter en rute")}
+          description={uiText("Åpne en GPS-økt i treningsloggen og velg GPX-eksport.")}
           icon="share"
           onPress={() =>
             router.push({ pathname: "/profile", params: { tab: "activities" } })
@@ -55,15 +56,12 @@ export default function DataSettings() {
       ) : (
         <SettingsGroup>
           <SettingsRow
-            title="Logg inn for sikkerhetskopiering"
+            title={uiText("Logg inn for sikkerhetskopiering")}
             onPress={() => router.push("/account")}
           />
         </SettingsGroup>
       )}
-      <PageNote>
-        En eksportert GPX-fil kan inneholde hele ruten. Del filen bare med dem
-        du vil gi tilgang til den.
-      </PageNote>
+      <PageNote>{uiText("En eksportert GPX-fil kan inneholde hele ruten. Del filen bare med dem du vil gi tilgang til den.")}</PageNote>
     </Page>
   );
 }

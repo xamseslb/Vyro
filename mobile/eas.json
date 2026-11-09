@@ -8,6 +8,9 @@
     "production": {
       "distribution": "store",
       "environment": "production",
+      "env": {
+        "EXPO_PUBLIC_IOS_APPLE_AUTH_ENABLED": "true"
+      },
       "node": "24.19.0",
       "autoIncrement": true
     },

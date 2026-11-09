@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useCallback, useState } from "react";
 import { Switch, View } from "react-native";
 import { useFocusEffect } from "expo-router";
@@ -36,27 +37,27 @@ function WatchSettings({ user }: { user: string }) {
   );
   const ready = watchSupported && checked && paired && installed;
   const title = !watchSupported
-    ? "Åpne på iPhone"
+    ? uiText("Åpne på iPhone")
     : !checked
-      ? "Sjekker tilkoblingen …"
+      ? uiText("Sjekker tilkoblingen …")
       : !paired
-        ? "Ingen Apple Watch tilkoblet"
+        ? uiText("Ingen Apple Watch tilkoblet")
         : !installed
-          ? "Installer VYRO på klokken"
+          ? uiText("Installer VYRO på klokken")
           : enabled
-            ? "Klar for neste tur"
-            : "Apple Watch er klar";
+            ? uiText("Klar for neste tur")
+            : uiText("Apple Watch er klar");
   const description = !watchSupported
-    ? "Klokketilkoblingen krever den installerte VYRO-appen på iPhone."
+    ? uiText("Klokketilkoblingen krever den installerte VYRO-appen på iPhone.")
     : !checked
-      ? "Ha klokken og telefonen i nærheten av hverandre."
+      ? uiText("Ha klokken og telefonen i nærheten av hverandre.")
       : !paired
-        ? "Koble klokken til iPhonen i Apples Watch-app først."
+        ? uiText("Koble klokken til iPhonen i Apples Watch-app først.")
         : !installed
-          ? "Åpne Watch-appen på iPhone og installer VYRO under tilgjengelige apper."
+          ? uiText("Åpne Watch-appen på iPhone og installer VYRO under tilgjengelige apper.")
           : enabled
-            ? "Start økten i VYRO på klokken. Lagrede økter overføres til denne kontoen."
-            : "Slå på tilkoblingen nedenfor for å bruke denne kontoen på klokken.";
+            ? uiText("Start økten i VYRO på klokken. Lagrede økter overføres til denne kontoen.")
+            : uiText("Slå på tilkoblingen nedenfor for å bruke denne kontoen på klokken.");
   return (
     <Page title="Apple Watch">
       <View style={{ padding: 16, gap: 16 }}>
@@ -70,15 +71,15 @@ function WatchSettings({ user }: { user: string }) {
         >
           <Icon name="device" size={42} color={brand.lime} />
           <Txt size={25} weight="700" style={{ color: "white" }}>
-            {title}
+            {uiText(title)}
           </Txt>
           <Txt size={15} style={{ color: "#D1D7E4" }}>
-            {description}
+            {uiText(description)}
           </Txt>
         </View>
         {watchSupported && (
           <Button
-            title={busy ? "Sjekker …" : "Sjekk tilkoblingen"}
+            title={busy ? uiText("Sjekker …") : uiText("Sjekk tilkoblingen")}
             secondary
             icon="refresh"
             disabled={busy || changing}
@@ -93,23 +94,23 @@ function WatchSettings({ user }: { user: string }) {
         )}
       </View>
       <SettingsGroup
-        title="Din konto"
+        title={uiText("Din konto")}
         note={
           !ready && !enabled
-            ? "Bryteren blir tilgjengelig når VYRO er installert på en sammenkoblet Apple Watch."
-            : "Øktene lagres privat. Du velger selv om de skal deles."
+            ? uiText("Bryteren blir tilgjengelig når VYRO er installert på en sammenkoblet Apple Watch.")
+            : uiText("Øktene lagres privat. Du velger selv om de skal deles.")
         }
       >
         <SettingsRow
-          title="Bruk VYRO på Apple Watch"
+          title={uiText("Bruk VYRO på Apple Watch")}
           description={
             enabled && !ready
-              ? "Aktivert for kontoen. Venter på klokken."
-              : "Koble denne kontoen til klokken."
+              ? uiText("Aktivert for kontoen. Venter på klokken.")
+              : uiText("Koble denne kontoen til klokken.")
           }
           end={
             <Switch
-              accessibilityLabel="Bruk VYRO på Apple Watch"
+              accessibilityLabel={uiText("Bruk VYRO på Apple Watch")}
               value={enabled}
               accessibilityState={{ disabled: busy || changing || (!ready && !enabled), checked: enabled }}
               disabled={busy || changing || (!ready && !enabled)}
@@ -122,7 +123,7 @@ function WatchSettings({ user }: { user: string }) {
                     setLocalError(
                       e instanceof Error
                         ? e.message
-                        : "Kunne ikke endre tilkoblingen.",
+                        : uiText("Kunne ikke endre tilkoblingen."),
                     ),
                   )
                   .finally(() => setChanging(false));
@@ -134,15 +135,13 @@ function WatchSettings({ user }: { user: string }) {
       {ready && enabled && (
         <View style={{ padding: 20, gap: 10 }}>
           <Button
-            title={busy ? "Synkroniserer …" : "Synkroniser nå"}
+            title={busy ? uiText("Synkroniserer …") : uiText("Synkroniser nå")}
             disabled={busy || changing}
             onPress={() => void syncWatch()}
           />
           {imported > 0 && (
             <Txt muted size={13}>
-              {imported} {imported === 1 ? "økt overført" : "økter overført"}{" "}
-              til treningsloggen.
-            </Txt>
+              {imported} {imported === 1 ? uiText("økt overført") : uiText("økter overført")}{" "}{uiText("til treningsloggen.")}</Txt>
           )}
         </View>
       )}
@@ -155,9 +154,7 @@ function WatchSettings({ user }: { user: string }) {
           gap: 20,
         }}
       >
-        <Txt size={20} weight="700">
-          Slik bruker du klokken
-        </Txt>
+        <Txt size={20} weight="700">{uiText("Slik bruker du klokken")}</Txt>
         {[
           [
             "1",

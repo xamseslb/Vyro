@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { router } from "expo-router";
 import {
   ChoiceRow,
@@ -28,36 +29,33 @@ export default function PrivacySettings() {
     });
   }
   return (
-    <Page title="Personvern og deling">
-      <PageNote>
-        Du velger hva du deler. Nye økter er alltid private. Ingen innstilling
-        her publiserer øktene dine automatisk.
-      </PageNote>
+    <Page title={uiText("Personvern og deling")}>
+      <PageNote>{uiText("Du velger hva du deler. Nye økter er alltid private. Ingen innstilling her publiserer øktene dine automatisk.")}</PageNote>
       {userId && <ProfilePrivacy key={userId} />}
       {userId && (
-        <SettingsGroup title="Trygghet">
+        <SettingsGroup title={uiText("Trygghet")}>
           <SettingsRow
-            title="Blokkerte brukere"
+            title={uiText("Blokkerte brukere")}
             onPress={() => router.push("/settings/blocked")}
           />
         </SettingsGroup>
       )}
       <SettingsGroup
-        title="Når du velger å dele"
-        note="Dette er et forvalg for nye innlegg på denne enheten. Du bekrefter publikum før publisering. Gamle innlegg endres ikke."
+        title={uiText("Når du velger å dele")}
+        note={uiText("Dette er et forvalg for nye innlegg på denne enheten. Du bekrefter publikum før publisering. Gamle innlegg endres ikke.")}
       >
         {userId ? (
           <>
             <ChoiceRow
-              title="Følgere"
-              description="Personene som følger deg i VYRO."
+              title={uiText("Følgere")}
+              description={uiText("Personene som følger deg i VYRO.")}
               selected={!!profile?.is_private || audience === "followers"}
               onPress={() => choose("followers")}
             />
             {!profile?.is_private && (
               <ChoiceRow
-                title="Alle innloggede"
-                description="Andre VYRO-brukere kan se innlegget."
+                title={uiText("Alle innloggede")}
+                description={uiText("Andre VYRO-brukere kan se innlegget.")}
                 selected={audience === "everyone"}
                 onPress={() => choose("everyone")}
               />
@@ -65,33 +63,33 @@ export default function PrivacySettings() {
           </>
         ) : (
           <SettingsRow
-            title="Logg inn for å velge publikum"
+            title={uiText("Logg inn for å velge publikum")}
             onPress={() => router.push("/account")}
           />
         )}
       </SettingsGroup>
-      <SettingsGroup title="Beskyttelse av ruten">
+      <SettingsGroup title={uiText("Beskyttelse av ruten")}>
         <SettingsRow
-          title="Skjerm start og slutt"
-          value={`${WORKOUT_SHARING_RADIUS_METERS} meter`}
-          description="Punkter nær start og slutt fjernes fra kartet du deler. Kontroller alltid forhåndsvisningen før publisering."
+          title={uiText("Skjerm start og slutt")}
+          value={uiText("{0} meter", WORKOUT_SHARING_RADIUS_METERS)}
+          description={uiText("Punkter nær start og slutt fjernes fra kartet du deler. Kontroller alltid forhåndsvisningen før publisering.")}
           icon="lock"
         />
         <SettingsRow
-          title="Kart på låseskjermen"
-          description="Velg om siste kartutsnitt og økttall skal være synlige på låst iPhone."
+          title={uiText("Kart på låseskjermen")}
+          description={uiText("Velg om siste kartutsnitt og økttall skal være synlige på låst iPhone.")}
           onPress={() => router.push("/training-settings")}
         />
       </SettingsGroup>
-      <SettingsGroup title="Kontoinformasjon">
+      <SettingsGroup title={uiText("Kontoinformasjon")}>
         <SettingsRow
-          title="Profil og etternavn"
-          description="Visningsnavn og brukernavn er synlige for andre. Etternavn og øvrige profildetaljer er private."
+          title={uiText("Profil og etternavn")}
+          description={uiText("Visningsnavn og brukernavn er synlige for andre. Etternavn og øvrige profildetaljer er private.")}
           onPress={() => router.push("/edit-profile")}
         />
         <SettingsRow
-          title="Privat sikkerhetskopi"
-          description="Administrer lagring og gjenoppretting av øktene dine."
+          title={uiText("Privat sikkerhetskopi")}
+          description={uiText("Administrer lagring og gjenoppretting av øktene dine.")}
           onPress={() => router.push("/settings/data")}
         />
       </SettingsGroup>

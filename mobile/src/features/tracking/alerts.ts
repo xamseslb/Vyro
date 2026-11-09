@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../../i18n/language";
 import * as Speech from "expo-speech";
 import * as Haptics from "expo-haptics";
 import { useAppStore } from "../../stores/useAppStore";
@@ -9,7 +10,7 @@ export const stopWorkoutSpeech = () => Speech.stop().catch(() => undefined);
 // Preview requests never create a split or workout.
 export async function playWorkoutAlert(
   mode: AlertMode,
-  text = "Dette er et prøvevarsel fra VYRO. Én kilometer er fullført.",
+  text = uiText("Dette er et prøvevarsel fra VYRO. Én kilometer er fullført."),
   current = () => true,
 ) {
   if (mode === "off" || !current()) return;
@@ -20,12 +21,12 @@ export async function playWorkoutAlert(
   await Speech.stop();
   if (!current()) return;
   Speech.speak(text, {
-    language: "nb-NO",
+    language: displayLocale(),
     onError: () => {
       if (current())
         useTrackingStatus.setState({
           alertError:
-            "Talevarselet kunne ikke spilles av. Prøv igjen med lyd på.",
+            uiText("Talevarselet kunne ikke spilles av. Prøv igjen med lyd på."),
         });
     },
   });
@@ -61,12 +62,12 @@ export function observeKilometerAlerts() {
     const seconds = Math.round(last.seconds);
     void playWorkoutAlert(
       next.kilometerAlerts,
-      `${last.kilometer} kilometer. Siste kilometer: ${Math.floor(seconds / 60)} minutter og ${seconds % 60} sekunder.`,
+      uiText("{0} kilometer. Siste kilometer: {1} minutter og {2} sekunder.", last.kilometer, Math.floor(seconds / 60), seconds % 60),
       current,
     ).catch(() => {
       if (current())
         useTrackingStatus.setState({
-          alertError: "Kilometervarselet kunne ikke spilles av.",
+          alertError: uiText("Kilometervarselet kunne ikke spilles av."),
         });
     });
   });

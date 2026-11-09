@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import type { Workout } from "./model";
 
 const xml = (value: string) =>
@@ -16,7 +17,7 @@ const xml = (value: string) =>
 /** Export only the owner's actual route. Never invent timestamps or bridge pauses. */
 export function workoutGpx(workout: Workout, userId: string | undefined) {
   if (!userId || workout.ownerId !== userId || workout.source !== "gps")
-    throw new Error("Bare dine egne GPS-økter kan eksporteres.");
+    throw new Error(uiText("Bare dine egne GPS-økter kan eksporteres."));
   const route = workout.route;
   if (
     !route ||
@@ -29,7 +30,7 @@ export function workoutGpx(workout: Workout, userId: string | undefined) {
         Math.abs(point.longitude) > 180,
     )
   )
-    throw new Error("Økten mangler en gyldig GPS-rute.");
+    throw new Error(uiText("Økten mangler en gyldig GPS-rute."));
   const segments: string[][] = [[]];
   for (const point of route) {
     if (point.breakBefore && segments[segments.length - 1].length)

@@ -27,6 +27,7 @@ import { BrandMark, BrandWordmark } from "./Brand";
 import { brand, palettes } from "../theme/tokens";
 
 export function useTheme() {
+  useAppStore((s) => s.language);
   const theme = useAppStore((s) => s.theme);
   const system = useColorScheme();
   return palettes[theme === "system" ? (system ?? "light") : theme];

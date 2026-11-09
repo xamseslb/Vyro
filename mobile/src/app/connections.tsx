@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -79,7 +80,7 @@ function ConnectionList({
   );
   return (
     <Page
-      title={kind === "followers" ? "Følgere" : "Følger"}
+      title={kind === "followers" ? uiText("Følgere") : uiText("Følger")}
       fallback="/profile"
     >
       <SettingsGroup>
@@ -97,7 +98,7 @@ function ConnectionList({
               <View style={{ paddingHorizontal: 22, paddingBottom: 12 }}>
                 <Button
                   secondary
-                  title="Fjern følger"
+                  title={uiText("Fjern følger")}
                   disabled={busy}
                   onPress={async () => {
                     setBusy(true);
@@ -123,30 +124,30 @@ function ConnectionList({
         ))}
       </SettingsGroup>
       <View style={{ padding: 22, gap: 14 }}>
-        {busy && <Txt muted>Henter personer …</Txt>}
+        {busy && <Txt muted>{uiText("Henter personer …")}</Txt>}
         {!!error && (
           <>
             <Txt>{error}</Txt>
-            <Button title="Prøv igjen" onPress={() => void load()} />
+            <Button title={uiText("Prøv igjen")} onPress={() => void load()} />
           </>
         )}
         {!busy && !error && !people.length && (
           <Txt muted>
             {kind === "followers"
-              ? "Du har ingen følgere ennå."
-              : "Du følger ingen ennå. Finn noen å dele turene med."}
+              ? uiText("Du har ingen følgere ennå.")
+              : uiText("Du følger ingen ennå. Finn noen å dele turene med.")}
           </Txt>
         )}
         {more && (
           <Button
-            title="Vis flere"
+            title={uiText("Vis flere")}
             disabled={busy}
             secondary
             onPress={() => void load(true)}
           />
         )}
         <Button
-          title="Finn venner"
+          title={uiText("Finn venner")}
           secondary
           onPress={() => router.push("/people")}
         />

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { sports, isRecordedWorkout, type Workout } from "../activities/model";
 import { validWorkoutDetails } from "../activities/sports";
 import { validMaxSpeed } from "../football/speed";
@@ -31,7 +32,7 @@ export function backupPayload(workout: Workout, owner: string): Workout {
     !validBackup(payload, owner, id)
   )
     throw new Error(
-      "Økten har data som ikke kan sikkerhetskopieres. Den lokale kopien er beholdt.",
+      uiText("Økten har data som ikke kan sikkerhetskopieres. Den lokale kopien er beholdt."),
     );
   return payload;
 }

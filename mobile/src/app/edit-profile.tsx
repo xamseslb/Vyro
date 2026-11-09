@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { Pressable, TextInput, View } from "react-native";
@@ -26,14 +27,14 @@ export default function EditProfileScreen() {
         (profile ? (
           <ProfileForm key={user.id} user={user} />
         ) : (
-          <Page title="Rediger profil" fallback="/profile">
+          <Page title={uiText("Rediger profil")} fallback="/profile">
             <View style={{ padding: 22, gap: 14 }}>
               <Txt>
-                {failed ? "Kunne ikke hente profilen din." : "Henter profil …"}
+                {failed ? uiText("Kunne ikke hente profilen din.") : uiText("Henter profil …")}
               </Txt>
               {failed && (
                 <Button
-                  title="Prøv igjen"
+                  title={uiText("Prøv igjen")}
                   onPress={() =>
                     void loadOwnProfile(
                       user.id,
@@ -88,7 +89,7 @@ function ProfileForm({ user }: { user: User }) {
       if (router.canGoBack()) router.back();
       else router.replace("/profile");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Kunne ikke lagre profilen.");
+      setError(e instanceof Error ? e.message : uiText("Kunne ikke lagre profilen."));
     } finally {
       lock.current = false;
       setBusy(false);
@@ -110,11 +111,11 @@ function ProfileForm({ user }: { user: User }) {
       }}
     >
       <Txt muted size={13}>
-        {label}
+        {uiText(label)}
       </Txt>
       <TextInput
-        accessibilityLabel={label}
-        placeholder={label}
+        accessibilityLabel={uiText(label)}
+        placeholder={uiText(label)}
         placeholderTextColor={c.muted}
         editable={!busy}
         value={draft[key]}
@@ -134,7 +135,7 @@ function ProfileForm({ user }: { user: User }) {
   );
   return (
     <Page
-      title="Rediger profil"
+      title={uiText("Rediger profil")}
       fallback="/profile"
       backDisabled={busy}
       right={
@@ -151,7 +152,7 @@ function ProfileForm({ user }: { user: User }) {
           }}
         >
           <Txt weight="700" style={{ color: c.accent }}>
-            {busy ? "Lagrer …" : "Lagre"}
+            {busy ? uiText("Lagrer …") : uiText("Lagre")}
           </Txt>
         </Pressable>
       }
@@ -166,20 +167,20 @@ function ProfileForm({ user }: { user: User }) {
         </View>
       )}
       <SettingsGroup
-        title="Synlig for andre"
-        note="Dette navnet vises på profilen, innleggene og kommentarene dine."
+        title={uiText("Synlig for andre")}
+        note={uiText("Dette navnet vises på profilen, innleggene og kommentarene dine.")}
       >
         {field("displayName", "Visningsnavn", 50)}
       </SettingsGroup>
       <SettingsGroup
-        title="Om deg · privat"
-        note="Disse feltene er valgfrie og vises bare til deg. Etternavnet legges ikke til det offentlige profilnavnet."
+        title={uiText("Om deg · privat")}
+        note={uiText("Disse feltene er valgfrie og vises bare til deg. Etternavnet legges ikke til det offentlige profilnavnet.")}
       >
         {field("lastName", "Etternavn (valgfritt)", 50)}
         {field("bio", "Biografi (valgfritt)", 280, true)}
         {field("city", "Sted (valgfritt)", 80)}
       </SettingsGroup>
-      <SettingsGroup title="Dine idretter" note="Velg én, flere eller alle.">
+      <SettingsGroup title={uiText("Dine idretter")} note={uiText("Velg én, flere eller alle.")}>
         <View
           style={{
             padding: 22,
@@ -189,7 +190,7 @@ function ProfileForm({ user }: { user: User }) {
           }}
         >
           <Chip
-            title="Alle"
+            title={uiText("Alle")}
             selected={selectableSports.every((sport) =>
               draft.selectedSports.includes(sport),
             )}
@@ -199,13 +200,13 @@ function ProfileForm({ user }: { user: User }) {
             }}
           />
           <Button
-            title={`Velg idretter (${draft.selectedSports.length})`}
+            title={uiText("Velg idretter ({0})", draft.selectedSports.length)}
             secondary
             disabled={busy}
             onPress={() => setSelectSports(true)}
           />
           <Txt muted size={13}>
-            {draft.selectedSports.join(" · ") || "Ingen valgt"}
+            {draft.selectedSports.join(" · ") || uiText("Ingen valgt")}
           </Txt>
         </View>
       </SettingsGroup>
@@ -226,7 +227,7 @@ function ProfileForm({ user }: { user: User }) {
       )}
       <View style={{ padding: 22 }}>
         <Button
-          title={busy ? "Lagrer profil …" : "Lagre profil"}
+          title={busy ? uiText("Lagrer profil …") : uiText("Lagre profil")}
           disabled={busy}
           onPress={() => void save()}
         />

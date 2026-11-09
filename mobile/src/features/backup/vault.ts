@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { randomUUID } from "expo-crypto";
 import { workoutStorage } from "../../lib/workoutStorage";
 import { client } from "../social/api";
@@ -28,7 +29,7 @@ async function verify(owner: string, vault: Vault, code: string) {
       throw new Error();
   } catch {
     throw new Error(
-      "Koden passer ikke til sikkerhetskopien. Ingen økter er endret.",
+      uiText("Koden passer ikke til sikkerhetskopien. Ingen økter er endret."),
     );
   }
 }
@@ -50,7 +51,7 @@ export async function unlockVault(owner: string, code: string) {
     vault = await remoteVault(owner);
   }
   if (!vault)
-    throw new Error("Kunne ikke bekrefte sikkerhetskopien. Prøv igjen.");
+    throw new Error(uiText("Kunne ikke bekrefte sikkerhetskopien. Prøv igjen."));
   await verify(owner, vault, normalized);
   requireOwner(owner);
   const key = { keyId: vault.key_id, code: normalized };
@@ -63,11 +64,11 @@ export async function vaultKey(owner: string): Promise<VaultKey> {
   const raw = await workoutStorage.getItem(localKey(owner));
   if (!vault || !raw)
     throw new Error(
-      "Aktiver kryptert sikkerhetskopi eller skriv inn gjenopprettingskoden under Data og sikkerhetskopi.",
+      uiText("Aktiver kryptert sikkerhetskopi eller skriv inn gjenopprettingskoden under Data og sikkerhetskopi."),
     );
   const key = JSON.parse(raw) as VaultKey;
   if (key.keyId !== vault.key_id)
-    throw new Error("Skriv inn gjenopprettingskoden på denne enheten.");
+    throw new Error(uiText("Skriv inn gjenopprettingskoden på denne enheten."));
   await verify(owner, vault, key.code);
   requireOwner(owner);
   return key;

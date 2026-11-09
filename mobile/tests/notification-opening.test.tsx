@@ -1,6 +1,8 @@
 import { act, render, waitFor } from "@testing-library/react-native";
 import NotificationObserver from "../src/components/NotificationObserver";
 
+let mockOptedIn = false;
+const mockRefresh = jest.fn();
 let mockOwner = "alex";
 let mockResponse: (value: unknown) => void;
 const mockPush = jest.fn();
@@ -17,8 +19,8 @@ jest.mock("../src/stores/useAuthStore", () => ({
 }));
 jest.mock("../src/features/social/push", () => ({
   pushSupported: true,
-  pushPreference: async () => false,
-  enablePush: jest.fn(),
+  pushPreference: async () => mockOptedIn,
+  enablePush: (...args: unknown[]) => mockRefresh(...args),
   isOwnNotification: (data: { recipientId?: string }, owner: string) => data.recipientId === owner,
 }));
 jest.mock("../src/features/social/notificationTarget", () => ({
@@ -40,11 +42,13 @@ jest.mock("../src/features/social/notificationRuntime", () => ({
 }));
 beforeEach(() => {
   mockOwner = "alex";
+  mockOptedIn = false;
+  mockRefresh.mockReset();
   mockPush.mockReset();
   mockTarget.mockReset().mockResolvedValue({ postId, type: "workout", comments: true });
 });
 async function mountAndOpen(identifier: string, recipientId = "alex") {
-  await render(<NotificationObserver />);
+  await render(<NotificationObserver language="nb" />);
   await act(async () => {
     mockResponse({
       actionIdentifier: "default",
@@ -81,4 +85,16 @@ test("a failed target lookup still opens a usable inbox", async () => {
   mockTarget.mockRejectedValue(new Error("offline"));
   await mountAndOpen("offline-target");
   await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/notifications"));
+});
+
+test("switching language refreshes delivery only on opted-in devices", async () => {
+  mockOptedIn = true;
+  const view = await render(<NotificationObserver language="nb" />);
+  await waitFor(() => expect(mockRefresh).toHaveBeenCalledTimes(1));
+  await view.rerender(<NotificationObserver language="en" />);
+  await waitFor(() => expect(mockRefresh).toHaveBeenCalledTimes(2));
+  expect(mockRefresh).toHaveBeenLastCalledWith("alex", false);
+  mockOptedIn = false;
+  await view.rerender(<NotificationObserver language="nb" />);
+  expect(mockRefresh).toHaveBeenCalledTimes(2);
 });

@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../../i18n/language";
 import { personName } from "../../features/social/display";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
@@ -59,7 +60,7 @@ function ProfileContent({ user }: { user?: User }) {
   const name = personName(
     profile?.display_name ||
     user?.user_metadata?.display_name ||
-    (user ? "Din profil" : localName || "Din profil"));
+    (user ? uiText("Din profil") : localName || uiText("Din profil")));
   const details = user ? profileDetails(user, name) : null;
   const real = useMemo(
     () => ownTraining(workouts, user?.id),
@@ -102,23 +103,21 @@ function ProfileContent({ user }: { user?: User }) {
       >
         <IconButton
           name="plus"
-          label="Start en ny økt"
+          label={uiText("Start en ny økt")}
           variant="elevated"
           onPress={() => router.push("/track")}
         />
-        <Txt size={18} weight="700">
-          Du
-        </Txt>
+        <Txt size={18} weight="700">{uiText("Du")}</Txt>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <IconButton
             name="search"
-            label="Finn venner"
+            label={uiText("Finn venner")}
             variant="elevated"
             onPress={() => router.push("/people")}
           />
           <IconButton
             name="settings"
-            label="Innstillinger"
+            label={uiText("Innstillinger")}
             variant="elevated"
             onPress={() => router.push("/settings")}
           />
@@ -160,8 +159,8 @@ function ProfileContent({ user }: { user?: User }) {
                     {user
                       ? `${real.length} ${real.length === 1 ? "aktivitet" : "aktiviteter"}`
                       : confirmation
-                        ? "Fullfør innlogging · ikke innlogget"
-                        : "Gjest · ikke innlogget"}
+                        ? uiText("Fullfør innlogging · ikke innlogget")
+                        : uiText("Gjest · ikke innlogget")}
                   </Txt>
                   {!!details?.city && (
                     <Txt muted size={12}>
@@ -177,7 +176,7 @@ function ProfileContent({ user }: { user?: User }) {
                   >
                     <Pressable
                       accessibilityRole="button"
-                      accessibilityLabel="Se følgere"
+                      accessibilityLabel={uiText("Se følgere")}
                       onPress={() =>
                         router.push({
                           pathname: "/connections",
@@ -189,16 +188,14 @@ function ProfileContent({ user }: { user?: User }) {
                       <Txt size={14}>
                         <Txt weight="700" size={14}>
                           {counts?.followers ?? "—"}
-                        </Txt>{" "}
-                        følgere
-                      </Txt>
+                        </Txt>{" "}{uiText("følgere")}</Txt>
                     </Pressable>
                     <Txt muted size={14} style={{ alignSelf: "center" }}>
                       ·
                     </Txt>
                     <Pressable
                       accessibilityRole="button"
-                      accessibilityLabel="Se hvem du følger"
+                      accessibilityLabel={uiText("Se hvem du følger")}
                       onPress={() =>
                         router.push({
                           pathname: "/connections",
@@ -210,9 +207,7 @@ function ProfileContent({ user }: { user?: User }) {
                       <Txt size={14}>
                         <Txt weight="700" size={14}>
                           {counts?.following ?? "—"}
-                        </Txt>{" "}
-                        følger
-                      </Txt>
+                        </Txt>{" "}{uiText("følger")}</Txt>
                     </Pressable>
                   </View>
                   {!!details?.bio && (
@@ -226,9 +221,7 @@ function ProfileContent({ user }: { user?: User }) {
                       onPress={() => router.push("/edit-profile")}
                       style={outlineButton}
                     >
-                      <Txt size={14} weight="700">
-                        Rediger profil
-                      </Txt>
+                      <Txt size={14} weight="700">{uiText("Rediger profil")}</Txt>
                     </Pressable>
                     <Pressable
                       accessibilityRole="button"
@@ -254,22 +247,16 @@ function ProfileContent({ user }: { user?: User }) {
                           )
                             return;
                           if (!currentProfile) {
-                            setShareMessage(
-                              "Kunne ikke hente profilen. Sjekk nettforbindelsen og trykk Del profil igjen.",
-                            );
+                            setShareMessage(uiText("Kunne ikke hente profilen. Sjekk nettforbindelsen og trykk Del profil igjen."));
                             return;
                           }
                           const result = await shareProfile(currentProfile);
                           if (request.signal.aborted) return;
                           if (result === "copied")
-                            setShareMessage(
-                              "Profilteksten er kopiert. Lim den inn der du vil dele den.",
-                            );
+                            setShareMessage(uiText("Profilteksten er kopiert. Lim den inn der du vil dele den."));
                         } catch {
                           if (request.signal.aborted) return;
-                          setShareMessage(
-                            "Kunne ikke åpne deling. Trykk Del profil for å prøve igjen.",
-                          );
+                          setShareMessage(uiText("Kunne ikke åpne deling. Trykk Del profil for å prøve igjen."));
                         } finally {
                           shareRequest.current = null;
                           if (!request.signal.aborted) setSharing(false);
@@ -280,9 +267,9 @@ function ProfileContent({ user }: { user?: User }) {
                       <Txt size={14} weight="700">
                         {sharing
                           ? profile
-                            ? "Åpner …"
-                            : "Henter profil …"
-                          : "Del profil"}
+                            ? uiText("Åpner …")
+                            : uiText("Henter profil …")
+                          : uiText("Del profil")}
                       </Txt>
                     </Pressable>
                   </View>
@@ -290,7 +277,7 @@ function ProfileContent({ user }: { user?: User }) {
                     !sharing && (
                       <Txt muted size={13} accessibilityRole="alert">
                         {shareMessage ||
-                          "Kunne ikke hente profilen. Trykk Del profil for å prøve igjen."}
+                          uiText("Kunne ikke hente profilen. Trykk Del profil for å prøve igjen.")}
                       </Txt>
                     )}
                 </>
@@ -298,12 +285,9 @@ function ProfileContent({ user }: { user?: User }) {
               {!!storageError && <Txt>{storageError}</Txt>}
               {!user && (
                 <>
-                  <Txt muted>
-                    Logg inn for å se din fremgang, finne venner og ta vare på
-                    turene dine.
-                  </Txt>
+                  <Txt muted>{uiText("Logg inn for å se din fremgang, finne venner og ta vare på turene dine.")}</Txt>
                   <Button
-                    title="Logg inn"
+                    title={uiText("Logg inn")}
                     onPress={() => router.push("/account")}
                   />
                 </>
@@ -332,7 +316,7 @@ function ProfileContent({ user }: { user?: User }) {
                       <Pressable
                         key={value}
                         accessibilityRole="tab"
-                        accessibilityLabel={label}
+                        accessibilityLabel={uiText(label)}
                         accessibilityState={{ selected: tab === value }}
                         onPress={() => selectTab(value)}
                         style={{
@@ -355,7 +339,7 @@ function ProfileContent({ user }: { user?: User }) {
                           weight={tab === value ? "700" : "500"}
                           style={{ color: tab === value ? c.text : c.muted }}
                         >
-                          {label}
+                          {uiText(label)}
                         </Txt>
                       </Pressable>
                     ))}
@@ -372,14 +356,14 @@ function ProfileContent({ user }: { user?: User }) {
                 )}
                 {tab === "more" && (
                   <>
-                    <SettingsGroup title="Din trening">
+                    <SettingsGroup title={uiText("Din trening")}>
                       <SettingsRow
-                        title="Treningsmål"
+                        title={uiText("Treningsmål")}
                         icon="chart"
                         onPress={() => router.push("/training-goal")}
                       />
                       <SettingsRow
-                        title="Soner"
+                        title={uiText("Soner")}
                         icon="map"
                         onPress={() => router.push("/turf")}
                       />
@@ -389,19 +373,19 @@ function ProfileContent({ user }: { user?: User }) {
                         onPress={() => router.push("/apple-watch")}
                       />
                     </SettingsGroup>
-                    <SettingsGroup title="Konto">
+                    <SettingsGroup title={uiText("Konto")}>
                       <SettingsRow
-                        title="Rediger profil"
+                        title={uiText("Rediger profil")}
                         icon="user"
                         onPress={() => router.push("/edit-profile")}
                       />
                       <SettingsRow
-                        title="Data og sikkerhetskopi"
+                        title={uiText("Data og sikkerhetskopi")}
                         icon="cloud"
                         onPress={() => router.push("/settings/data")}
                       />
                       <SettingsRow
-                        title="Innstillinger"
+                        title={uiText("Innstillinger")}
                         icon="settings"
                         onPress={() => router.push("/settings")}
                       />
@@ -424,7 +408,7 @@ function ProfileContent({ user }: { user?: User }) {
             {(!index ||
               item.date.slice(0, 7) !== list[index - 1].date.slice(0, 7)) && (
               <Txt muted size={13} weight="600">
-                {new Date(item.date).toLocaleDateString("nb-NO", {
+                {new Date(item.date).toLocaleDateString(displayLocale(), {
                   month: "long",
                   year: "numeric",
                 })}
@@ -440,14 +424,14 @@ function ProfileContent({ user }: { user?: User }) {
                 {filter.search ||
                 filter.sport !== "Alle" ||
                 filter.period !== "all"
-                  ? "Ingen økter passer filtrene. Prøv et annet søk."
+                  ? uiText("Ingen økter passer filtrene. Prøv et annet søk.")
                   : ["recorded", "gps", "timer"].includes(filter.source)
-                    ? "Din første tur starter her."
-                    : "Ingen økter i denne kategorien."}
+                    ? uiText("Din første tur starter her.")
+                    : uiText("Ingen økter i denne kategorien.")}
               </Txt>
               {["recorded", "gps", "timer"].includes(filter.source) && (
                 <Button
-                  title="Start en økt"
+                  title={uiText("Start en økt")}
                   onPress={() => router.push("/track")}
                 />
               )}

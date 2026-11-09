@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { personName } from "../features/social/display";
 import { TextInput, TextInputProps, Pressable, View, Image } from "react-native";
 import { useAvatar } from "../features/social/avatar";
@@ -61,7 +62,7 @@ export function SocialHeader({
         {back && (
           <IconButton
             name="back"
-            label="Tilbake"
+            label={uiText("Tilbake")}
             onPress={() =>
               router.canGoBack() ? router.back() : router.replace("/community")
             }
@@ -73,7 +74,7 @@ export function SocialHeader({
       </View>
       <IconButton
         name="search"
-        label="Søk etter personer"
+        label={uiText("Søk etter personer")}
         onPress={() => router.push("/people")}
       />
     </View>
@@ -126,7 +127,7 @@ export function Avatar({
         justifyContent: "center",
       }}
     >
-      {uri && uri!==failedUri && !club ? <Image source={{uri}} onError={()=>setFailedUri(uri)} accessibilityLabel={`Profilbilde: ${personName(name)}`} style={{width:size,height:size,borderRadius:size/2}}/> : club ? (
+      {uri && uri!==failedUri && !club ? <Image source={{uri}} onError={()=>setFailedUri(uri)} accessibilityLabel={uiText("Profilbilde: {0}", personName(name))} style={{width:size,height:size,borderRadius:size/2}}/> : club ? (
         <Icon name="club" color={c.accent} />
       ) : (
         <Txt size={size * 0.43} weight="700">

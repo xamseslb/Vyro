@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -78,12 +79,12 @@ export function RouteDiscover({
       if (!controller.signal.aborted) {
         setPlaces(result);
         if (!result.length)
-          setError("Fant ikke stedet. Prøv med sted og kommune.");
+          setError(uiText("Fant ikke stedet. Prøv med sted og kommune."));
       }
     } catch (e) {
       if (!controller.signal.aborted)
         setError(
-          e instanceof Error ? e.message : "Stedssøket feilet. Prøv igjen.",
+          e instanceof Error ? e.message : uiText("Stedssøket feilet. Prøv igjen."),
         );
     } finally {
       if (request.current === controller) {
@@ -101,7 +102,7 @@ export function RouteDiscover({
     try {
       if (!(await loc.request()))
         throw new Error(
-          "Tillat posisjon for «Nær meg», eller søk etter et sted.",
+          uiText("Tillat posisjon for «Nær meg», eller søk etter et sted."),
         );
       if (controller.signal.aborted) return;
       const fresh = () => {
@@ -124,12 +125,12 @@ export function RouteDiscover({
               controller.signal.removeEventListener("abort", cancel);
               if (error) reject(error);
             };
-            const cancel = () => end(new Error("Avbrutt"));
+            const cancel = () => end(new Error(uiText("Avbrutt")));
             const timer = setTimeout(
               () =>
                 end(
                   new Error(
-                    "Fant ikke posisjonen. Søk etter et sted i stedet.",
+                    uiText("Fant ikke posisjonen. Søk etter et sted i stedet."),
                   ),
                 ),
               12000,
@@ -162,7 +163,7 @@ export function RouteDiscover({
     } catch (e) {
       if (!controller.signal.aborted)
         setError(
-          e instanceof Error ? e.message : "Kunne ikke finne posisjonen.",
+          e instanceof Error ? e.message : uiText("Kunne ikke finne posisjonen."),
         );
     } finally {
       if (request.current === controller) {
@@ -203,36 +204,29 @@ export function RouteDiscover({
   const route = routes[selected];
   return (
     <Page
-      title="Ruteforslag"
+      title={uiText("Ruteforslag")}
       fallback="/(tabs)/map"
       right={
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Lagrede løyper"
+          accessibilityLabel={uiText("Lagrede løyper")}
           onPress={() =>
             router.push({ pathname: "/routes", params: { tab: "saved" } })
           }
           style={{ padding: 12 }}
         >
-          <Txt size={14} weight="700">
-            Lagret
-          </Txt>
+          <Txt size={14} weight="700">{uiText("Lagret")}</Txt>
         </Pressable>
       }
     >
       <View style={{ padding: 20, gap: 16 }}>
-        <Txt size={26} weight="700">
-          Finn din neste løype
-        </Txt>
-        <Txt muted size={14}>
-          Løyper delt av folk som har gått eller løpt dem. Finn en løype i ditt
-          område, eller bidra med din egen.
-        </Txt>
+        <Txt size={26} weight="700">{uiText("Finn din neste løype")}</Txt>
+        <Txt muted size={14}>{uiText("Løyper delt av folk som har gått eller løpt dem. Finn en løype i ditt område, eller bidra med din egen.")}</Txt>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <TextInput
-            accessibilityLabel="Søk etter sted"
+            accessibilityLabel={uiText("Søk etter sted")}
             value={query}
-            placeholder="Søk etter sted"
+            placeholder={uiText("Søk etter sted")}
             placeholderTextColor={c.muted}
             onChangeText={(text) => {
               reset();
@@ -256,13 +250,13 @@ export function RouteDiscover({
           />
           <IconButton
             name="search"
-            label="Søk etter sted"
+            label={uiText("Søk etter sted")}
             onPress={findPlace}
             disabled={busy === "places" || !query.trim()}
           />
         </View>
         <Button
-          title={busy === "location" ? "Finner posisjon …" : "Nær meg"}
+          title={busy === "location" ? uiText("Finner posisjon …") : uiText("Nær meg")}
           icon="locate"
           secondary
           disabled={!!busy}
@@ -273,7 +267,7 @@ export function RouteDiscover({
             key={p.id}
             title={p.name}
             icon="map"
-            label={`Velg ${p.name}`}
+            label={uiText("Velg {0}", p.name)}
             onPress={() => {
               reset();
               setPlace(p);
@@ -284,8 +278,7 @@ export function RouteDiscover({
           />
         ))}
         {!!place && (
-          <Txt muted size={13}>
-            Område: {place.name}
+          <Txt muted size={13}>{uiText("Område:") + " "}{place.name}
           </Txt>
         )}
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
@@ -301,12 +294,12 @@ export function RouteDiscover({
             />
           ))}
         </View>
-        <Txt weight="700">Lengde</Txt>
+        <Txt weight="700">{uiText("Lengde")}</Txt>
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
           {[0, ...routeLengths].map((value) => (
             <Chip
               key={value}
-              title={value ? `${value / 1000} km` : "Alle lengder"}
+              title={value ? `${value / 1000} km` : uiText("Alle lengder")}
               selected={value === length}
               onPress={() => {
                 reset();
@@ -316,35 +309,32 @@ export function RouteDiscover({
           ))}
         </View>
         <Button
-          title={busy === "routes" ? "Finner løyper …" : "Finn løyper"}
+          title={busy === "routes" ? uiText("Finner løyper …") : uiText("Finn løyper")}
           disabled={!place || !!busy}
           onPress={findRoutes}
         />
-        <Txt muted size={12}>
-          Viser inntil 20 delte løyper innen 15 km fra området du velger.
-        </Txt>
+        <Txt muted size={12}>{uiText("Viser inntil 20 delte løyper innen 15 km fra området du velger.")}</Txt>
         <Button
-          title="Bidra med en løype"
+          title={uiText("Bidra med en løype")}
           secondary
           onPress={() =>
             router.push({ pathname: "/routes", params: { tab: "contribute" } })
           }
         />
         {!!busy && (
-          <ActivityIndicator accessibilityLabel="Søker" color={c.accent} />
+          <ActivityIndicator accessibilityLabel={uiText("Søker")} color={c.accent} />
         )}
         {!!error && <Txt accessibilityRole="alert">{error}</Txt>}
         {searched && !routes.length && (
           <Txt>
             {length
-              ? "Ingen delte løyper passer søket her ennå. Prøv «Alle lengder», eller bidra med din egen tur."
-              : "Ingen delte løyper i dette området ennå. Bli den første til å dele en tur herfra."}
+              ? uiText("Ingen delte løyper passer søket her ennå. Prøv «Alle lengder», eller bidra med din egen tur.")
+              : uiText("Ingen delte løyper i dette området ennå. Bli den første til å dele en tur herfra.")}
           </Txt>
         )}
         {!!route && (
           <>
-            <Txt size={23} weight="700">
-              Løyper ved {place?.name}
+            <Txt size={23} weight="700">{uiText("Løyper ved") + " "}{place?.name}
             </Txt>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
               {routes.map((r, i) => (
@@ -359,13 +349,13 @@ export function RouteDiscover({
             <WorkoutMap points={route.route} height={240} />
             <Txt size={20} weight="700">
               {km(route.distance_m / 1000)} km
-              {route.ascent_m !== null ? ` · ${route.ascent_m} m stigning` : ""}
+              {route.ascent_m !== null ? uiText(" · {0} m stigning", route.ascent_m) : ""}
             </Txt>
             <Txt muted size={14}>
               {route.name} · {route.place}
             </Txt>
             <Button
-              title="Se og lagre løypa"
+              title={uiText("Se og lagre løypa")}
               onPress={() =>
                 router.push({
                   pathname: "/routes",

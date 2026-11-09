@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
@@ -36,11 +37,7 @@ export function SocialSignIn({
   const providers = visibleSocialProviders(available);
   if (!providers.google && !providers.apple)
     return googleNeedsOwnBuild ? (
-      <Txt muted size={13}>
-        Google-innlogging og registrering fungerer i nettleseren og i VYROs egen
-        installasjon. Expo Go støtter ikke denne innloggingen. Her kan du bruke
-        e-post.
-      </Txt>
+      <Txt muted size={13}>{uiText("Google-innlogging og registrering fungerer i nettleseren og i VYROs egen installasjon. Expo Go støtter ikke denne innloggingen. Her kan du bruke e-post.")}</Txt>
     ) : null;
   return (
     <View style={{ gap: 12 }}>
@@ -53,7 +50,7 @@ export function SocialSignIn({
       {providers.google && (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Fortsett med Google"
+          accessibilityLabel={uiText("Fortsett med Google")}
           accessibilityState={{ disabled }}
           disabled={disabled}
           onPress={() => onPress("google")}
@@ -89,17 +86,11 @@ export function SocialSignIn({
               d="M24 12.12c3 0 5.67 1.03 7.8 3.05l5.85-5.85C34.1 6.01 29.51 4 24 4A20 20 0 0 0 5.73 15.24l6.82 5.3C14.17 15.71 18.68 12.12 24 12.12Z"
             />
           </Svg>
-          <Text style={{ color: "#1F1F1F", fontSize: 17, fontWeight: "600" }}>
-            Fortsett med Google
-          </Text>
+          <Text style={{ color: "#1F1F1F", fontSize: 17, fontWeight: "600" }}>{uiText("Fortsett med Google")}</Text>
         </Pressable>
       )}
-      <Txt muted size={13} style={{ textAlign: "center" }}>
-        Ny i VYRO? Kontoen opprettes når du fortsetter.
-      </Txt>
-      <Txt muted size={13} style={{ textAlign: "center", marginVertical: 4 }}>
-        eller bruk e-post
-      </Txt>
+      <Txt muted size={13} style={{ textAlign: "center" }}>{uiText("Ny i VYRO? Kontoen opprettes når du fortsetter.")}</Txt>
+      <Txt muted size={13} style={{ textAlign: "center", marginVertical: 4 }}>{uiText("eller bruk e-post")}</Txt>
     </View>
   );
 }

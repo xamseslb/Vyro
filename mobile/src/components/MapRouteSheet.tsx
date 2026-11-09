@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import {
   PropsWithChildren,
   useCallback,
@@ -129,9 +130,9 @@ export function MapRouteSheet({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={
-            collapsed ? "Vis rutedetaljer" : "Minimer rutepanelet"
+            collapsed ? uiText("Vis rutedetaljer") : uiText("Minimer rutepanelet")
           }
-          accessibilityHint="Dra håndtaket opp eller ned, eller trykk for å åpne og lukke."
+          accessibilityHint={uiText("Dra håndtaket opp eller ned, eller trykk for å åpne og lukke.")}
           accessibilityState={{ expanded: !collapsed }}
           onPress={() => snap(!collapsed)}
           onLayout={(event) => setHandleHeight(event.nativeEvent.layout.height)}
@@ -144,7 +145,7 @@ export function MapRouteSheet({
               weight="600"
               style={{ color: palettes.light.muted, flexShrink: 1 }}
             >
-              {collapsed ? "Vis ruten · dra opp" : "Dra ned for å se kartet"}
+              {collapsed ? uiText("Vis ruten · dra opp") : uiText("Dra ned for å se kartet")}
             </Txt>
             <Icon
               name={collapsed ? "chevronUp" : "chevronDown"}

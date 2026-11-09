@@ -35,7 +35,7 @@ async function main() {
     );
   const jobs = async () => {
     await db.exec("reset role;set role service_role");
-    return q("select * from vyro_claim_push()");
+    return q("select * from vyro_claim_push_localized()");
   };
   const notices = async (kind) =>
     await q("select * from social_notifications where kind=$1", [kind]);
@@ -80,9 +80,11 @@ async function main() {
       await db.exec(fs.readFileSync(path.join(dir, f), "utf8"));
     await as(A);
     await q(
-      "select vyro_register_push($1,'ExpoPushToken[local_post_notification_test]')",
+      "select vyro_register_push($1,'ExpoPushToken[local_post_notification_test]','en')",
       [device],
     );
+    await denied("select * from vyro_claim_push_localized()");
+    await denied("select vyro_register_push($1,'ExpoPushToken[local_post_notification_test]','unknown')", [device]);
     await pref(A, "posts", true, false);
     eq((await q("select * from notification_preferences")).length, 1);
     await as(B);
@@ -116,6 +118,7 @@ async function main() {
     eq(work.length, 1);
     eq(work[0].kind, "like");
     eq(work[0].notice_id, n.id);
+    eq(work[0].language, "en");
     eq((await jobs()).length, 0); // leased once
     await clearJobs();
     await as(B);
@@ -132,9 +135,13 @@ async function main() {
     await as(A);
     n = (await notices("comment"))[0];
     eq(n.comment_id, cid);
+    // Language is resolved at delivery, not when the comment was written.
+    // An older client registers without a language and gets Norwegian.
+    await q("select vyro_register_push($1,'ExpoPushToken[local_post_notification_test]')", [device]);
     work = await jobs();
     eq(work.length, 1);
     eq(work[0].kind, "comment");
+    eq(work[0].language, "nb");
     await clearJobs();
     await as(B);
     await comment(p);

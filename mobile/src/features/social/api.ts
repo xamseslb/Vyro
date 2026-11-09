@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { supabase } from "../../lib/supabase";
 import { Workout, Sport } from "../activities/model";
 import { shareable } from "../../stores/useSocialStore";
@@ -32,19 +33,19 @@ export type Comment = {
   profiles: Profile;
 };
 export function client() {
-  if (!supabase) throw new Error("Supabase er ikke konfigurert.");
+  if (!supabase) throw new Error(uiText("Supabase er ikke konfigurert."));
   return supabase;
 }
 export function socialError(error: unknown) {
   const code = (error as { code?: string })?.code;
   if (code === "42P01" || code === "PGRST205" || code === "PGRST202")
-    return "Databasen er ikke klargjort ennå. Prøv igjen etter at databaseoppsettet er fullført.";
-  if (code === "23505") return "Dette er allerede lagret.";
+    return uiText("Databasen er ikke klargjort ennå. Prøv igjen etter at databaseoppsettet er fullført.");
+  if (code === "23505") return uiText("Dette er allerede lagret.");
   if (code === "P0001")
-    return "For mange forsøk på kort tid. Vent litt og prøv igjen.";
+    return uiText("For mange forsøk på kort tid. Vent litt og prøv igjen.");
   if (code === "42501" || code === "PGRST301")
-    return "Du har ikke tilgang. Logg inn igjen og prøv på nytt.";
-  return "Kunne ikke hente eller lagre data. Kontroller nettforbindelsen og prøv igjen.";
+    return uiText("Du har ikke tilgang. Logg inn igjen og prøv på nytt.");
+  return uiText("Kunne ikke hente eller lagre data. Kontroller nettforbindelsen og prøv igjen.");
 }
 export async function publish(
   workout: Workout,
@@ -57,7 +58,7 @@ export async function publish(
   const route = publicationRoute(workout, wholeFootballRoute);
   if (workout.source !== "timer" && !hasVisibleSegment(route))
     throw new Error(
-      "Ruten er for kort til å deles med skjermet start og slutt.",
+      uiText("Ruten er for kort til å deles med skjermet start og slutt."),
     );
   const football = workout.sport === "Fotball";
   const { data, error } = await client().rpc(

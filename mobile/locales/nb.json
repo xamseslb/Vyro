@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSLocationWhenInUseUsageDescription": "VYRO bruker posisjonen din for å vise kartet og måle distansen mens du trener.",
+    "NSLocationAlwaysAndWhenInUseUsageDescription": "VYRO bruker posisjonen under en økt du starter, også med låst skjerm og i andre apper når opptak med låst skjerm er slått på. GPS stoppes når du pauser eller avslutter økten.",
+    "NSPhotoLibraryUsageDescription": "Velg et bilde du vil dele med andre i VYRO."
+  }
+}

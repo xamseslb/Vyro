@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import type { Profile } from "./api";
 import { personName, visibleUsername } from "./display";
 
@@ -5,5 +6,5 @@ import { personName, visibleUsername } from "./display";
 export function profileShareText(profile: Profile) {
   const name = personName(profile.display_name);
   const search = visibleUsername(profile.username) ?? name;
-  return `Finn meg på VYRO: ${name}. Åpne Finn venner i VYRO og søk etter «${search}».`;
+  return uiText("Finn meg på VYRO: {0}. Åpne Finn venner i VYRO og søk etter «{1}».", name, search);
 }

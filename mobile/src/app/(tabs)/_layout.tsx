@@ -1,14 +1,15 @@
+import { message as uiText } from "../../i18n/language";
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon, IconName, useTheme } from "../../components/ui";
 import { useAppStore } from "../../stores/useAppStore";
 import { SelectionMotion } from "../../components/motion";
 const tabs: { name: string; title: string; icon: IconName }[] = [
-  { name: "index", title: "Hjem", icon: "home" },
-  { name: "map", title: "Kart", icon: "map" },
-  { name: "track", title: "Tren", icon: "record" },
-  { name: "community", title: "Klubber", icon: "club" },
-  { name: "profile", title: "Du", icon: "user" },
+  { name: "index", get title() { return uiText("Hjem"); }, icon: "home" },
+  { name: "map", get title() { return uiText("Kart"); }, icon: "map" },
+  { name: "track", get title() { return uiText("Tren"); }, icon: "record" },
+  { name: "community", get title() { return uiText("Klubber"); }, icon: "club" },
+  { name: "profile", get title() { return uiText("Du"); }, icon: "user" },
 ];
 export default function TabLayout() {
   const c = useTheme();

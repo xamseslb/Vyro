@@ -106,3 +106,19 @@ test("missing receipt is retried", async () => {
   await dispatchJobs([j], finish, jest.fn().mockResolvedValue(result({})));
   expect(finish).toHaveBeenCalledWith(j, "retry", undefined, "receipt_pending");
 });
+
+test.each([
+  ["follow", "You have a new follower."],
+  ["request", "You have a new follow request."],
+  ["accepted", "Your follow request was accepted."],
+  ["comment", "Someone commented on your post."],
+  ["like", "Someone liked your post."],
+  ["post", "Someone you follow shared a new post."],
+] as const)("renders %s per receiving device in a single batch", async (kind, expected) => {
+  const send = jest.fn().mockResolvedValue(result([]));
+  await dispatchJobs([{ ...job, kind, language: "en" }, { ...job, kind, language: "nb", token: "second" }], jest.fn(), send);
+  const [en, nb] = JSON.parse(send.mock.calls[0][1].body);
+  expect(en.body).toBe(expected);
+  expect(nb.body).not.toBe(expected);
+  expect(en.data).toEqual(nb.data);
+});

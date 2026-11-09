@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { client } from "./api";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { applyProfilePatch } from "../../stores/useProfileStore";
@@ -6,7 +7,7 @@ import type { PreparedPhoto } from "../places/photos";
 
 export function requireOwner(owner: string) {
   if (useAuthStore.getState().session?.user.id !== owner)
-    throw new Error("Kontoen er endret. Åpne siden på nytt.");
+    throw new Error(uiText("Kontoen er endret. Åpne siden på nytt."));
 }
 export async function changePrivacy(owner: string, value: boolean) {
   requireOwner(owner);
@@ -30,7 +31,7 @@ export async function changeAvatar(
   if (photo && path) {
     const bytes = stripPhotoMetadata(photo.bytes);
     if (bytes.byteLength > 2 * 1024 * 1024)
-      throw new Error("Bildet er for stort. Velg et mindre bilde.");
+      throw new Error(uiText("Bildet er for stort. Velg et mindre bilde."));
     const upload = await client()
       .storage.from("profile-photos")
       .upload(path, bytes.buffer, {
@@ -69,6 +70,6 @@ export async function changeFollow(
   if (result.error) throw result.error;
   requireOwner(owner);
   if (!["none", "following", "requested"].includes(result.data))
-    throw new Error("Uventet svar. Prøv igjen.");
+    throw new Error(uiText("Uventet svar. Prøv igjen."));
   return result.data as FollowState;
 }

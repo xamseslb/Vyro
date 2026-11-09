@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import type { User } from "@supabase/supabase-js";
@@ -34,7 +35,7 @@ export function AccountLastName({ user }: { user: User }) {
         return;
       acceptAuthSession({ ...session, user: data.user });
       setDraft(null);
-      setMessage("Etternavnet er lagret.");
+      setMessage(uiText("Etternavnet er lagret."));
     } catch (error) {
       if (useAuthStore.getState().session?.user.id === user.id)
         setMessage(authErrorMessage(error));
@@ -45,10 +46,10 @@ export function AccountLastName({ user }: { user: User }) {
   }
   return (
     <View style={{ gap: 12 }}>
-      <Txt weight="600">Etternavn (valgfritt)</Txt>
+      <Txt weight="600">{uiText("Etternavn (valgfritt)")}</Txt>
       <TextInput
-        accessibilityLabel="Etternavn (valgfritt)"
-        placeholder="Etternavn"
+        accessibilityLabel={uiText("Etternavn (valgfritt)")}
+        placeholder={uiText("Etternavn")}
         placeholderTextColor={c.muted}
         value={value}
         onChangeText={(text) => {
@@ -68,13 +69,10 @@ export function AccountLastName({ user }: { user: User }) {
           fontSize: 16,
         }}
       />
-      <Txt muted size={13}>
-        Privat kontoinformasjon. Bare visningsnavnet du velger i Innstillinger
-        vises til andre.
-      </Txt>
+      <Txt muted size={13}>{uiText("Privat kontoinformasjon. Bare visningsnavnet du velger i Innstillinger vises til andre.")}</Txt>
       <Button
         secondary
-        title={busy ? "Lagrer etternavn …" : "Lagre etternavn"}
+        title={busy ? uiText("Lagrer etternavn …") : uiText("Lagre etternavn")}
         disabled={busy || value.trim() === current || !supabase}
         onPress={() => void save()}
       />

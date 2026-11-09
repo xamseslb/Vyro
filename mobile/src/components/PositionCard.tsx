@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { Linking, View } from "react-native";
 import { useLiveLocation } from "../features/tracking/useLiveLocation";
 import { useAppStore } from "../stores/useAppStore";
@@ -14,20 +15,18 @@ export function PositionCard() {
       <Card>
         <View style={styles.row}>
           <Icon name="run" />
-          <Txt weight="700" style={{ flex: 1 }}>
-            Se deg selv på kartet
-          </Txt>
+          <Txt weight="700" style={{ flex: 1 }}>{uiText("Se deg selv på kartet")}</Txt>
         </View>
         <Txt muted size={14}>
           {loc.permission === "denied"
-            ? "Posisjon er slått av for VYRO. Slå den på i innstillingene for å se kartet."
-            : "Posisjonen brukes bare mens appen er åpen og lagres ikke."}
+            ? uiText("Posisjon er slått av for VYRO. Slå den på i innstillingene for å se kartet.")
+            : uiText("Posisjonen brukes bare mens appen er åpen og lagres ikke.")}
         </Txt>
         <Button
           title={
             loc.permission === "denied" && !loc.canAskAgain
-              ? "Åpne innstillinger"
-              : "Vis min posisjon"
+              ? uiText("Åpne innstillinger")
+              : uiText("Vis min posisjon")
           }
           secondary
           onPress={() => {
@@ -47,9 +46,9 @@ export function PositionCard() {
         {loc.error ??
           (loc.position
             ? route.length
-              ? "Live posisjon · økten din tegnes på kartet"
-              : "Live posisjon · lagres ikke"
-            : "Leter etter posisjonen din …")}
+              ? uiText("Live posisjon · økten din tegnes på kartet")
+              : uiText("Live posisjon · lagres ikke")
+            : uiText("Leter etter posisjonen din …"))}
       </Txt>
     </View>
   );

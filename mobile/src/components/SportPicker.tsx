@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { message as uiText } from "../i18n/language";
+import { useState } from "react";
 import { Modal, Pressable, SectionList, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Icon, Txt, useTheme } from "./ui";
@@ -21,10 +22,7 @@ export default function SportPicker({
 }) {
   const c = useTheme();
   const [query, setQuery] = useState("");
-  const sections = useMemo(
-    () => sportSections(query, favorites),
-    [query, favorites],
-  );
+  const sections = sportSections(query, favorites);
   return (
     <Modal
       animationType="slide"
@@ -45,12 +43,12 @@ export default function SportPicker({
           }}
         >
           <Txt size={22} weight="700">
-            {multiple ? "Dine idretter" : "Velg en idrett"}
+            {multiple ? uiText("Dine idretter") : uiText("Velg en idrett")}
           </Txt>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={
-              multiple ? "Ferdig med idrettsvalg" : "Lukk idrettsvalg"
+              multiple ? uiText("Ferdig med idrettsvalg") : uiText("Lukk idrettsvalg")
             }
             onPress={onClose}
             style={{
@@ -61,9 +59,7 @@ export default function SportPicker({
             }}
           >
             {multiple ? (
-              <Txt weight="700" style={{ color: c.accent }}>
-                Ferdig
-              </Txt>
+              <Txt weight="700" style={{ color: c.accent }}>{uiText("Ferdig")}</Txt>
             ) : (
               <Icon name="close" color={c.text} />
             )}
@@ -83,8 +79,8 @@ export default function SportPicker({
         >
           <Icon name="search" size={20} color={c.muted} />
           <TextInput
-            accessibilityLabel="Søk etter idrett"
-            placeholder="Søk etter idrett"
+            accessibilityLabel={uiText("Søk etter idrett")}
+            placeholder={uiText("Søk etter idrett")}
             placeholderTextColor={c.muted}
             value={query}
             onChangeText={setQuery}
@@ -102,9 +98,7 @@ export default function SportPicker({
           extraData={selected}
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
           ListEmptyComponent={
-            <Txt muted style={{ paddingVertical: 24 }}>
-              Ingen idretter passer søket.
-            </Txt>
+            <Txt muted style={{ paddingVertical: 24 }}>{uiText("Ingen idretter passer søket.")}</Txt>
           }
           renderSectionHeader={({ section }) => (
             <Txt
@@ -112,7 +106,7 @@ export default function SportPicker({
               size={14}
               style={{ paddingTop: 20, paddingBottom: 8 }}
             >
-              {section.title}
+              {uiText(section.title)}
             </Txt>
           )}
           renderItem={({ item }) => {
@@ -120,7 +114,7 @@ export default function SportPicker({
             return (
               <Pressable
                 accessibilityRole={multiple ? "checkbox" : "radio"}
-                accessibilityLabel={item}
+                accessibilityLabel={uiText(item)}
                 accessibilityState={{ checked: chosen }}
                 onPress={() => {
                   onSelect(item);
@@ -141,9 +135,9 @@ export default function SportPicker({
               >
                 <SportIcon sport={item} size={48} />
                 <View style={{ flex: 1, gap: 2 }}>
-                  <Txt weight={chosen ? "700" : "500"}>{item}</Txt>
+                  <Txt weight={chosen ? "700" : "500"}>{uiText(item)}</Txt>
                   <Txt muted size={12}>
-                    {sportInfo(item).gps ? "Tid og GPS" : "Tid · uten GPS"}
+                    {sportInfo(item).gps ? uiText("Tid og GPS") : uiText("Tid · uten GPS")}
                   </Txt>
                 </View>
                 {chosen && <Icon name="check" color={c.accent} size={22} />}

@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import type { PropsWithChildren } from "react";
 import { Pressable, type StyleProp, type ViewStyle } from "react-native";
 import { router } from "expo-router";
@@ -24,7 +25,7 @@ export function ProfileLink({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Vis profilen til ${personName(name)}`}
+      accessibilityLabel={uiText("Vis profilen til {0}", personName(name))}
       onPress={() => {
         beforeOpen?.();
         openProfile(id);

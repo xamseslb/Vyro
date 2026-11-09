@@ -1,3 +1,4 @@
+import { message as uiText, displayLocale } from "../i18n/language";
 import { View } from "react-native";
 import type { Workout } from "../features/activities/model";
 import SportIcon from "./SportIcon";
@@ -30,16 +31,16 @@ export default function WorkoutOverview({
         </View>
         <View style={{ flex: 1, gap: 4 }}>
           <Txt size={22} weight="700">
-            {workout.title || workout.sport}
+            {workout.title === workout.sport || !workout.title ? uiText(workout.sport) : workout.title}
           </Txt>
           <Txt size={13} muted>
-            {workout.sport} ·{" "}
-            {new Date(workout.date).toLocaleDateString("nb-NO", {
+            {uiText(workout.sport)} ·{" "}
+            {new Date(workout.date).toLocaleDateString(displayLocale(), {
               day: "numeric",
               month: "short",
             })}
-            {workout.source === "simulation" ? " · Simulering" : ""}
-            {workout.source === "example" ? " · Eksempel" : ""}
+            {workout.source === "simulation" ? uiText(" · Simulering") : ""}
+            {workout.source === "example" ? uiText(" · Eksempel") : ""}
           </Txt>
         </View>
       </View>

@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { Directory, File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
@@ -16,14 +17,14 @@ export async function shareFile(
   exported: ExportFile,
   authorized: () => boolean,
 ) {
-  if (sharing) throw new Error("En eksport er allerede åpen.");
+  if (sharing) throw new Error(uiText("En eksport er allerede åpen."));
   sharing = true;
   let file: File | undefined;
   let delivered = false;
   try {
     if (!(await Sharing.isAvailableAsync()))
-      throw new Error("Fildeling er ikke tilgjengelig på denne enheten.");
-    if (!authorized()) throw new Error("Logg inn med kontoen som eier økten.");
+      throw new Error(uiText("Fildeling er ikke tilgjengelig på denne enheten."));
+    if (!authorized()) throw new Error(uiText("Logg inn med kontoen som eier økten."));
     cleanExports();
     const directory = new Directory(
       Paths.cache,
@@ -33,7 +34,7 @@ export async function shareFile(
     directory.create({ intermediates: true });
     file = new File(directory, exported.filename);
     await file.write(exported.contents);
-    if (!authorized()) throw new Error("Logg inn med kontoen som eier økten.");
+    if (!authorized()) throw new Error(uiText("Logg inn med kontoen som eier økten."));
     await Sharing.shareAsync(file.uri, {
       mimeType: "application/gpx+xml",
       UTI: "com.topografix.gpx",

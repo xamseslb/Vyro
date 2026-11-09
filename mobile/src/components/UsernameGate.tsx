@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -66,7 +67,7 @@ function Choose({ id }: { id: string }) {
     try {
       await action();
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Prøv igjen.");
+      setMessage(err instanceof Error ? err.message : uiText("Prøv igjen."));
     } finally {
       lock.current = false;
       setBusy(false);
@@ -94,16 +95,14 @@ function Choose({ id }: { id: string }) {
             <BrandWordmark width={112} color={c.text} />
             {profile ? (
               <>
-                <Txt size={30} weight="700">
-                  Velg brukernavnet ditt
-                </Txt>
+                <Txt size={30} weight="700">{uiText("Velg brukernavnet ditt")}</Txt>
                 <UsernameField
                   value={value}
                   onChange={setValue}
                   disabled={busy}
                 />
                 <Button
-                  title={busy ? "Vent litt …" : "Lagre og fortsett"}
+                  title={busy ? uiText("Vent litt …") : uiText("Lagre og fortsett")}
                   disabled={busy}
                   onPress={() =>
                     void act(async () => {
@@ -117,14 +116,14 @@ function Choose({ id }: { id: string }) {
               </>
             ) : error ? (
               <>
-                <Txt>Kunne ikke hente profilen din.</Txt>
+                <Txt>{uiText("Kunne ikke hente profilen din.")}</Txt>
                 <Button
-                  title="Prøv igjen"
+                  title={uiText("Prøv igjen")}
                   onPress={() => retry((n) => n + 1)}
                 />
               </>
             ) : (
-              <ActivityIndicator accessibilityLabel="Henter profil" />
+              <ActivityIndicator accessibilityLabel={uiText("Henter profil")} />
             )}
             {!!message && (
               <View accessibilityLiveRegion="polite">
@@ -133,7 +132,7 @@ function Choose({ id }: { id: string }) {
             )}
             <Button
               secondary
-              title="Logg ut"
+              title={uiText("Logg ut")}
               disabled={busy}
               onPress={() =>
                 void act(async () => {
@@ -142,7 +141,7 @@ function Choose({ id }: { id: string }) {
                     scope: "local",
                   });
                   if (result.error)
-                    throw new Error("Kunne ikke logge ut. Prøv igjen.");
+                    throw new Error(uiText("Kunne ikke logge ut. Prøv igjen."));
                 })
               }
             />

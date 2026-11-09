@@ -1,3 +1,4 @@
+import { message as uiText } from "../i18n/language";
 import { Pressable, View } from "react-native";
 import { Icon, Txt, useTheme, type IconName } from "./ui";
 
@@ -35,7 +36,7 @@ export function PostActions({
   }[] = [
     {
       icon: "heart",
-      label: `${liked ? "Likt" : "Lik"} · ${likeCount}`,
+      label: `${liked ? uiText("Likt") : uiText("Lik")} · ${likeCount}`,
       count: likeCount,
       active: liked,
       disabled,
@@ -43,14 +44,14 @@ export function PostActions({
     },
     {
       icon: "message",
-      label: "Kommentarer",
+      label: uiText("Kommentarer"),
       count: commentCount,
       expanded: commentsOpen,
       onPress: onComment,
     },
     {
       icon: "repost",
-      label: reposted ? "Angre repost" : "Del på nytt",
+      label: reposted ? uiText("Angre repost") : uiText("Del på nytt"),
       active: reposted,
       disabled,
       onPress: onRepost,

@@ -1,3 +1,4 @@
+import { message as uiText } from "../../i18n/language";
 import { MapPoint } from "../maps/config";
 import { Sample, meters } from "./rules";
 import { traceDistance } from "./trace";
@@ -28,7 +29,7 @@ export function previewGrowth(
 ): GrowthPreview {
   if (samples.length < 2)
     throw new Error(
-      "Ingen sammenhengende løype utenfor de private start- og sluttområdene.",
+      uiText("Ingen sammenhengende løype utenfor de private start- og sluttområdene."),
     );
   for (let i = 0; i < samples.length; i++) {
     const p = samples[i];
@@ -41,25 +42,25 @@ export function previewGrowth(
       p.accuracy < 0 ||
       p.accuracy > 30
     )
-      throw new Error("GPS-opptaket er for upresist.");
+      throw new Error(uiText("GPS-opptaket er for upresist."));
     if (i > 0) {
       const d = meters(samples[i - 1], p);
       const dt = (p.timestamp - samples[i - 1].timestamp) / 1000;
       if (dt <= 0 || dt > 3600 || d > 40 || d / dt > 12 || (dt > 15 && d > 10))
         throw new Error(
-          "GPS-sporet har et hull eller urealistisk fart. Det kan ikke brukes i konkurransen.",
+          uiText("GPS-sporet har et hull eller urealistisk fart. Det kan ikke brukes i konkurransen."),
         );
     }
   }
   const distance = traceDistance(samples);
   if (distance < 200 || distance > 100000)
-    throw new Error("Den synlige løypa må være mellom 200 meter og 100 km.");
+    throw new Error(uiText("Den synlige løypa må være mellom 200 meter og 100 km."));
   let start = 0,
     end = samples.length - 1;
   if (turf) {
     start = samples.findIndex((p) => meters(p, turf.route[0]) <= 15);
     if (start < 0)
-      throw new Error("Økten passerer ikke starten på denne sonen.");
+      throw new Error(uiText("Økten passerer ikke starten på denne sonen."));
     let j = 0;
     end = -1;
     for (let i = start; i < samples.length; i++) {
@@ -69,7 +70,7 @@ export function previewGrowth(
       )
         j++;
       if (meters(samples[i], turf.route[j]) > 35)
-        throw new Error("Du må følge hele løypa i samme retning.");
+        throw new Error(uiText("Du må følge hele løypa i samme retning."));
       if (
         j === turf.route.length - 1 &&
         meters(samples[i], turf.route[j]) <= 15
@@ -79,20 +80,20 @@ export function previewGrowth(
       }
     }
     if (end < 0)
-      throw new Error("Økten fullfører ikke hele den gjeldende sonen.");
+      throw new Error(uiText("Økten fullfører ikke hele den gjeldende sonen."));
     const matched = traceDistance(samples.slice(start, end + 1));
     if (matched < turf.distance_m * 0.95 || matched > turf.distance_m * 1.1)
-      throw new Error("Distansen avviker for mye fra konkurranseløypa.");
+      throw new Error(uiText("Distansen avviker for mye fra konkurranseløypa."));
   }
   const originalSeconds =
     (samples[end].timestamp - samples[start].timestamp) / 1000;
   const wins = !turf || originalSeconds < turf.seconds;
-  if (originalSeconds <= 0) throw new Error("Mangler gyldig totaltid.");
+  if (originalSeconds <= 0) throw new Error(uiText("Mangler gyldig totaltid."));
   if (extend && (!turf || !wins))
-    throw new Error("Slå tiden på den opprinnelige sonen før du utvider den.");
+    throw new Error(uiText("Slå tiden på den opprinnelige sonen før du utvider den."));
   if (extend && traceDistance(samples.slice(end)) < 100)
     throw new Error(
-      "Utvidelsen må være minst 100 meter etter mål, utenfor private områder.",
+      uiText("Utvidelsen må være minst 100 meter etter mål, utenfor private områder."),
     );
   const route = turf
     ? [...turf.route, ...(extend ? samples.slice(end + 1) : [])]
