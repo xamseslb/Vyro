@@ -1,5 +1,7 @@
 # Testing
 
+Kart i innlegg: `cloud-post.test.tsx` dekker åpning fra forhåndsvisningen og nytt forsøk etter lesefeil. På iPhone gjenstår å sjekke at sveip over bildet ruller strømmen, at et trykk åpner hele den delte ruten, og at panorering, knipezoom og tilbake fungerer.
+
 ## Velkomstside — 9. november 2026
 
 Typekontrollen og de 17 testene for autentiseringsvisninger, Hjem og språk bestod. En interaksjonstest velger hver introduksjon og kontrollerer at registrering og innlogging åpner riktig kontomodus. Lokal iOS-eksport uten bytekode inneholder begge JPEG-filene. Ikke fysisk verifisert: sveip, bildeutsnitt og lesbarhet med stor tekst på iPhone.

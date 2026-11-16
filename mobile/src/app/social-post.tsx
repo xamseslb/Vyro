@@ -7,6 +7,10 @@ import { Page } from "../components/SettingsUi";
 import { Button, Txt } from "../components/ui";
 import { CloudPost } from "../components/CloudPost";
 import { PlacePost } from "../components/PlacePost";
+import WorkoutMap from "../components/WorkoutMap";
+import FootballMap from "../components/FootballMap";
+import { MapViewport } from "../components/MapViewport";
+import { hasVisibleSegment } from "../features/social/routePrivacy";
 import { useAuthStore } from "../stores/useAuthStore";
 import {
   client,
@@ -20,10 +24,11 @@ import { requireOwner } from "../features/social/profiles";
 
 export default function SharedPostPage() {
   const [revision, setRevision] = useState(0);
-  const { id, type, comments } = useLocalSearchParams<{
+  const { id, type, comments, view } = useLocalSearchParams<{
     id: string;
     type: string;
     comments: string;
+    view?: string;
   }>();
   const owner = useAuthStore((s) => s.session?.user.id);
   return (
@@ -34,6 +39,7 @@ export default function SharedPostPage() {
           owner={owner}
           id={id}
           place={type === "place"}
+          mapOnly={type === "workout" && view === "map"}
           comments={comments === "1"}
           retry={() => setRevision((n) => n + 1)}
         />
@@ -45,12 +51,14 @@ function Content({
   owner,
   id,
   place,
+  mapOnly,
   comments,
   retry,
 }: {
   owner: string;
   id: string;
   place: boolean;
+  mapOnly: boolean;
   comments: boolean;
   retry: () => void;
 }) {
@@ -87,8 +95,19 @@ function Content({
       return () => ctl.abort();
     }, [owner, id, place]),
   );
+  if (mapOnly && post && "route" in post && post.route && hasVisibleSegment(post.route)) {
+    return (
+      <Page title={post.title} fallback="/" scroll={false} plain>
+        {post.sport === "Fotball" ? (
+          <FootballMap points={post.route} height="fill" />
+        ) : (
+          <MapViewport>{(height) => <WorkoutMap points={post.route} height={height} />}</MapViewport>
+        )}
+      </Page>
+    );
+  }
   return (
-    <Page title={uiText("Innlegg")} fallback="/notifications">
+    <Page title={mapOnly ? uiText("Rutekart") : uiText("Innlegg")} fallback={mapOnly ? "/" : "/notifications"}>
       <View style={{ padding: 20, gap: 16 }}>
         {busy ? (
           <Txt muted>{uiText("Henter innlegget …")}</Txt>
@@ -101,6 +120,8 @@ function Content({
               onPress={retry}
             />
           </>
+        ) : post && mapOnly ? (
+          <Txt muted>{uiText("Dette innlegget har ikke et delt rutekart.")}</Txt>
         ) : post ? (
           place ? (
             <PlacePost

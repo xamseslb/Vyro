@@ -1,5 +1,7 @@
 # Leveranseplan
 
+Delte GPS-økter har en fast kartforhåndsvisning i innlegget. Et trykk åpner et eget kart med panorering og zoom for den publiserte delen av ruten.
+
 ## Velkomstside — 9. november 2026
 
 Ved første oppstart velges norsk eller engelsk. Velkomstsiden bruker to lokale bilder med korte introduksjoner til klubber og treningsloggen. Brukeren kan opprette konto, logge inn eller utforske kartet fra begge sider.

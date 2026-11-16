@@ -23,6 +23,7 @@ import {
 const defaultPadding = { top: 40, right: 40, bottom: 40, left: 40 };
 
 export default function AppleMap({
+  preview = false,
   height = 300,
   attributionBottom = 0,
   mapKind = "standard",
@@ -249,6 +250,7 @@ export default function AppleMap({
       accessibilityLabel="Apple-kart"
       style={{ height, width: "100%" }}
       provider={PROVIDER_DEFAULT}
+      cacheEnabled={preview}
       mapType={
         presentation.mapKind !== "standard"
           ? `${presentation.mapKind}Flyover`

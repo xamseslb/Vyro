@@ -5,10 +5,12 @@ import { MapPoint, MapRoute } from "../features/maps/config";
 const empty: MapRoute[] = [];
 const emptyPoints: MapPoint[] = [];
 export default function WorkoutMap({
+  preview = false,
   height = 300,
   points = emptyPoints,
   routes = empty,
 }: {
+  preview?: boolean;
   height?: number;
   points?: MapPoint[];
   routes?: MapRoute[];
@@ -17,5 +19,5 @@ export default function WorkoutMap({
     () => (routes.length ? [] : routeSegments(points)),
     [points, routes],
   );
-  return <LiveMap height={height} route={segments} overlays={routes} />;
+  return <LiveMap height={height} route={segments} overlays={routes} preview={preview} />;
 }

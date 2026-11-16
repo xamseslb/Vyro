@@ -2,11 +2,12 @@ import {
   fireEvent,
   render,
   screen,
-  waitFor,
 } from "@testing-library/react-native";
 import { CloudPost } from "../src/components/CloudPost";
 import { client } from "../src/features/social/api";
 import { FeedPost } from "../src/features/social/feed";
+import { router } from "expo-router";
+jest.mock("expo-router", () => ({ router: { push: jest.fn() } }));
 jest.mock("../src/components/LiveMap", () => ({
   __esModule: true,
   default: () => null,
@@ -85,7 +86,11 @@ test("feed maps load automatically; reactions use the feed summary and route rea
     <CloudPost post={post} userId="viewer" onRemoved={() => {}} />,
   );
   expect(screen.getByRole("button", { name: "Lik · 2" })).toBeTruthy();
-  expect(await screen.findByText("Rutekart lastet")).toBeTruthy();
+  await fireEvent.press(await screen.findByRole("button", { name: "Åpne rutekart i fullskjerm" }));
+  expect(router.push).toHaveBeenCalledWith({
+    pathname: "/social-post",
+    params: { id: post.id, type: "workout", view: "map" },
+  });
   expect(screen.queryByRole("button", { name: "Vis rutekart" })).toBeNull();
   expect(from).toHaveBeenCalledTimes(1);
   expect(from).toHaveBeenCalledWith("posts");
@@ -126,7 +131,7 @@ test("a successful reaction updates the feed snapshot for recycled list rows, wh
   expect(changed).not.toHaveBeenCalled();
   expect(screen.getByRole("button", { name: "Del på nytt" })).toBeTruthy();
 });
-test("football posts automatically expose both map choices and the authorized GPS speed", async () => {
+test("football posts offer a static map preview and the authorized GPS speed", async () => {
   const chain = {
     select: jest.fn().mockReturnThis(),
     eq: jest.fn().mockReturnThis(),
@@ -151,7 +156,8 @@ test("football posts automatically expose both map choices and the authorized GP
       onRemoved={() => {}}
     />,
   );
-  expect(await screen.findByRole("tab", { name: "Varmekart" })).toBeTruthy();
+  expect(await screen.findByRole("button", { name: "Åpne rutekart i fullskjerm" })).toBeTruthy();
+  expect(screen.queryByRole("tab", { name: "Varmekart" })).toBeNull();
   expect(screen.getByText(/Maksfart · GPS/)).toBeTruthy();
   expect(screen.getByText(/21.6 km\/t|21,6 km\/t/)).toBeTruthy();
 });
@@ -196,7 +202,7 @@ test("a failed map read is retryable without changing reactions", async () => {
   await fireEvent.press(
     await screen.findByRole("button", { name: "Last kartet på nytt" }),
   );
-  await waitFor(() => expect(screen.getByText("Rutekart lastet")).toBeTruthy());
+  expect(await screen.findByRole("button", { name: "Åpne rutekart i fullskjerm" })).toBeTruthy();
   expect(screen.getByRole("button", { name: "Lik · 2" })).toBeTruthy();
   expect(single).toHaveBeenCalledTimes(2);
 });

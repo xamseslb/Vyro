@@ -2,6 +2,7 @@ import { message as uiText } from "../i18n/language";
 import { useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import LiveMap from "./LiveMap";
+import { MapViewport } from "./MapViewport";
 import { useAppStore } from "../stores/useAppStore";
 import { Txt, useTheme } from "./ui";
 import { routeSegments, type RoutePoint } from "../features/tracking/gps";
@@ -13,15 +14,18 @@ export default function FootballMap({
   height = 310,
 }: {
   points: RoutePoint[];
-  height?: number;
+  height?: number | "fill";
 }) {
   const c = useTheme();
   const mapKind = useAppStore(s => s.defaultMapKind);
   const [mode, setMode] = useState<"route" | "heat">("route");
   const route = useMemo(() => routeSegments(points), [points]);
   const heatmap = useMemo(() => footballHeatmap(points), [points]);
+  const drawMap = (mapHeight: number) => (
+    <LiveMap route={route} height={mapHeight} mapKind={mapKind} heatmap={mode === "heat" ? heatmap : null} />
+  );
   return (
-    <View style={{ gap: 12 }}>
+    <View style={{ gap: 12, flex: height === "fill" ? 1 : undefined }}>
       <View
         accessibilityRole="tablist"
         style={{
@@ -59,14 +63,9 @@ export default function FootballMap({
           </Pressable>
         ))}
       </View>
-      <View style={{ borderRadius: 20, overflow: "hidden" }}>
+      <View style={{ borderRadius: height === "fill" ? 0 : 20, overflow: "hidden", flex: height === "fill" ? 1 : undefined }}>
         {route.some((segment) => segment.length > 1) ? (
-          <LiveMap
-            route={route}
-            height={height}
-            mapKind={mapKind}
-            heatmap={mode === "heat" ? heatmap : null}
-          />
+          height === "fill" ? <MapViewport>{drawMap}</MapViewport> : drawMap(height)
         ) : (
           <Txt muted size={13}>{uiText("Ingen synlig rute i kartet.")}</Txt>
         )}

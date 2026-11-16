@@ -1,13 +1,15 @@
 import { message as uiText, displayLocale } from "../i18n/language";
 import { useEffect, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
+import { router } from "expo-router";
 import { client, Post, socialError } from "../features/social/api";
 import { FeedPost, ReactionSummary } from "../features/social/feed";
 import { km, duration, pace } from "../features/activities/model";
 import { isSport, sportInfo } from "../features/activities/sports";
-import { Button, Txt, useTheme } from "./ui";
+import { Button, Icon, Txt, useTheme } from "./ui";
 import WorkoutMap from "./WorkoutMap";
-import FootballMap, { FootballSpeed } from "./FootballMap";
+import { FootballSpeed } from "./FootballSpeed";
+import { hasVisibleSegment } from "../features/social/routePrivacy";
 import { Avatar } from "./SocialUi";
 import { ProfileLink } from "./ProfileLink";
 
@@ -206,6 +208,7 @@ export function CloudPost({
 }
 
 function PostMap({ postId, football }: { postId: string; football: boolean }) {
+  const c = useTheme();
   const [revision, setRevision] = useState(0);
   const [route, setRoute] = useState<Post["route"] | null>(null);
   const [error, setError] = useState("");
@@ -260,15 +263,30 @@ function PostMap({ postId, football }: { postId: string; football: boolean }) {
           />
         </View>
       ) : route ? (
-        route.length < 2 ? (
+        !hasVisibleSegment(route) ? (
           <Txt muted>{uiText("Dette innlegget har ikke et delt rutekart.")}</Txt>
-        ) : football ? (
-          <View style={{ gap: 16 }}>
-            <FootballMap points={route} height={260} />
-            <FootballSpeed value={maxSpeed} />
-          </View>
         ) : (
-          <WorkoutMap points={route} height={220} />
+          <View style={{ gap: 16 }}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={uiText("Åpne rutekart i fullskjerm")}
+              onPress={() => router.push({
+                pathname: "/social-post",
+                params: { id: postId, type: "workout", view: "map" },
+              })}
+            >
+              <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <WorkoutMap points={route} height={football ? 260 : 220} preview />
+              </View>
+              <View pointerEvents="none" style={{
+                position: "absolute", top: 10, right: 10, padding: 8,
+                backgroundColor: c.surface, borderRadius: 18,
+              }}>
+                <Icon name="expand" size={18} color={c.text} />
+              </View>
+            </Pressable>
+            {football && <FootballSpeed value={maxSpeed} />}
+          </View>
         )
       ) : (
         <Txt muted>{uiText("Laster kart …")}</Txt>
